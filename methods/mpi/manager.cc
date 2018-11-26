@@ -11,7 +11,7 @@
 #include "../read_input.h"
 #include "mpi_helper.h"
 #include "common.h"
-#include "SimulationHandler.h"
+#include "ProcessHandler.h"
 #include "manager.h"
 
 // Flags
@@ -104,7 +104,7 @@ void process_signal(const MPI::Status& status) {
 void process_parameter(const MPI::Status& status,
                        const std::string& epsilon,
                        const cmd_t& simulator,
-                       AbstractSimulationHandler*& sim_handler) {
+                       AbstractProcessHandler*& sim_handler) {
 
     // sim_handler should be nullptr
     if (sim_handler) {
@@ -132,25 +132,29 @@ void process_parameter(const MPI::Status& status,
     delete[] buffer;
 
     // Start simulation
+    std::string input_string;
+    simulator_input(epsilon, prmtr_received, input_string);
     if (mpi_simulator)
-        sim_handler = new MPISimulationHandler(epsilon, simulator, prmtr_received);
+        sim_handler = new MPIProcessHandler(simulator, input_string);
     else
-        sim_handler = new SimulationHandler(epsilon, simulator, prmtr_received);
+        sim_handler = new ForkedProcessHandler(simulator, input_string);
 }
 
-void check_simulation(AbstractSimulationHandler*& sim_handler) {
+void check_simulation(AbstractProcessHandler*& sim_handler) {
 
     if (sim_handler == nullptr) {
         std::runtime_error e("simulation is not running");
         throw e;
     }
 
-    const std::string *result_str = sim_handler->getResult();
+    // Process is finished and result is ready
+    if (sim_handler->isDone()) {
 
-    if (result_str) { // Simulation is finished and result is ready
+        // Get output string
+        std::string result_str = sim_handler->getOutput();
 
         // Send result to master
-        int result = simulation_result(*result_str);
+        int result = simulation_result(result_str);
         MPI::COMM_WORLD.Send(&result, 1, MPI::INT, MASTER, RESULT_TAG);
 
         // Clean up simulation handler
@@ -164,8 +168,8 @@ void manager(const std::vector<std::string>& epsilons,
     // Set signal handler
     set_signal_handler();
 
-    // Initialize SimulationHandler pointer
-    AbstractSimulationHandler *sim_handler = nullptr;
+    // Initialize ProcessHandler pointer
+    AbstractProcessHandler *sim_handler = nullptr;
 
     // Initialize epsilon iterators
     epsilon = epsilons.cbegin();

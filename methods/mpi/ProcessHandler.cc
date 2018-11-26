@@ -3,6 +3,8 @@
 #include <atomic>
 #include <stdexcept>
 
+#include <cassert>
+
 #include <unistd.h>
 #include <signal.h>
 #include <sys/utsname.h>
@@ -10,73 +12,84 @@
 #include "../types.h"
 #include "../system_call.h"
 #include "../pipe_io.h"
-#include "../run_simulation.h"
 
 #include "common.h"
 #include "spawn.h"
-#include "SimulationHandler.h"
+#include "ProcessHandler.h"
 
 #ifndef NDEBUG
 #include <iostream>
 #endif
 
-AbstractSimulationHandler::AbstractSimulationHandler(
-        const std::string& epsilon,
-        const cmd_t& simulator,
-        const parameter_t& prmtr_sample) :
-    m_epsilon(epsilon),
-    m_simulator(simulator),
-    m_prmtr_sample(prmtr_sample) {}
+AbstractProcessHandler::AbstractProcessHandler(
+        const cmd_t& command,
+        const std::string& input_string) :
+    m_command(command),
+    m_input_string(input_string)
+{
+}
 
-SimulationHandler::SimulationHandler(const std::string& epsilon, const cmd_t& simulator,
-                                     const parameter_t& prmtr_sample) :
-    AbstractSimulationHandler(epsilon, simulator, prmtr_sample) {
+std::string AbstractProcessHandler::getOutput()
+{
+    assert(isDone());
 
-    // Start simulation
-    system_call(m_simulator, m_child_pid, m_pipe_write_fd, m_pipe_read_fd);
+    return m_output_buffer;
+}
 
-    // Write input to simulator
-    std::string write_buffer;
-    simulator_input(m_epsilon, m_prmtr_sample, write_buffer);
+ForkedProcessHandler::ForkedProcessHandler(
+        const cmd_t& command,
+        const std::string& input_string) :
+    AbstractProcessHandler(command, input_string)
+{
+
+    // Start process
+    system_call(m_command, m_child_pid, m_pipe_write_fd, m_pipe_read_fd);
+
+    // Write input string to stdin of process
 #ifndef NDEBUG
-    std::cerr << "write_buffer: " << write_buffer << std::endl;
+    std::cerr << "input_string: " << input_string << std::endl;
 #endif
-    write_to_pipe(m_pipe_write_fd, write_buffer);
+    write_to_pipe(m_pipe_write_fd, input_string);
     close_check(m_pipe_write_fd);
 }
 
-SimulationHandler::~SimulationHandler() {
+ForkedProcessHandler::~ForkedProcessHandler()
+{
 
 #ifndef NDEBUG
     std::cerr << "Destroying...\n";
 #endif
     // Wait on child process if it has not yet been waited for
-    if (m_child_pid) waitpid_success(m_child_pid, 0, m_simulator);
+    if (m_child_pid) waitpid_success(m_child_pid, 0, m_command);
 
     // Close pipe if not already closed
     if (!m_read_done) close_check(m_pipe_read_fd);
 }
 
-void SimulationHandler::terminate() {
+void ForkedProcessHandler::terminate()
+{
 
 #ifndef NDEBUG
     std::cerr << "Terminating...\n";
 #endif
 
 #ifndef NDEBUG
-    std::cerr << "Checking whether simulation has finished...\n";
+    std::cerr << "Checking whether child process has finished...\n";
 #endif
     // If simulation has finished, mark by setting m_child_pid to zero
-    if ( waitpid_success(m_child_pid, WNOHANG, m_simulator) ) {
+    if ( waitpid_success(m_child_pid, WNOHANG, m_command) )
+    {
         m_child_pid = 0;
         return;
     }
 
 #ifndef NDEBUG
-    std::cerr << "Sending sigterm to child with pid " << m_child_pid << "...\n";
+    std::cerr << "Sending sigterm to child process with pid " << m_child_pid <<
+        "...\n";
 #endif
     // Send SIGTERM to child process
-    if ( kill(m_child_pid, SIGTERM) ) {
+    if ( kill(m_child_pid, SIGTERM) )
+    {
         std::runtime_error e("an error occurred while trying to terminate "
                              "child process");
         throw e;
@@ -92,16 +105,18 @@ void SimulationHandler::terminate() {
     std::cerr << "Checking whether sigterm worked...\n";
 #endif
     // If simulation has finished, mark by setting m_child_pid to zero
-    if ( waitpid_success(m_child_pid, WNOHANG, m_simulator, ignore_error) ) {
+    if ( waitpid_success(m_child_pid, WNOHANG, m_command, ignore_error) )
+    {
         m_child_pid = 0;
         return;
     }
 
 #ifndef NDEBUG
-    std::cerr << "Sending sigkill to child...\n";
+    std::cerr << "Sending sigkill to child process...\n";
 #endif
     // Send SIGKILL to child process
-    if ( kill(m_child_pid, SIGKILL) ) {
+    if ( kill(m_child_pid, SIGKILL) )
+    {
         std::runtime_error e("an error occurred while trying to kill "
                              "child process");
         throw e;
@@ -110,54 +125,58 @@ void SimulationHandler::terminate() {
 #ifndef NDEBUG
     std::cerr << "Waiting on child...\n";
 #endif
-     waitpid_success(m_child_pid, 0, m_simulator, ignore_error);
+     waitpid_success(m_child_pid, 0, m_command, ignore_error);
      m_child_pid = 0;
 }
 
-const std::string* SimulationHandler::getResult() {
-
-    // Poll pipe. If pipe is finished reading, close pipe and
-    // return pointer to m_read_buffer, else return nullptr
-    if ( poll_read_from_pipe(m_pipe_read_fd, m_read_buffer) ) {
+bool ForkedProcessHandler::isDone()
+{
+    // Poll pipe if m_read_done flag is false. If pipe is finished reading,
+    // close pipe and set m_read_done flag to true
+    if (    !m_read_done &&
+            poll_read_from_pipe(m_pipe_read_fd, m_output_buffer) )
+    {
         close_check(m_pipe_read_fd);
         m_read_done = true;
-        return &m_read_buffer;
     }
-    else
-        return nullptr;
+
+    return m_read_done;
 }
 
-MPISimulationHandler::MPISimulationHandler(const std::string& epsilon, const cmd_t& simulator,
-                                     const parameter_t& prmtr_sample) :
-    AbstractSimulationHandler(epsilon, simulator, prmtr_sample) {
+MPIProcessHandler::MPIProcessHandler(
+        const cmd_t& command,
+        const std::string& input_string) :
+    AbstractProcessHandler(command, input_string)
+{
 #ifndef NDEBUG
     const int rank = MPI::COMM_WORLD.Get_rank();
     const int size = MPI::COMM_WORLD.Get_size();
-    std::cerr << "Manager " << rank << "/" << size << ": MPI simulation constructing...\n";
+    std::cerr << "Manager " << rank << "/" << size << ": MPI process constructing...\n";
 #endif
 
     // Create MPI::Info object
     MPI::Info info = MPI::Info::Create();
 
     // Ensure process is spawned on same node if force_host_spawn is set
-    if (force_host_spawn) {
+    if (force_host_spawn)
+    {
         struct utsname buf;
         uname(&buf);
         info.Set("host", buf.nodename);
     }
 
-    m_child_comm = spawn(simulator, info);
+    m_child_comm = spawn(m_command, info);
 
     // Free MPI::Info object
     info.Free();
 
-    // Write input to simulator
-    std::string write_buffer;
-    simulator_input(m_epsilon, m_prmtr_sample, write_buffer);
-    m_child_comm.Send(write_buffer.c_str(), write_buffer.size() + 1, MPI::CHAR, 0, 0);
+    // Write input string to spawned MPI process
+    m_child_comm.Send(input_string.c_str(), input_string.size() + 1, MPI::CHAR,
+            0, 0);
 }
 
-MPISimulationHandler::~MPISimulationHandler() {
+MPIProcessHandler::~MPIProcessHandler()
+{
 #ifndef NDEBUG
     const int rank = MPI::COMM_WORLD.Get_rank();
     const int size = MPI::COMM_WORLD.Get_size();
@@ -169,8 +188,8 @@ MPISimulationHandler::~MPISimulationHandler() {
     m_child_comm.Disconnect();
 }
 
-void MPISimulationHandler::terminate() {
-
+void MPIProcessHandler::terminate()
+{
 #ifndef NDEBUG
     const int rank = MPI::COMM_WORLD.Get_rank();
     const int size = MPI::COMM_WORLD.Get_size();
@@ -179,7 +198,8 @@ void MPISimulationHandler::terminate() {
     // MPI does not provide process control, so
     // we can only wait for the simulation to finish
     // if it has not finished yet
-    if (!m_result_received) {
+    if (!m_result_received)
+    {
         // Source and tag are both zero
         const int source = 0, tag = 0;
 
@@ -199,11 +219,13 @@ void MPISimulationHandler::terminate() {
     }
 }
 
-const std::string* MPISimulationHandler::getResult() {
-
-    // Probe for result.
+bool MPIProcessHandler::isDone()
+{
+    // Probe for result if result has not yet been received
     MPI::Status status;
-    if (m_child_comm.Iprobe(0, 0, status)) {
+    if (    m_result_received &&
+            m_child_comm.Iprobe(0, 0, status) )
+    {
         // Source and tag are both zero
         const int source = 0, tag = 0;
 
@@ -212,11 +234,11 @@ const std::string* MPISimulationHandler::getResult() {
 
         m_child_comm.Recv(buffer, count, MPI::CHAR, source, tag);
 
-        m_read_buffer.assign(buffer);
+        m_output_buffer.assign(buffer);
         delete[] buffer;
 
         m_result_received = true;
+    }
 
-        return &m_read_buffer;
-    } else return nullptr;
+    return m_result_received;
 }
