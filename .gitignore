@@ -1,0 +1,16 @@
+*.o
+*.d
+/methods/mcmc
+/methods/rejection
+/methods/smc
+/methods/sweep
+/methods/rejection-mpi
+/methods/mcmc-mpi
+/methods/smc-mpi
+/methods/sweep-mpi
+/models/binomial
+/samplers/uniform
+/samplers/normal
+/densities/uniform_pdf
+/densities/normal_pdf
+/simulators/mpi_simulator
