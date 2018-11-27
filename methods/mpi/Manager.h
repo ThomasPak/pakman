@@ -95,9 +95,11 @@ class Manager
         // Terminate process
         void terminateProcess();
 
-        // TODO: send output string instead of result
         // Send output to Master
-        void sendOutputToMaster(int result) const;
+        void sendOutputToMaster(const std::string& output_string) const;
+
+        // Send signal to Master
+        void sendSignalToMaster(int signal) const;
 
         /**** Member variables ****/
         // Command for process

@@ -18,14 +18,19 @@ const int MASTER_RANK = 0;
 
 /**** Tags ****/
 const int INPUT_TAG = 0;
-const int SIGNAL_TAG = 1;
+const int MASTER_SIGNAL_TAG = 1;
 const int OUTPUT_TAG = 2;
+const int MANAGER_SIGNAL_TAG = 3;
 
-/**** Signals ****/
+/**** Master signals ****/
 // Terminate Manager
 const int TERMINATE_MANAGER_SIGNAL = 0;
 // Terminate process
 const int TERMINATE_PROCESS_SIGNAL = 1;
+
+/**** Manager signals ****/
+// Process is cancelled
+const int PROCESS_CANCELLED_SIGNAL = 0;
 
 /**** Results ****/
 const int REJECT = 0;

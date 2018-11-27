@@ -39,13 +39,15 @@ void Manager::doIdleStuff()
                 m_state = terminated;
                 return;
 
-            // TERMINATE_MANAGER_SIGNAL is the only valid signal in the idle
-            // Manager state
+            // An idle Manager can receive TERMINATE_PROCESS_SIGNAL when the
+            // Master has not yet checked for the Manager's output message.
+            // In this case, nothing needs to be done
+            case TERMINATE_PROCESS_SIGNAL:
+                return;
+
+            // TERMINATE_MANAGER_SIGNAL and TERMINATE_PROCESS_SIGNAL are the
+            // only valid Master signals
             default:
-#ifndef NDEBUG
-                std::cerr << "Manager: I received a signal that's not "
-                    "TERMINATE_MANAGER_SIGNAL!!\n";
-#endif
                 throw;
         }
     }
@@ -94,18 +96,21 @@ void Manager::doBusyStuff()
                 return;
 
             case TERMINATE_PROCESS_SIGNAL:
+#ifndef NDEBUG
+                std::cerr << "Manager: sending PROCESS_CANCELLED_SIGNAL to Master\n";
+#endif
                 // Terminate process
                 terminateProcess();
 
-                // Send CANCEL result
-                sendOutputToMaster(CANCEL);
+                // Send PROCESS_CANCELLED_SIGNAL result
+                sendSignalToMaster(PROCESS_CANCELLED_SIGNAL);
 
                 // Switch to idle state
                 m_state = idle;
                 return;
 
             // TERMINATE_MANAGER_SIGNAL and TERMINATE_PROCESS_SIGNAL are the
-            // only valid signals in the busy Manager state
+            // only valid Master signals
             default:
                 throw;
         }
@@ -115,12 +120,10 @@ void Manager::doBusyStuff()
     if (m_p_process_handler->isDone())
     {
         // Get output string
-        std::string result_str = m_p_process_handler->getOutput();
+        std::string output_string = m_p_process_handler->getOutput();
 
-        // TODO: send entire output string to master
-        // Send result to master
-        int result = simulation_result(result_str);
-        sendOutputToMaster(result);
+        // Send output string to master
+        sendOutputToMaster(output_string);
 
         // Terminate process handler
         terminateProcess();
@@ -168,7 +171,7 @@ std::string Manager::receiveInput() const
 // Probe for signal
 bool Manager::probeSignal() const
 {
-    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, SIGNAL_TAG);
+    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, MASTER_SIGNAL_TAG);
 }
 
 // Receive signal
@@ -179,16 +182,16 @@ int Manager::receiveSignal() const
 
     // Probe signal message to get status
     MPI::Status status;
-    MPI::COMM_WORLD.Probe(MASTER_RANK, SIGNAL_TAG, status);
+    MPI::COMM_WORLD.Probe(MASTER_RANK, MASTER_SIGNAL_TAG, status);
 
     // Sanity check on signal, which has to be a single integer
-    assert(status.Get_tag() == SIGNAL_TAG);
+    assert(status.Get_tag() == MASTER_SIGNAL_TAG);
     assert(status.Get_source() == MASTER_RANK);
     assert(status.Get_count(MPI::INT) == 1);
 
     // Receive signal from Master
     int signal = 0;
-    MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, MASTER_RANK, SIGNAL_TAG);
+    MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, MASTER_RANK, MASTER_SIGNAL_TAG);
 
     // Return signal as integer
     return signal;
@@ -232,11 +235,20 @@ void Manager::terminateProcess()
     m_p_process_handler = nullptr;
 }
 
-// TODO: send output string instead of result
-// Send result to Master
-void Manager::sendOutputToMaster(int result) const
+// Send output to Master
+void Manager::sendOutputToMaster(const std::string& output_string) const
 {
     // Note: Isend is used here to avoid deadlock since the Master and the root
     // Manager are executed by the same process
-    MPI::COMM_WORLD.Isend(&result, 1, MPI::INT, MASTER_RANK, OUTPUT_TAG);
+    MPI::COMM_WORLD.Isend(output_string.c_str(), output_string.size() + 1,
+            MPI::CHAR, MASTER_RANK, OUTPUT_TAG);
+}
+
+// Send signal to Master
+void Manager::sendSignalToMaster(int signal) const
+{
+    // Note: Isend is used here to avoid deadlock since the Master and the root
+    // Manager are executed by the same process
+    MPI::COMM_WORLD.Isend(&signal,  1, MPI::INT, MASTER_RANK,
+            MANAGER_SIGNAL_TAG);
 }

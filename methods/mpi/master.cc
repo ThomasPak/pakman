@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cassert>
 #include <string>
 #include <queue>
 #include <vector>
@@ -24,13 +25,15 @@
 void check_managers(const std::vector<ParameterHandler*>& manager_map,
                     std::set<int>& idle_managers) {
 
-    // While there are any incoming messages
+    // While there are any incoming output messages
     MPI::Status status;
     while (MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, OUTPUT_TAG, status)) {
 
-        // Receive message
-        int msg, manager = status.Get_source();
-        MPI::COMM_WORLD.Recv(&msg, 1, MPI::INT, manager, OUTPUT_TAG);
+        // Receive output message
+        int count = status.Get_count(MPI::CHAR);
+        int manager = status.Get_source();
+        char *buffer = new char[count];
+        MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, manager, OUTPUT_TAG);
 
 #ifndef NDEBUG
         const int rank = MPI::COMM_WORLD.Get_rank();
@@ -40,8 +43,13 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
                   << manager << std::endl;
 #endif
 
-        // Set parameter status appropriately according to message received
-        switch (msg) {
+        // Interpret output message
+        int result = simulation_result(buffer);
+        delete[] buffer;
+
+        // Set parameter status appropriately according to output message
+        // received
+        switch (result) {
             case REJECT:
                 if (!tolerate_rejections) {
                     std::runtime_error e("Simulator rejected simulation!");
@@ -49,9 +57,11 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
                 }
                 manager_map[manager]->setStatus(rejected);
                 break;
+
             case ACCEPT:
                 manager_map[manager]->setStatus(accepted);
                 break;
+
             case ERROR:
                 if (!tolerate_errors) {
                     std::runtime_error e("Simulator returned error!");
@@ -59,13 +69,41 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
                 }
                 manager_map[manager]->setStatus(error);
                 break;
-            case CANCEL:
-                manager_map[manager]->setStatus(cancelled);
-                break;
+
+            default:
+                throw;
         }
 
         // Mark manager as idle
         idle_managers.insert(manager);
+    }
+
+    // Check for Manager signals
+    while (MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG, status)) {
+
+        // Receive Manager signal
+        int signal, manager = status.Get_source();
+        MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, manager,
+                MANAGER_SIGNAL_TAG);
+
+#ifndef NDEBUG
+        const int rank = MPI::COMM_WORLD.Get_rank();
+        const int size = MPI::COMM_WORLD.Get_size();
+        std::cerr << "Master " << rank << "/" << size
+                  << ": received signal from manager "
+                  << manager << std::endl;
+#endif
+
+        // Set parameter status appropriately according to signal received
+        switch (signal) {
+            case PROCESS_CANCELLED_SIGNAL:
+                manager_map[manager]->setStatus(cancelled);
+                idle_managers.insert(manager);
+                break;
+
+            default:
+                throw;
+        }
     }
 }
 
@@ -147,7 +185,7 @@ void send_signal_to_managers(const int signal) {
     std::vector<MPI::Request> reqs;
 
     for (int manager_idx = 0; manager_idx < size; manager_idx++)
-        reqs.push_back(MPI::COMM_WORLD.Isend(&signal, 1, MPI::INT, manager_idx, SIGNAL_TAG));
+        reqs.push_back(MPI::COMM_WORLD.Isend(&signal, 1, MPI::INT, manager_idx, MASTER_SIGNAL_TAG));
 
     for (auto& req : reqs) req.Wait();
 }
@@ -159,7 +197,7 @@ void send_signal_to_idle_managers(const int signal,
 
     for (auto it = idle_managers.begin();
          it != idle_managers.end(); it++)
-        reqs.push_back(MPI::COMM_WORLD.Isend(&signal, 1, MPI::INT, *it, SIGNAL_TAG));
+        reqs.push_back(MPI::COMM_WORLD.Isend(&signal, 1, MPI::INT, *it, MASTER_SIGNAL_TAG));
 
     for (auto& req : reqs) req.Wait();
 }
@@ -367,7 +405,13 @@ void master(const int pop_size, const input_t& input_obj) {
 
         if (t < input_obj.epsilons.size() - 1) {
             // Send signal to managers to signal next generation
-            send_signal_to_idle_managers(TERMINATE_PROCESS_SIGNAL, idle_managers);
+            //send_signal_to_idle_managers(TERMINATE_PROCESS_SIGNAL, idle_managers);
+#ifndef NDEBUG
+            std::cerr << "Printing idle_managers..\n";
+            for (auto idx : idle_managers)
+                std::cerr << "Idle in idle_managers" << idx << std::endl;
+#endif
+            send_signal_to_managers(TERMINATE_PROCESS_SIGNAL);
 
             // Check result messages until you have received results from all
             // managers. Since all managers send either a valid result,
