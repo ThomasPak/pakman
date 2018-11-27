@@ -14,12 +14,12 @@ extern bool force_host_spawn;
 extern bool tolerate_rejections;
 extern bool tolerate_errors;
 
-const int MASTER = 0;
+const int MASTER_RANK = 0;
 
 /**** Tags ****/
-const int PARAMETER_TAG = 0;
+const int INPUT_TAG = 0;
 const int SIGNAL_TAG = 1;
-const int RESULT_TAG = 2;
+const int OUTPUT_TAG = 2;
 
 /**** Signals ****/
 // Terminate Manager

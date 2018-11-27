@@ -42,7 +42,7 @@ void broadcast_raw_input(const std::string& raw_input) {
     // Broadcast raw input
     char *buffer;
     string_to_buffer(buffer, raw_input);
-    Dynamic_Bcast(MPI::COMM_WORLD, buffer, raw_input.size() + 1, MPI::CHAR, MASTER);
+    Dynamic_Bcast(MPI::COMM_WORLD, buffer, raw_input.size() + 1, MPI::CHAR, MASTER_RANK);
     delete[] buffer;
 }
 
@@ -50,7 +50,7 @@ void receive_raw_input(std::string& raw_input) {
 
     // Receive raw input
     char *buffer;
-    Dynamic_Bcast(MPI::COMM_WORLD, buffer, 0, MPI::CHAR, MASTER);
+    Dynamic_Bcast(MPI::COMM_WORLD, buffer, 0, MPI::CHAR, MASTER_RANK);
     raw_input.assign(buffer);
     delete[] buffer;
 }

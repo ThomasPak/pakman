@@ -137,7 +137,7 @@ void Manager::doBusyStuff()
 // Probe for input
 bool Manager::probeInput() const
 {
-    return MPI::COMM_WORLD.Iprobe(MASTER, PARAMETER_TAG);
+    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, INPUT_TAG);
 }
 
 // Receive input
@@ -148,16 +148,16 @@ std::string Manager::receiveInput() const
 
     // Probe input message to get status
     MPI::Status status;
-    MPI::COMM_WORLD.Probe(MASTER, PARAMETER_TAG, status);
+    MPI::COMM_WORLD.Probe(MASTER_RANK, INPUT_TAG, status);
 
     // Sanity check on input
-    assert(status.Get_tag() == PARAMETER_TAG);
-    assert(status.Get_source() == MASTER);
+    assert(status.Get_tag() == INPUT_TAG);
+    assert(status.Get_source() == MASTER_RANK);
 
     // Receive input from Master
     int count = status.Get_count(MPI::CHAR);
     char *buffer = new char[count];
-    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, MASTER, PARAMETER_TAG);
+    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, MASTER_RANK, INPUT_TAG);
 
     // Return input as string
     std::string input_string(buffer);
@@ -168,7 +168,7 @@ std::string Manager::receiveInput() const
 // Probe for signal
 bool Manager::probeSignal() const
 {
-    return MPI::COMM_WORLD.Iprobe(MASTER, SIGNAL_TAG);
+    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, SIGNAL_TAG);
 }
 
 // Receive signal
@@ -179,16 +179,16 @@ int Manager::receiveSignal() const
 
     // Probe signal message to get status
     MPI::Status status;
-    MPI::COMM_WORLD.Probe(MASTER, SIGNAL_TAG, status);
+    MPI::COMM_WORLD.Probe(MASTER_RANK, SIGNAL_TAG, status);
 
     // Sanity check on signal, which has to be a single integer
     assert(status.Get_tag() == SIGNAL_TAG);
-    assert(status.Get_source() == MASTER);
+    assert(status.Get_source() == MASTER_RANK);
     assert(status.Get_count(MPI::INT) == 1);
 
     // Receive signal from Master
     int signal = 0;
-    MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, MASTER, SIGNAL_TAG);
+    MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, MASTER_RANK, SIGNAL_TAG);
 
     // Return signal as integer
     return signal;
@@ -238,5 +238,5 @@ void Manager::sendOutputToMaster(int result) const
 {
     // Note: Isend is used here to avoid deadlock since the Master and the root
     // Manager are executed by the same process
-    MPI::COMM_WORLD.Isend(&result, 1, MPI::INT, MASTER, RESULT_TAG);
+    MPI::COMM_WORLD.Isend(&result, 1, MPI::INT, MASTER_RANK, OUTPUT_TAG);
 }
