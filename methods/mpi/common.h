@@ -7,7 +7,7 @@
 extern std::chrono::milliseconds MAIN_TIMEOUT;
 extern std::chrono::milliseconds KILL_TIMEOUT;
 
-extern std::atomic<bool> terminate_program;
+extern bool terminate_program;
 
 extern bool mpi_simulator;
 extern bool force_host_spawn;
@@ -22,11 +22,10 @@ const int SIGNAL_TAG = 1;
 const int RESULT_TAG = 2;
 
 /**** Signals ****/
-// Terminate simulation and exit manager loop
+// Terminate Manager
 const int TERMINATE_MANAGER_SIGNAL = 0;
-// Synchronize with master, terminate simulation
-// and switch to next epsilon
-const int NEXT_GENERATION_SIGNAL = 1;
+// Terminate process
+const int TERMINATE_PROCESS_SIGNAL = 1;
 
 /**** Results ****/
 const int REJECT = 0;
@@ -42,5 +41,11 @@ typedef enum {
     cancelled,
     busy
 } status_t;
+
+typedef enum
+{
+    forked_process,
+    mpi_process
+} process_t;
 
 #endif // COMMON_H

@@ -4,6 +4,7 @@
 #include <queue>
 #include <vector>
 #include <set>
+#include <string>
 
 #include "../types.h"
 #include "../Sampler.h"
@@ -14,12 +15,15 @@
 void check_managers(const std::vector<ParameterHandler*>& manager_map,
                     std::set<int>& idle_managers);
 void delegate_managers(const AbstractSampler& sampler_obj,
+                       const std::string& epsilon,
                        std::vector<ParameterHandler*>& manager_map,
                        std::set<int>& idle_managers,
                        std::queue<ParameterHandler>& prmtr_sampled);
 void check_parameters(std::queue<ParameterHandler>& prmtr_sampled,
                       std::vector<parameter_t>& prmtr_accepted);
 void send_signal_to_managers(const int signal);
+void send_signal_to_idle_managers(const int signal,
+        std::set<int>& idle_managers);
 
 namespace rejection {
 

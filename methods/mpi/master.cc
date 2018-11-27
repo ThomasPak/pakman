@@ -13,6 +13,7 @@
 #include "../read_input.h"
 #include "../system_call.h"
 #include "../write_parameters.h"
+#include "../run_simulation.h"
 #include "../Sampler.h"
 #include "../smc_weight.h"
 #include "mpi_utils.h"
@@ -69,6 +70,7 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
 }
 
 void delegate_managers(const AbstractSampler& sampler_obj,
+                       const std::string& epsilon,
                        std::vector<ParameterHandler*>& manager_map,
                        std::set<int>& idle_managers,
                        std::queue<ParameterHandler>& prmtr_sampled) {
@@ -80,9 +82,13 @@ void delegate_managers(const AbstractSampler& sampler_obj,
         // Sample parameter and push to queue
         prmtr_sampled.emplace(sampler_obj.sampleParameter());
 
-        // Send sampled parameter to manager
-        MPI::COMM_WORLD.Isend(prmtr_sampled.back().getCString(),
-                              prmtr_sampled.back().getParameterSize() + 1,
+        // Format input message
+        std::string input_str;
+        simulator_input(epsilon, prmtr_sampled.back().getCString(), input_str);
+
+        // Send input message to manager
+        MPI::COMM_WORLD.Isend(input_str.c_str(),
+                              input_str.size() + 1,
                               MPI::CHAR, *it, PARAMETER_TAG);
 
 #ifndef NDEBUG
@@ -146,6 +152,18 @@ void send_signal_to_managers(const int signal) {
     for (auto& req : reqs) req.Wait();
 }
 
+void send_signal_to_idle_managers(const int signal,
+        std::set<int>& idle_managers) {
+
+    std::vector<MPI::Request> reqs;
+
+    for (auto it = idle_managers.begin();
+         it != idle_managers.end(); it++)
+        reqs.push_back(MPI::COMM_WORLD.Isend(&signal, 1, MPI::INT, *it, SIGNAL_TAG));
+
+    for (auto& req : reqs) req.Wait();
+}
+
 namespace rejection {
 
 void master(const int num_accept, const input_t& input_obj) {
@@ -177,8 +195,8 @@ void master(const int num_accept, const input_t& input_obj) {
         check_managers(manager_map, idle_managers);
 
         // Send work to idle managers
-        delegate_managers(prior_sampler_obj, manager_map, idle_managers,
-                          prmtr_sampled);
+        delegate_managers(prior_sampler_obj, input_obj.epsilon, manager_map,
+                idle_managers, prmtr_sampled);
 
         // Add parameter to prmtr_accepted in the order they were sampled
         check_parameters(prmtr_sampled, prmtr_accepted);
@@ -301,8 +319,8 @@ void master(const int pop_size, const input_t& input_obj) {
             check_managers(manager_map, idle_managers);
 
             // Send work to idle managers
-            delegate_managers(smc_sampler, manager_map, idle_managers,
-                              prmtr_sampled);
+            delegate_managers(smc_sampler, input_obj.epsilons[t], manager_map,
+                    idle_managers, prmtr_sampled);
 
             // Add parameter to prmtr_accepted_new in the order they were sampled
             num_simulated += prmtr_sampled.size();
@@ -349,7 +367,7 @@ void master(const int pop_size, const input_t& input_obj) {
 
         if (t < input_obj.epsilons.size() - 1) {
             // Send signal to managers to signal next generation
-            send_signal_to_managers(NEXT_GENERATION_SIGNAL);
+            send_signal_to_idle_managers(TERMINATE_PROCESS_SIGNAL, idle_managers);
 
             // Check result messages until you have received results from all
             // managers. Since all managers send either a valid result,
@@ -411,7 +429,7 @@ void master(const input_t& input_obj) {
         check_managers(manager_map, idle_managers);
 
         // Send work to idle managers
-        delegate_managers(generator_obj, manager_map, idle_managers,
+        delegate_managers(generator_obj, "0", manager_map, idle_managers,
                           prmtr_sampled);
 
         // Add parameter to prmtr_accepted in the order they were generated

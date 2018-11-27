@@ -1,212 +1,242 @@
-#include <iostream>
 #include <string>
-#include <stdexcept>
-#include <atomic>
+#include <cassert>
 
 #include <mpi.h>
 #include <signal.h>
 
-#include "../types.h"
+// TODO: remove run_simulation.h when output string is sent to Master as a
+// whole
 #include "../run_simulation.h"
-#include "../read_input.h"
-#include "mpi_utils.h"
 #include "common.h"
 #include "ProcessHandler.h"
 #include "Manager.h"
 
-// Flags
-bool terminate_simulation = false;
-bool terminate_manager = false;
-std::atomic<bool> terminate_program(false);
-
-// Epsilon iterators
-std::vector<std::string>::const_iterator epsilon;
-std::vector<std::string>::const_iterator epsilon_end;
-
-void process_signal(const MPI::Status& status) {
-
-    int count = status.Get_count(MPI::INT), tag = status.Get_tag(), source = status.Get_source();
-
-    if (tag != SIGNAL_TAG) {
-        std::runtime_error e("tag should be SIGNAL_TAG");
-        throw e;
-    }
-
-    if (count != 1) {
-        std::string error_msg("signal should be single integer");
-        error_msg += ", count: ";
-        error_msg += std::to_string(count);
-        std::runtime_error e(error_msg);
-        throw e;
-    }
-
-    if (source != MASTER) {
-        std::runtime_error e("signal should come from master");
-        throw e;
-    }
-
-    // Receive signal
-    int signal;
-    MPI::COMM_WORLD.Recv(&signal, count, MPI::INT, source, tag);
-
-    // Process signal
-    switch (signal) {
-        case TERMINATE_MANAGER_SIGNAL:
-            terminate_manager = true;
-            break;
-        case NEXT_GENERATION_SIGNAL:
-            // Set flag to terminate current simulation
-            terminate_simulation = true;
-
-            // Increment epsilon iterator
-            epsilon++;
-            if (epsilon >= epsilon_end) {
-                std::runtime_error e("not enough epsilon values");
-                throw e;
-            }
-            break;
-        default:
-            std::runtime_error e("did not recognize signal");
-            throw e;
-    }
-}
-
-void process_parameter(const MPI::Status& status,
-                       const std::string& epsilon,
-                       const cmd_t& simulator,
-                       AbstractProcessHandler*& sim_handler) {
-
-    // sim_handler should be nullptr
-    if (sim_handler) {
-        std::runtime_error e("simulation is already running, "
-                             "manager should not be receiving parameters");
-        throw e;
-    }
-
-    int count = status.Get_count(MPI::CHAR), tag = status.Get_tag(), source = status.Get_source();
-
-    if (tag != PARAMETER_TAG) {
-        std::runtime_error e("tag should be PARAMETER_TAG");
-        throw e;
-    }
-
-    if (source != MASTER) {
-        std::runtime_error e("parameter should come from master");
-        throw e;
-    }
-
-    // Get parameter
-    char *buffer = new char[count];
-    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, source, tag);
-    parameter_t prmtr_received(buffer);
-    delete[] buffer;
-
-    // Start simulation
-    std::string input_string;
-    simulator_input(epsilon, prmtr_received, input_string);
-    if (mpi_simulator)
-        sim_handler = new MPIProcessHandler(simulator, input_string);
-    else
-        sim_handler = new ForkedProcessHandler(simulator, input_string);
-}
-
-void check_simulation(AbstractProcessHandler*& sim_handler) {
-
-    if (sim_handler == nullptr) {
-        std::runtime_error e("simulation is not running");
-        throw e;
-    }
-
-    // Process is finished and result is ready
-    if (sim_handler->isDone()) {
-
-        // Get output string
-        std::string result_str = sim_handler->getOutput();
-
-        // Send result to master
-        int result = simulation_result(result_str);
-        MPI::COMM_WORLD.Send(&result, 1, MPI::INT, MASTER, RESULT_TAG);
-
-        // Clean up simulation handler
-        delete sim_handler; sim_handler = nullptr;
-   }
-}
-
-void manager(const std::vector<std::string>& epsilons,
-             const cmd_t& simulator) {
-
-    // Set signal handler
-    set_signal_handler();
-
-    // Initialize ProcessHandler pointer
-    AbstractProcessHandler *sim_handler = nullptr;
-
-    // Initialize epsilon iterators
-    epsilon = epsilons.cbegin();
-    epsilon_end = epsilons.cend();
-
-    // Loop
-    for (;;) {
-
-        // If simulation is running, check up on it
-        if (sim_handler) check_simulation(sim_handler);
-
-        // Probe for message
-        MPI::Status status;
-        if ( MPI::COMM_WORLD.Iprobe(MASTER, SIGNAL_TAG, status)
-             || MPI::COMM_WORLD.Iprobe(MASTER, PARAMETER_TAG, status) ) {
-
-            // Switch based on tag
-            int tag = status.Get_tag();
-
 #ifndef NDEBUG
-            const int rank = MPI::COMM_WORLD.Get_rank();
-            const int size = MPI::COMM_WORLD.Get_size();
-            switch (tag) {
-                case SIGNAL_TAG:
-                    std::cerr << "Manager " << rank << "/" << size <<
-                    ": received signal message from master" << std::endl;
-                    break;
-                case PARAMETER_TAG:
-                    std::cerr << "Manager " << rank << "/" << size <<
-                    ": received parameter message from master" << std::endl;
-                    break;
-            }
+#include <iostream>
 #endif
 
-            switch (tag) {
-                case SIGNAL_TAG:
-                    process_signal(status);
-                    break;
-                case PARAMETER_TAG:
-                    process_parameter(status, *epsilon, simulator, sim_handler);
-                    break;
-                default:
-                    std::runtime_error e("did not recognize message tag");
-                    throw e;
-            }
-        } // If a message was received
+// Do idle stuff
+void Manager::doIdleStuff()
+{
+    // Sanity check: m_p_process_handler should be the null pointer
+    assert(m_p_process_handler == nullptr);
 
-        // If terminate_simulation, terminate_manager or terminate_program is set,
-        // terminate simulation and reset terminate_simulation flag
-        // Also send cancellation message to master
-        if (terminate_simulation || terminate_manager || terminate_program) {
-            if (sim_handler) {
-                sim_handler->terminate();
-                delete sim_handler; sim_handler = nullptr;
-
-                if (terminate_simulation) {
-                    int cancel_result = CANCEL;
-                    MPI::COMM_WORLD.Send(&cancel_result, 1, MPI::INT, MASTER, RESULT_TAG);
-                }
-            }
-            terminate_simulation = false;
-
-            // If terminate_manager or terminate_program is set, return
-            if (terminate_manager || terminate_program) return;
-        }
-
-        // Sleep for MAIN_TIMEOUT
-        std::this_thread::sleep_for(MAIN_TIMEOUT);
+    // Check for program termination interrupt
+    if (*m_p_program_terminated)
+    {
+        // Terminate Manager
+        m_state = terminated;
+        return;
     }
+
+    // Check for Manager termination signal
+    if (probeSignal())
+    {
+        switch (receiveSignal())
+        {
+            case TERMINATE_MANAGER_SIGNAL:
+                // Terminate Manager
+                m_state = terminated;
+                return;
+
+            // TERMINATE_MANAGER_SIGNAL is the only valid signal in the idle
+            // Manager state
+            default:
+#ifndef NDEBUG
+                std::cerr << "Manager: I received a signal that's not "
+                    "TERMINATE_MANAGER_SIGNAL!!\n";
+#endif
+                throw;
+        }
+    }
+
+    // Check for input message
+    if (probeInput())
+    {
+        // Receive input string and create new process
+        std::string input_string = receiveInput();
+        createProcess(input_string);
+
+        // Switch to busy state
+        m_state = busy;
+        return;
+    }
+}
+
+// Do busy stuff
+void Manager::doBusyStuff()
+{
+    // Sanity check: m_p_process_handler should not be the null pointer
+    assert(m_p_process_handler != nullptr);
+
+    // Check for program termination interrupt
+    if (*m_p_program_terminated)
+    {
+        // Terminate process
+        terminateProcess();
+
+        // Terminate Manager
+        m_state = terminated;
+        return;
+    }
+
+    // Check for Manager or process termination signal
+    if (probeSignal())
+    {
+        switch (receiveSignal())
+        {
+            case TERMINATE_MANAGER_SIGNAL:
+                // Terminate process
+                terminateProcess();
+
+                // Terminate Manager
+                m_state = terminated;
+                return;
+
+            case TERMINATE_PROCESS_SIGNAL:
+                // Terminate process
+                terminateProcess();
+
+                // Send CANCEL result
+                sendOutputToMaster(CANCEL);
+
+                // Switch to idle state
+                m_state = idle;
+                return;
+
+            // TERMINATE_MANAGER_SIGNAL and TERMINATE_PROCESS_SIGNAL are the
+            // only valid signals in the busy Manager state
+            default:
+                throw;
+        }
+    }
+
+    // Check if process has finished
+    if (m_p_process_handler->isDone())
+    {
+        // Get output string
+        std::string result_str = m_p_process_handler->getOutput();
+
+        // TODO: send entire output string to master
+        // Send result to master
+        int result = simulation_result(result_str);
+        sendOutputToMaster(result);
+
+        // Terminate process handler
+        terminateProcess();
+
+        // Switch to idle state
+        m_state = idle;
+        return;
+    }
+
+    // Sanity check: No input message should be received in the busy state
+    assert(probeInput() == false);
+}
+
+// Probe for input
+bool Manager::probeInput() const
+{
+    return MPI::COMM_WORLD.Iprobe(MASTER, PARAMETER_TAG);
+}
+
+// Receive input
+std::string Manager::receiveInput() const
+{
+    // Sanity check: probeInput must return true
+    assert(probeInput());
+
+    // Probe input message to get status
+    MPI::Status status;
+    MPI::COMM_WORLD.Probe(MASTER, PARAMETER_TAG, status);
+
+    // Sanity check on input
+    assert(status.Get_tag() == PARAMETER_TAG);
+    assert(status.Get_source() == MASTER);
+
+    // Receive input from Master
+    int count = status.Get_count(MPI::CHAR);
+    char *buffer = new char[count];
+    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, MASTER, PARAMETER_TAG);
+
+    // Return input as string
+    std::string input_string(buffer);
+    delete[] buffer;
+    return input_string;
+}
+
+// Probe for signal
+bool Manager::probeSignal() const
+{
+    return MPI::COMM_WORLD.Iprobe(MASTER, SIGNAL_TAG);
+}
+
+// Receive signal
+int Manager::receiveSignal() const
+{
+    // Sanity check: probeSignal must return true
+    assert(probeSignal());
+
+    // Probe signal message to get status
+    MPI::Status status;
+    MPI::COMM_WORLD.Probe(MASTER, SIGNAL_TAG, status);
+
+    // Sanity check on signal, which has to be a single integer
+    assert(status.Get_tag() == SIGNAL_TAG);
+    assert(status.Get_source() == MASTER);
+    assert(status.Get_count(MPI::INT) == 1);
+
+    // Receive signal from Master
+    int signal = 0;
+    MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, MASTER, SIGNAL_TAG);
+
+    // Return signal as integer
+    return signal;
+}
+
+// Create process
+void Manager::createProcess(const std::string& input_string)
+{
+    // Sanity check: m_p_process_handler should be the null pointer
+    assert(m_p_process_handler == nullptr);
+
+    // Switch on process type
+    switch (m_process_type)
+    {
+        // Fork process
+        case forked_process:
+            m_p_process_handler =
+                new ForkedProcessHandler(m_command, input_string);
+            break;
+
+        // Spawn MPI process
+        case mpi_process:
+            m_p_process_handler =
+                new MPIProcessHandler(m_command, input_string);
+            break;
+
+        default:
+            throw;
+    }
+}
+
+// Terminate process
+void Manager::terminateProcess()
+{
+    // Sanity check: This function should not be called when
+    // m_p_process_handler is the null pointer
+    assert(m_p_process_handler != nullptr);
+
+    // Delete process handler and reset m_p_process_handler to null pointer
+    delete m_p_process_handler;
+    m_p_process_handler = nullptr;
+}
+
+// TODO: send output string instead of result
+// Send result to Master
+void Manager::sendOutputToMaster(int result) const
+{
+    // Note: Isend is used here to avoid deadlock since the Master and the root
+    // Manager are executed by the same process
+    MPI::COMM_WORLD.Isend(&result, 1, MPI::INT, MASTER, RESULT_TAG);
 }

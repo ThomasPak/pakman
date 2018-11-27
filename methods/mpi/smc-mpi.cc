@@ -26,6 +26,7 @@ bool mpi_simulator = false;
 bool force_host_spawn = false;
 bool tolerate_rejections = true;
 bool tolerate_errors = false;
+bool terminate_program = false;
 
 void usage(int status) {
     if (status != EXIT_SUCCESS)
@@ -154,8 +155,21 @@ int main(int argc, char *argv[]) {
     if (rank == 0)
         master_thread = std::thread(master, pop_size, input_obj);
 
-    // Start manager routine
-    manager(input_obj.epsilons, input_obj.simulator);
+    // Set signal handler
+    set_signal_handler();
+
+    // Create Manager object
+    Manager manager_obj(input_obj.simulator, &terminate_program,
+            mpi_simulator ? mpi_process : forked_process);
+
+    // Manager event loop
+    while (manager_obj.isActive())
+    {
+        manager_obj.iterate();
+
+        std::this_thread::sleep_for(MAIN_TIMEOUT);
+    }
+
 
     // Join master thread
     if (rank == 0)
