@@ -15,19 +15,10 @@
 #include "../write_parameters.h"
 #include "../Sampler.h"
 #include "../smc_weight.h"
-#include "mpi_helper.h"
+#include "mpi_utils.h"
 #include "common.h"
 #include "master.h"
 #include "../timer.h"
-
-void broadcast_raw_input(const std::string& raw_input) {
-
-    // Broadcast raw input
-    char *buffer;
-    string_to_buffer(buffer, raw_input);
-    Dynamic_Bcast(MPI::COMM_WORLD, buffer, raw_input.size() + 1, MPI::CHAR, MASTER);
-    delete[] buffer;
-}
 
 void check_managers(const std::vector<ParameterHandler*>& manager_map,
                     std::set<int>& idle_managers) {

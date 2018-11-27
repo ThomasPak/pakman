@@ -9,10 +9,10 @@
 #include "../types.h"
 #include "../run_simulation.h"
 #include "../read_input.h"
-#include "mpi_helper.h"
+#include "mpi_utils.h"
 #include "common.h"
 #include "ProcessHandler.h"
-#include "manager.h"
+#include "Manager.h"
 
 // Flags
 bool terminate_simulation = false;
@@ -22,36 +22,6 @@ std::atomic<bool> terminate_program(false);
 // Epsilon iterators
 std::vector<std::string>::const_iterator epsilon;
 std::vector<std::string>::const_iterator epsilon_end;
-
-void set_terminate_flag(int signal) {
-    switch (signal) {
-        case SIGINT:
-        case SIGTERM:
-            terminate_program = true;
-            break;
-    }
-}
-
-void set_signal_handler() {
-
-    struct sigaction act;
-
-    act.sa_handler = set_terminate_flag;
-    sigemptyset(&act.sa_mask);
-    act.sa_flags = 0;
-
-    sigaction(SIGINT, &act, nullptr);
-    sigaction(SIGTERM, &act, nullptr);
-}
-
-void receive_raw_input(std::string& raw_input) {
-
-    // Receive raw input
-    char *buffer;
-    Dynamic_Bcast(MPI::COMM_WORLD, buffer, 0, MPI::CHAR, MASTER);
-    raw_input.assign(buffer);
-    delete[] buffer;
-}
 
 void process_signal(const MPI::Status& status) {
 

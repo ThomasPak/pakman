@@ -11,7 +11,6 @@
 
 #include "common.h"
 
-void broadcast_raw_input(const std::string& raw_input);
 void check_managers(const std::vector<ParameterHandler*>& manager_map,
                     std::set<int>& idle_managers);
 void delegate_managers(const AbstractSampler& sampler_obj,

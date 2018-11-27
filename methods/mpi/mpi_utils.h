@@ -1,10 +1,14 @@
-#ifndef MPI_HELPER_H
-#define MPI_HELPER_H
+#ifndef MPI_UTILS_H
+#define MPI_UTILS_H
 
 #include <string>
 #include <mpi.h>
 
 void string_to_buffer(char*& buffer, const std::string& str);
+void set_terminate_flag(int signal);
+void set_signal_handler();
+void broadcast_raw_input(const std::string& raw_input);
+void receive_raw_input(std::string& raw_input);
 
 /*** Templates ***/
 template <class T>
@@ -23,4 +27,4 @@ void Dynamic_Bcast(const MPI::Comm& comm, T*& buffer,
     comm.Bcast(buffer, count, datatype, root);
 }
 
-#endif // MPI_HELPER_H
+#endif // MPI_UTILS_H

@@ -2,7 +2,7 @@
 
 #include "common.h"
 #include "master.h"
-#include "manager.h"
+#include "Manager.h"
 
 std::chrono::milliseconds MAIN_TIMEOUT(1);
 std::chrono::milliseconds KILL_TIMEOUT(100);
