@@ -60,7 +60,7 @@ ForkedProcessHandler::~ForkedProcessHandler()
     std::cerr << "Destroying...\n";
 #endif
     // Wait on child process if it has not yet been waited for
-    if (m_child_pid) waitpid_success(m_child_pid, 0, m_command);
+    if (m_child_pid) terminate();
 
     // Close pipe if not already closed
     if (!m_read_done) close_check(m_pipe_read_fd);
