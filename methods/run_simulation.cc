@@ -5,17 +5,20 @@
 #include "system_call.h"
 #include "run_simulation.h"
 
-void simulator_input(const std::string& epsilon,
-                     const parameter_t& prmtr_sample,
-                     std::string& input) {
-    input.clear();
-    input += epsilon;
-    input += '\n';
-    input += prmtr_sample;
-    input += '\n';
+std::string simulator_input(const std::string& epsilon,
+        const parameter_t& prmtr_sample)
+{
+    std::string input_string;
+    input_string += epsilon;
+    input_string += '\n';
+    input_string += prmtr_sample;
+    input_string += '\n';
+
+    return input_string;
 }
 
-int simulation_result(const std::string& output) {
+int simulation_result(const std::string& output)
+{
 
     using namespace std;
 
@@ -36,12 +39,12 @@ int simulation_result(const std::string& output) {
 
 int run_simulation(const std::string& epsilon,
                     const cmd_t& simulator,
-                    const parameter_t& prmtr_sample) {
+                    const parameter_t& prmtr_sample)
+{
 
     using namespace std;
 
-    string input;
-    simulator_input(epsilon, prmtr_sample, input);
+    string input = simulator_input(epsilon, prmtr_sample);
 
     string output;
     system_call(simulator, input, output);

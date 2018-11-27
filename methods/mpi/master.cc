@@ -83,8 +83,8 @@ void delegate_managers(const AbstractSampler& sampler_obj,
         prmtr_sampled.emplace(sampler_obj.sampleParameter());
 
         // Format input message
-        std::string input_str;
-        simulator_input(epsilon, prmtr_sampled.back().getCString(), input_str);
+        std::string input_str =
+            simulator_input(epsilon, prmtr_sampled.back().getCString());
 
         // Send input message to manager
         MPI::COMM_WORLD.Isend(input_str.c_str(),

@@ -6,9 +6,8 @@
 
 #include "types.h"
 
-void simulator_input(const std::string& epsilon,
-                     const parameter_t& prmtr_sample,
-                     std::string& input);
+std::string simulator_input(const std::string& epsilon,
+        const parameter_t& prmtr_sample);
 
 int simulation_result(const std::string& output);
 
