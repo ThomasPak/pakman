@@ -11,7 +11,7 @@ bool mpi_simulator = false;
 bool force_host_spawn = false;
 bool tolerate_rejections = true;
 bool tolerate_errors = false;
-bool terminate_program = false;
+bool program_terminated = false;
 
 int rank, size;
 

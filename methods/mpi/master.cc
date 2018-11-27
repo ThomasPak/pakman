@@ -225,8 +225,8 @@ void master(const int num_accept, const input_t& input_obj) {
             return;
         }
 
-        // If terminate_program is set, return
-        if (terminate_program) return;
+        // If program_terminated is set, return
+        if (program_terminated) return;
 
         // Sleep for MAIN_TIMEOUT
         std::this_thread::sleep_for(MAIN_TIMEOUT);
@@ -331,8 +331,8 @@ void master(const int pop_size, const input_t& input_obj) {
             compute_weights(smc_sampler, input_obj.perturbation_pdf,
                             t, prmtr_accepted_new, weights_new);
 
-            // If terminate_program is set, return
-            if (terminate_program) return;
+            // If program_terminated is set, return
+            if (program_terminated) return;
 
             // If we have enough parameters in this generation,
             // break out of control loop
@@ -469,8 +469,8 @@ void master(const input_t& input_obj) {
             return;
         }
 
-        // If terminate_program is set, return
-        if (terminate_program) return;
+        // If program_terminated is set, return
+        if (program_terminated) return;
 
         // Sleep for MAIN_TIMEOUT
         std::this_thread::sleep_for(MAIN_TIMEOUT);

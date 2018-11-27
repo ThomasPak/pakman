@@ -7,7 +7,7 @@
 extern std::chrono::milliseconds MAIN_TIMEOUT;
 extern std::chrono::milliseconds KILL_TIMEOUT;
 
-extern bool terminate_program;
+extern bool program_terminated;
 
 extern bool mpi_simulator;
 extern bool force_host_spawn;

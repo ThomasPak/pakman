@@ -26,7 +26,7 @@ bool mpi_simulator = false;
 bool force_host_spawn = false;
 bool tolerate_rejections = true;
 bool tolerate_errors = false;
-bool terminate_program = false;
+bool program_terminated = false;
 
 void usage(int status) {
     if (status != EXIT_SUCCESS)
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) {
     set_signal_handler();
 
     // Create Manager object
-    Manager manager_obj(input_obj.simulator, &terminate_program,
+    Manager manager_obj(input_obj.simulator, &program_terminated,
             mpi_simulator ? mpi_process : forked_process);
 
     // Manager event loop

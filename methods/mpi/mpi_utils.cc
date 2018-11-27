@@ -20,7 +20,7 @@ void set_terminate_flag(int signal) {
     switch (signal) {
         case SIGINT:
         case SIGTERM:
-            terminate_program = true;
+            program_terminated = true;
             break;
     }
 }
