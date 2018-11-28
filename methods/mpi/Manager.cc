@@ -133,66 +133,6 @@ void Manager::doBusyStuff()
     assert(probeMessage() == false);
 }
 
-// Probe for message
-bool Manager::probeMessage() const
-{
-    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, INPUT_TAG);
-}
-
-// Receive message
-std::string Manager::receiveMessage() const
-{
-    // Sanity check: probeMessage must return true
-    assert(probeMessage());
-
-    // Probe message to get status
-    MPI::Status status;
-    MPI::COMM_WORLD.Probe(MASTER_RANK, INPUT_TAG, status);
-
-    // Sanity check on message
-    assert(status.Get_tag() == INPUT_TAG);
-    assert(status.Get_source() == MASTER_RANK);
-
-    // Receive message from Master
-    int count = status.Get_count(MPI::CHAR);
-    char *buffer = new char[count];
-    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, MASTER_RANK, INPUT_TAG);
-
-    // Return message as string
-    std::string message(buffer);
-    delete[] buffer;
-    return message;
-}
-
-// Probe for signal
-bool Manager::probeSignal() const
-{
-    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, MASTER_SIGNAL_TAG);
-}
-
-// Receive signal
-int Manager::receiveSignal() const
-{
-    // Sanity check: probeSignal must return true
-    assert(probeSignal());
-
-    // Probe signal message to get status
-    MPI::Status status;
-    MPI::COMM_WORLD.Probe(MASTER_RANK, MASTER_SIGNAL_TAG, status);
-
-    // Sanity check on signal, which has to be a single integer
-    assert(status.Get_tag() == MASTER_SIGNAL_TAG);
-    assert(status.Get_source() == MASTER_RANK);
-    assert(status.Get_count(MPI::INT) == 1);
-
-    // Receive signal from Master
-    int signal = 0;
-    MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, MASTER_RANK, MASTER_SIGNAL_TAG);
-
-    // Return signal as integer
-    return signal;
-}
-
 // Create process
 void Manager::createProcess(const std::string& input_string)
 {
@@ -231,10 +171,70 @@ void Manager::terminateProcess()
     m_p_process_handler = nullptr;
 }
 
+// Probe for message
+bool Manager::probeMessage() const
+{
+    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, INPUT_TAG);
+}
+
+// Probe for signal
+bool Manager::probeSignal() const
+{
+    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, MASTER_SIGNAL_TAG);
+}
+
+// Receive message
+std::string Manager::receiveMessage() const
+{
+    // Sanity check: probeMessage must return true
+    assert(probeMessage());
+
+    // Probe message to get status
+    MPI::Status status;
+    MPI::COMM_WORLD.Probe(MASTER_RANK, INPUT_TAG, status);
+
+    // Sanity check on message
+    assert(status.Get_tag() == INPUT_TAG);
+    assert(status.Get_source() == MASTER_RANK);
+
+    // Receive message from Master
+    int count = status.Get_count(MPI::CHAR);
+    char *buffer = new char[count];
+    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, MASTER_RANK, INPUT_TAG);
+
+    // Return message as string
+    std::string message(buffer);
+    delete[] buffer;
+    return message;
+}
+
+// Receive signal
+int Manager::receiveSignal() const
+{
+    // Sanity check: probeSignal must return true
+    assert(probeSignal());
+
+    // Probe signal message to get status
+    MPI::Status status;
+    MPI::COMM_WORLD.Probe(MASTER_RANK, MASTER_SIGNAL_TAG, status);
+
+    // Sanity check on signal, which has to be a single integer
+    assert(status.Get_tag() == MASTER_SIGNAL_TAG);
+    assert(status.Get_source() == MASTER_RANK);
+    assert(status.Get_count(MPI::INT) == 1);
+
+    // Receive signal from Master
+    int signal = 0;
+    MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, MASTER_RANK, MASTER_SIGNAL_TAG);
+
+    // Return signal as integer
+    return signal;
+}
+
 // Send message to Master
 void Manager::sendMessageToMaster(const std::string& message_string)
 {
-    // Ensure previous message message has finished sending
+    // Ensure previous message has finished sending
     m_message_request.Wait();
 
     // Store message string in buffer
@@ -257,6 +257,6 @@ void Manager::sendSignalToMaster(int signal)
 
     // Note: Isend is used here to avoid deadlock since the Master and the root
     // Manager are executed by the same process
-    m_signal_request = MPI::COMM_WORLD.Isend(&m_signal_buffer,  1, MPI::INT,
+    m_signal_request = MPI::COMM_WORLD.Isend(&m_signal_buffer, 1, MPI::INT,
             MASTER_RANK, MANAGER_SIGNAL_TAG);
 }

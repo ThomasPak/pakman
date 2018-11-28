@@ -158,8 +158,8 @@ int main(int argc, char *argv[]) {
     set_signal_handler();
 
     // Create Manager object
-    Manager manager_obj(input_obj.simulator, &program_terminated,
-            mpi_simulator ? mpi_process : forked_process);
+    Manager manager_obj(input_obj.simulator,
+            mpi_simulator ? mpi_process : forked_process, &program_terminated);
 
     // Manager event loop
     while (manager_obj.isActive())

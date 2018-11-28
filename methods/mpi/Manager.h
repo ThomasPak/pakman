@@ -18,11 +18,11 @@ class Manager
 
         // Construct from command, pointer to program terminated flag, and
         // process type (forked vs MPI)
-        Manager(cmd_t command, bool *p_program_terminated,
-                process_t process_type) :
+        Manager(cmd_t command, process_t process_type,
+                bool *p_program_terminated) :
             m_command(command),
-            m_p_program_terminated(p_program_terminated),
-            m_process_type(process_type)
+            m_process_type(process_type),
+            m_p_program_terminated(p_program_terminated)
         {
         }
 
@@ -77,23 +77,23 @@ class Manager
         // Do busy stuff
         void doBusyStuff();
 
-        // Probe for message
-        bool probeMessage() const;
-
-        // Receive message
-        std::string receiveMessage() const;
-
-        // Probe for signal
-        bool probeSignal() const;
-
-        // Receive signal
-        int receiveSignal() const;
-
         // Create process
         void createProcess(const std::string& input_string);
 
         // Terminate process
         void terminateProcess();
+
+        // Probe for message
+        bool probeMessage() const;
+
+        // Probe for signal
+        bool probeSignal() const;
+
+        // Receive message
+        std::string receiveMessage() const;
+
+        // Receive signal
+        int receiveSignal() const;
 
         // Send message to Master
         void sendMessageToMaster(const std::string& message_string);
@@ -102,20 +102,20 @@ class Manager
         void sendSignalToMaster(int signal);
 
         /**** Member variables ****/
+        // Initial state is idle
+        state_t m_state = idle;
+
         // Command for process
         const std::string m_command;
 
         // Process type (forked process vs MPI process)
         const process_t m_process_type;
 
-        // Initial state is idle
-        state_t m_state = idle;
+        // Pointer to program terminated flag
+        bool *m_p_program_terminated;
 
         // Pointer to process handler
         AbstractProcessHandler *m_p_process_handler = nullptr;
-
-        // Pointer to program terminated flag
-        bool *m_p_program_terminated;
 
         // Message buffer
         std::string m_message_buffer;
