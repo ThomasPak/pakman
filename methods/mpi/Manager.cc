@@ -36,7 +36,7 @@ void Manager::doIdleStuff()
                 return;
 
             // An idle Manager can receive TERMINATE_PROCESS_SIGNAL when the
-            // Master has not yet checked for the Manager's output message.
+            // Master has not yet checked for the Manager's message.
             // In this case, nothing needs to be done
             case TERMINATE_PROCESS_SIGNAL:
                 return;
@@ -48,11 +48,11 @@ void Manager::doIdleStuff()
         }
     }
 
-    // Check for input message
-    if (probeInput())
+    // Check for message
+    if (probeMessage())
     {
         // Receive input string and create new process
-        std::string input_string = receiveInput();
+        std::string input_string = receiveMessage();
         createProcess(input_string);
 
         // Switch to busy state
@@ -119,7 +119,7 @@ void Manager::doBusyStuff()
         std::string output_string = m_p_process_handler->getOutput();
 
         // Send output string to master
-        sendOutputToMaster(output_string);
+        sendMessageToMaster(output_string);
 
         // Terminate process handler
         terminateProcess();
@@ -129,39 +129,39 @@ void Manager::doBusyStuff()
         return;
     }
 
-    // Sanity check: No input message should be received in the busy state
-    assert(probeInput() == false);
+    // Sanity check: No message should be received in the busy state
+    assert(probeMessage() == false);
 }
 
-// Probe for input
-bool Manager::probeInput() const
+// Probe for message
+bool Manager::probeMessage() const
 {
     return MPI::COMM_WORLD.Iprobe(MASTER_RANK, INPUT_TAG);
 }
 
-// Receive input
-std::string Manager::receiveInput() const
+// Receive message
+std::string Manager::receiveMessage() const
 {
-    // Sanity check: probeInput must return true
-    assert(probeInput());
+    // Sanity check: probeMessage must return true
+    assert(probeMessage());
 
-    // Probe input message to get status
+    // Probe message to get status
     MPI::Status status;
     MPI::COMM_WORLD.Probe(MASTER_RANK, INPUT_TAG, status);
 
-    // Sanity check on input
+    // Sanity check on message
     assert(status.Get_tag() == INPUT_TAG);
     assert(status.Get_source() == MASTER_RANK);
 
-    // Receive input from Master
+    // Receive message from Master
     int count = status.Get_count(MPI::CHAR);
     char *buffer = new char[count];
     MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, MASTER_RANK, INPUT_TAG);
 
-    // Return input as string
-    std::string input_string(buffer);
+    // Return message as string
+    std::string message(buffer);
     delete[] buffer;
-    return input_string;
+    return message;
 }
 
 // Probe for signal
@@ -231,19 +231,19 @@ void Manager::terminateProcess()
     m_p_process_handler = nullptr;
 }
 
-// Send output to Master
-void Manager::sendOutputToMaster(const std::string& output_string)
+// Send message to Master
+void Manager::sendMessageToMaster(const std::string& message_string)
 {
-    // Ensure previous output message has finished sending
-    m_output_request.Wait();
+    // Ensure previous message message has finished sending
+    m_message_request.Wait();
 
-    // Store output string in buffer
-    m_output_buffer.assign(output_string);
+    // Store message string in buffer
+    m_message_buffer.assign(message_string);
 
     // Note: Isend is used here to avoid deadlock since the Master and the root
     // Manager are executed by the same process
-    m_output_request = MPI::COMM_WORLD.Isend(m_output_buffer.c_str(),
-            m_output_buffer.size() + 1, MPI::CHAR, MASTER_RANK, OUTPUT_TAG);
+    m_message_request = MPI::COMM_WORLD.Isend(m_message_buffer.c_str(),
+            m_message_buffer.size() + 1, MPI::CHAR, MASTER_RANK, OUTPUT_TAG);
 }
 
 // Send signal to Master

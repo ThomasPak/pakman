@@ -77,11 +77,11 @@ class Manager
         // Do busy stuff
         void doBusyStuff();
 
-        // Probe for input
-        bool probeInput() const;
+        // Probe for message
+        bool probeMessage() const;
 
-        // Receive input
-        std::string receiveInput() const;
+        // Receive message
+        std::string receiveMessage() const;
 
         // Probe for signal
         bool probeSignal() const;
@@ -95,8 +95,8 @@ class Manager
         // Terminate process
         void terminateProcess();
 
-        // Send output to Master
-        void sendOutputToMaster(const std::string& output_string);
+        // Send message to Master
+        void sendMessageToMaster(const std::string& message_string);
 
         // Send signal to Master
         void sendSignalToMaster(int signal);
@@ -117,11 +117,11 @@ class Manager
         // Pointer to program terminated flag
         bool *m_p_program_terminated;
 
-        // Output buffer
-        std::string m_output_buffer;
+        // Message buffer
+        std::string m_message_buffer;
 
-        // Output request
-        MPI::Request m_output_request;
+        // Message request
+        MPI::Request m_message_request;
 
         // Signal buffer
         int m_signal_buffer;
