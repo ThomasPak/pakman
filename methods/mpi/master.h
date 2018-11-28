@@ -22,8 +22,6 @@ void delegate_managers(const AbstractSampler& sampler_obj,
 void check_parameters(std::queue<ParameterHandler>& prmtr_sampled,
                       std::vector<parameter_t>& prmtr_accepted);
 void send_signal_to_managers(const int signal);
-void send_signal_to_idle_managers(const int signal,
-        std::set<int>& idle_managers);
 
 namespace rejection {
 

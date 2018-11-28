@@ -190,18 +190,6 @@ void send_signal_to_managers(const int signal) {
     for (auto& req : reqs) req.Wait();
 }
 
-void send_signal_to_idle_managers(const int signal,
-        std::set<int>& idle_managers) {
-
-    std::vector<MPI::Request> reqs;
-
-    for (auto it = idle_managers.begin();
-         it != idle_managers.end(); it++)
-        reqs.push_back(MPI::COMM_WORLD.Isend(&signal, 1, MPI::INT, *it, MASTER_SIGNAL_TAG));
-
-    for (auto& req : reqs) req.Wait();
-}
-
 namespace rejection {
 
 void master(const int num_accept, const input_t& input_obj) {
@@ -405,12 +393,6 @@ void master(const int pop_size, const input_t& input_obj) {
 
         if (t < input_obj.epsilons.size() - 1) {
             // Send signal to managers to signal next generation
-            //send_signal_to_idle_managers(TERMINATE_PROCESS_SIGNAL, idle_managers);
-#ifndef NDEBUG
-            std::cerr << "Printing idle_managers..\n";
-            for (auto idx : idle_managers)
-                std::cerr << "Idle in idle_managers" << idx << std::endl;
-#endif
             send_signal_to_managers(TERMINATE_PROCESS_SIGNAL);
 
             // Check result messages until you have received results from all
