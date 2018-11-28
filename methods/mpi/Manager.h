@@ -16,7 +16,8 @@ class Manager
         // Enumerate type for Manager states
         enum state_t { idle, busy, terminated };
 
-        // Construct from command and pointer to program terminated flag
+        // Construct from command, pointer to program terminated flag, and
+        // process type (forked vs MPI)
         Manager(cmd_t command, bool *p_program_terminated,
                 process_t process_type) :
             m_command(command),
