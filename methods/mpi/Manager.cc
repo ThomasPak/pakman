@@ -232,19 +232,31 @@ void Manager::terminateProcess()
 }
 
 // Send output to Master
-void Manager::sendOutputToMaster(const std::string& output_string) const
+void Manager::sendOutputToMaster(const std::string& output_string)
 {
+    // Ensure previous output message has finished sending
+    m_output_request.Wait();
+
+    // Store output string in buffer
+    m_output_buffer.assign(output_string);
+
     // Note: Isend is used here to avoid deadlock since the Master and the root
     // Manager are executed by the same process
-    MPI::COMM_WORLD.Isend(output_string.c_str(), output_string.size() + 1,
-            MPI::CHAR, MASTER_RANK, OUTPUT_TAG);
+    m_output_request = MPI::COMM_WORLD.Isend(m_output_buffer.c_str(),
+            m_output_buffer.size() + 1, MPI::CHAR, MASTER_RANK, OUTPUT_TAG);
 }
 
 // Send signal to Master
-void Manager::sendSignalToMaster(int signal) const
+void Manager::sendSignalToMaster(int signal)
 {
+    // Ensure previous signal has finished sending
+    m_signal_request.Wait();
+
+    // Store signal in buffer
+    m_signal_buffer = signal;
+
     // Note: Isend is used here to avoid deadlock since the Master and the root
     // Manager are executed by the same process
-    MPI::COMM_WORLD.Isend(&signal,  1, MPI::INT, MASTER_RANK,
-            MANAGER_SIGNAL_TAG);
+    m_signal_request = MPI::COMM_WORLD.Isend(&m_signal_buffer,  1, MPI::INT,
+            MASTER_RANK, MANAGER_SIGNAL_TAG);
 }

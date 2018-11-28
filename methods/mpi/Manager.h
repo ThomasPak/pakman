@@ -95,10 +95,10 @@ class Manager
         void terminateProcess();
 
         // Send output to Master
-        void sendOutputToMaster(const std::string& output_string) const;
+        void sendOutputToMaster(const std::string& output_string);
 
         // Send signal to Master
-        void sendSignalToMaster(int signal) const;
+        void sendSignalToMaster(int signal);
 
         /**** Member variables ****/
         // Command for process
@@ -115,6 +115,18 @@ class Manager
 
         // Pointer to program terminated flag
         bool *m_p_program_terminated;
+
+        // Output buffer
+        std::string m_output_buffer;
+
+        // Output request
+        MPI::Request m_output_request;
+
+        // Signal buffer
+        int m_signal_buffer;
+
+        // Signal request
+        MPI::Request m_signal_request;
 };
 
 #endif // MANAGER_H
