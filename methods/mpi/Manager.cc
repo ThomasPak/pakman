@@ -2,11 +2,7 @@
 #include <cassert>
 
 #include <mpi.h>
-#include <signal.h>
 
-// TODO: remove run_simulation.h when output string is sent to Master as a
-// whole
-#include "../run_simulation.h"
 #include "common.h"
 #include "ProcessHandler.h"
 #include "Manager.h"

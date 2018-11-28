@@ -7,7 +7,6 @@
 #include <mpi.h>
 
 #include "ProcessHandler.h"
-#include "common.h"
 #include "../types.h"
 
 class Manager
