@@ -14,7 +14,7 @@
 #include "../read_input.h"
 #include "mpi_utils.h"
 #include "common.h"
-#include "master.h"
+#include "Master.h"
 #include "Manager.h"
 
 static const char *program_name;
@@ -149,17 +149,38 @@ int main(int argc, char *argv[]) {
     std::stringstream sstrm(raw_input);
     read_input(sstrm, input_obj);
 
-    // Start master in separate thread
-    std::thread master_thread;
-    if (rank == 0)
-        master_thread = std::thread(master, num_accept, input_obj);
-
     // Set signal handler
     set_signal_handler();
 
     // Create Manager object
     Manager manager_obj(input_obj.simulator,
             mpi_simulator ? mpi_process : forked_process, &program_terminated);
+
+    if (rank == 0)
+    {
+        ABCRejectionMaster master_obj(input_obj, num_accept, &program_terminated);
+
+        // Master & Manger event loop
+        while (master_obj.isActive() || manager_obj.isActive())
+        {
+            master_obj.iterate();
+
+            manager_obj.iterate();
+
+            std::this_thread::sleep_for(MAIN_TIMEOUT);
+        }
+
+    }
+    else
+    {
+        // Manager event loop
+        while (manager_obj.isActive())
+        {
+            manager_obj.iterate();
+
+            std::this_thread::sleep_for(MAIN_TIMEOUT);
+        }
+    }
 
     // Manager event loop
     while (manager_obj.isActive())
@@ -168,10 +189,6 @@ int main(int argc, char *argv[]) {
 
         std::this_thread::sleep_for(MAIN_TIMEOUT);
     }
-
-    // Join master thread
-    if (rank == 0)
-        master_thread.join();
 
     // Finalize
     MPI::Finalize();
