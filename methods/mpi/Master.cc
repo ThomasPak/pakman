@@ -118,7 +118,7 @@ void AbstractMaster::doFlushingStuff()
 // Queue task
 void AbstractMaster::queueTask(const std::string& input_string)
 {
-    m_pending_tasks.emplace(input_string);
+    m_pending_tasks.push(input_string);
 }
 
 // Pop finished tasks
@@ -170,7 +170,7 @@ void AbstractMaster::popBusyQueue()
             << ", " << m_pending_tasks.size() << std::endl;
 #endif
         // Move TaskHandler to finished tasks
-        m_finished_tasks.emplace_back(std::move(m_busy_tasks.front()));
+        m_finished_tasks.push_back(std::move(m_busy_tasks.front()));
 
         // Pop front TaskHandler from busy queue
         m_busy_tasks.pop();
@@ -202,7 +202,7 @@ void AbstractMaster::delegateToManagers()
         sendMessageToManager(*it, m_pending_tasks.front().getInputString());
 
         // Move pending TaskHandler to busy queue
-        m_busy_tasks.emplace(std::move(m_pending_tasks.front()));
+        m_busy_tasks.push(std::move(m_pending_tasks.front()));
 
         // Pop front TaskHandler from pending queue
         m_pending_tasks.pop();
