@@ -104,7 +104,7 @@ class PerturbationSampler : public virtual AbstractSampler {
         // Base parameter and t
         int m_t = -1;
         parameter_t m_base_parameter;
-        const int M_INVALID = -1;
+        constexpr static int M_INVALID = -1;
 };
 
 class SMCSampler :
@@ -135,7 +135,7 @@ class SMCSampler :
         const cmd_t m_prior_pdf;
         mutable double m_prior_pdf_val;
 
-        const double M_INVALID = -1.0;
+        constexpr static double M_INVALID = -1.0;
 };
 
 class Generator : public virtual AbstractSampler {
