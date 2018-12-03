@@ -96,7 +96,7 @@ void system_call(const cmd_t& cmd, std::string& output,
     // Create pipe
     int pipefd[2];
 
-    if (pipe2(pipefd, O_CLOEXEC) == -1) {
+    if (pipe(pipefd) == -1) {
         runtime_error e("pipe failed");
         throw e;
     }
@@ -173,7 +173,7 @@ void system_call(const cmd_t& cmd,
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
 
-    if ( (pipe2(send_pipefd, O_CLOEXEC) == -1) || (pipe2(recv_pipefd, O_CLOEXEC) == -1) ) {
+    if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) ) {
         runtime_error e("pipe failed");
         throw e;
     }
@@ -258,7 +258,7 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd) {
     // Create pipe
     int pipefd[2];
 
-    if (pipe2(pipefd, O_CLOEXEC) == -1) {
+    if (pipe(pipefd) == -1) {
         runtime_error e("pipe failed");
         throw e;
     }
@@ -323,7 +323,7 @@ void system_call(const cmd_t& cmd, pid_t& child_pid,
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
 
-    if ( (pipe2(send_pipefd, O_CLOEXEC) == -1) || (pipe2(recv_pipefd, O_CLOEXEC) == -1) ) {
+    if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) ) {
         runtime_error e("pipe failed");
         throw e;
     }
