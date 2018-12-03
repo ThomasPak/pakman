@@ -5,7 +5,7 @@
 #include <signal.h>
 
 #include "mpi_utils.h"
-#include "common.h"
+#include "mpi_common.h"
 
 void string_to_buffer(char*& buffer, const std::string& str) {
 

@@ -7,8 +7,6 @@
 
 #include "pipe_io.h"
 
-#include "mpi/common.h"
-
 #ifndef NDEBUG
 #include <iostream>
 #endif

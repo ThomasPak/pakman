@@ -1,5 +1,5 @@
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef MPI_COMMON_H
+#define MPI_COMMON_H
 
 #include <chrono>
 #include <atomic>
@@ -32,12 +32,6 @@ const int TERMINATE_PROCESS_SIGNAL = 1;
 // Process is cancelled
 const int PROCESS_CANCELLED_SIGNAL = 0;
 
-/**** Results ****/
-const int REJECT = 0;
-const int ACCEPT = 1;
-const int ERROR = 2;
-const int CANCEL = 3;
-
 /*** Sampled parameter status ***/
 typedef enum {
     rejected,
@@ -53,4 +47,4 @@ typedef enum
     mpi_process
 } process_t;
 
-#endif // COMMON_H
+#endif // MPI_COMMON_H

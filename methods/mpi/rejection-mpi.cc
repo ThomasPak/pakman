@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -13,8 +14,9 @@
 #include "../types.h"
 #include "../read_input.h"
 #include "mpi_utils.h"
-#include "common.h"
-#include "Master.h"
+#include "mpi_common.h"
+#include "MPIMaster.h"
+#include "../ABCRejectionController.h"
 #include "Manager.h"
 
 static const char *program_name;
@@ -158,18 +160,28 @@ int main(int argc, char *argv[]) {
 
     if (rank == 0)
     {
-        ABCRejectionMaster master_obj(input_obj, num_accept, &program_terminated);
+        // Create MPI master and ABC rejection controller
+        std::shared_ptr<MPIMaster> p_master =
+            std::make_shared<MPIMaster>(&program_terminated);
+
+        std::shared_ptr<ABCRejectionController> p_controller =
+            std::make_shared<ABCRejectionController>(input_obj, num_accept);
+
+        // Associate with each other
+        p_master->assignController(p_controller);
+        p_controller->assignMaster(p_master);
 
         // Master & Manger event loop
-        while (master_obj.isActive() || manager_obj.isActive())
+        while (p_master->isActive() || manager_obj.isActive())
         {
-            master_obj.iterate();
+            if (p_master->isActive())
+                p_master->iterate();
 
-            manager_obj.iterate();
+            if (manager_obj.isActive())
+                manager_obj.iterate();
 
             std::this_thread::sleep_for(MAIN_TIMEOUT);
         }
-
     }
     else
     {
@@ -180,14 +192,6 @@ int main(int argc, char *argv[]) {
 
             std::this_thread::sleep_for(MAIN_TIMEOUT);
         }
-    }
-
-    // Manager event loop
-    while (manager_obj.isActive())
-    {
-        manager_obj.iterate();
-
-        std::this_thread::sleep_for(MAIN_TIMEOUT);
     }
 
     // Finalize

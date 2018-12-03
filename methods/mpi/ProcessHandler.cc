@@ -13,7 +13,7 @@
 #include "../system_call.h"
 #include "../pipe_io.h"
 
-#include "common.h"
+#include "mpi_common.h"
 #include "spawn.h"
 #include "ProcessHandler.h"
 

@@ -3,7 +3,7 @@
 
 #include <mpi.h>
 
-#include "common.h"
+#include "mpi_common.h"
 #include "ProcessHandler.h"
 #include "Manager.h"
 

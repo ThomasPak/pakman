@@ -1,7 +1,7 @@
 #include <mpi.h>
 
-#include "common.h"
-#include "Master.h"
+#include "mpi_common.h"
+#include "master.h"
 #include "Manager.h"
 
 std::chrono::milliseconds MAIN_TIMEOUT(1);

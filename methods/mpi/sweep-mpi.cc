@@ -13,8 +13,8 @@
 #include "../types.h"
 #include "../read_input.h"
 #include "mpi_utils.h"
-#include "common.h"
-#include "Master.h"
+#include "mpi_common.h"
+#include "master.h"
 #include "Manager.h"
 
 static const char *program_name;

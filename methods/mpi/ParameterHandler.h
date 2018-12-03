@@ -6,7 +6,7 @@
 // status_t, holds a buffer for MPI_Isend, automatically
 // deallocates said buffer.
 
-#include "common.h"
+#include "mpi_common.h"
 #include "../types.h"
 
 class ParameterHandler {
