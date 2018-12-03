@@ -21,7 +21,7 @@ void write_parameters(std::ostream& ostrm,
              prmtr_name != parameter_names.cend(); prmtr_name++)
             sstrm << *prmtr_name << ",";
 
-        sstrm.seekp(sstrm.tellp() - 1l);
+        sstrm.seekp(sstrm.tellp() - (std::streamoff) 1);
         sstrm << endl;
 
         ostrm << sstrm.str();
@@ -40,7 +40,7 @@ void write_parameters(std::ostream& ostrm,
             sstrm << *element << ",";
         }
 
-        sstrm.seekp(sstrm.tellp() - 1l);
+        sstrm.seekp(sstrm.tellp() - (std::streamoff) 1);
         sstrm << endl;
 
         ostrm << sstrm.str();
