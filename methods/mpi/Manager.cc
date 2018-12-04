@@ -11,6 +11,58 @@
 #include <iostream>
 #endif
 
+// Construct from command, pointer to program terminated flag, and
+// process type (forked vs MPI)
+Manager::Manager(const cmd_t &command, process_t process_type,
+        bool *p_program_terminated) :
+    m_command(command),
+    m_process_type(process_type),
+    m_p_program_terminated(p_program_terminated)
+{
+}
+
+// Destructor
+Manager::~Manager()
+{
+    if (m_p_process_handler)
+        delete m_p_process_handler;
+}
+
+// Get state of Manager
+Manager::state_t Manager::getState() const
+{
+    return m_state;
+}
+
+// Probe whether Manager is active
+bool Manager::isActive() const
+{
+    return m_state != terminated;
+}
+
+// Iterate
+void Manager::iterate()
+{
+    // This function should never be called if the Manager has
+    // terminated
+    assert(m_state != terminated);
+
+    // Switch based on state
+    switch (m_state)
+    {
+        case idle:
+            doIdleStuff();
+            break;
+
+        case busy:
+            doBusyStuff();
+            break;
+
+        default:
+            throw;
+    }
+}
+
 // Do idle stuff
 void Manager::doIdleStuff()
 {
