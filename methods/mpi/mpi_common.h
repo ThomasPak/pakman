@@ -41,10 +41,4 @@ typedef enum {
     busy
 } status_t;
 
-typedef enum
-{
-    forked_process,
-    mpi_process
-} process_t;
-
 #endif // MPI_COMMON_H

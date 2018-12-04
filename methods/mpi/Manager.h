@@ -7,6 +7,7 @@
 
 #include <mpi.h>
 
+#include "../common.h"
 #include "ProcessHandler.h"
 #include "../types.h"
 
