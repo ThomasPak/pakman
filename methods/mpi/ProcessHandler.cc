@@ -221,7 +221,7 @@ bool MPIProcessHandler::isDone()
 {
     // Probe for result if result has not yet been received
     MPI::Status status;
-    if (    m_result_received &&
+    if (    !m_result_received &&
             m_child_comm.Iprobe(0, 0, status) )
     {
         // Source and tag are both zero
