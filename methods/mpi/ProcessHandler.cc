@@ -1,11 +1,9 @@
 #include <string>
 #include <thread>
-#include <atomic>
 #include <stdexcept>
 
 #include <cassert>
 
-#include <unistd.h>
 #include <signal.h>
 #include <sys/utsname.h>
 

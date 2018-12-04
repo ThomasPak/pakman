@@ -3,7 +3,6 @@
 
 #include <string>
 #include <thread>
-#include <atomic>
 
 #include <mpi.h>
 
