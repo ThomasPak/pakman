@@ -21,9 +21,6 @@ class ABCRejectionController : public AbstractController
 
     private:
 
-        /**** Member functions ****/
-        void printAcceptedParameters();
-
         /**** Member variables ****/
         // Epsilon
         std::string m_epsilon;
