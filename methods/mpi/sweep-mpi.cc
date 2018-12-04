@@ -14,7 +14,8 @@
 #include "../read_input.h"
 #include "mpi_utils.h"
 #include "mpi_common.h"
-#include "master.h"
+#include "MPIMaster.h"
+#include "../SweepController.h"
 #include "Manager.h"
 
 static const char *program_name;
@@ -140,11 +141,6 @@ int main(int argc, char *argv[]) {
     std::stringstream sstrm(raw_input);
     read_input(sstrm, input_obj);
 
-    // Start master in separate thread
-    std::thread master_thread;
-    if (rank == 0)
-        master_thread = std::thread(master, input_obj);
-
     // Set signal handler
     set_signal_handler();
 
@@ -152,17 +148,41 @@ int main(int argc, char *argv[]) {
     Manager manager_obj(input_obj.simulator,
             mpi_simulator ? mpi_process : forked_process, &program_terminated);
 
-    // Manager event loop
-    while (manager_obj.isActive())
-    {
-        manager_obj.iterate();
-
-        std::this_thread::sleep_for(MAIN_TIMEOUT);
-    }
-
-    // Join master thread
     if (rank == 0)
-        master_thread.join();
+    {
+        // Create MPI master and sweep controller
+        std::shared_ptr<MPIMaster> p_master =
+            std::make_shared<MPIMaster>(&program_terminated);
+
+        std::shared_ptr<SweepController> p_controller =
+            std::make_shared<SweepController>(input_obj);
+
+        // Associate with each other
+        p_master->assignController(p_controller);
+        p_controller->assignMaster(p_master);
+
+        // Master & Manger event loop
+        while (p_master->isActive() || manager_obj.isActive())
+        {
+            if (p_master->isActive())
+                p_master->iterate();
+
+            if (manager_obj.isActive())
+                manager_obj.iterate();
+
+            std::this_thread::sleep_for(MAIN_TIMEOUT);
+        }
+    }
+    else
+    {
+        // Manager event loop
+        while (manager_obj.isActive())
+        {
+            manager_obj.iterate();
+
+            std::this_thread::sleep_for(MAIN_TIMEOUT);
+        }
+    }
 
     // Finalize
     MPI::Finalize();
