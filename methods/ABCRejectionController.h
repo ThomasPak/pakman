@@ -13,7 +13,7 @@ class ABCRejectionController : public AbstractController
         ABCRejectionController(const rejection::input_t& input_obj,
                 int num_accept);
 
-        // Default constructor
+        // Default destructor
         virtual ~ABCRejectionController() = default;
 
         // Iterate function
