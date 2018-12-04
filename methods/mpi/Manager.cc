@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 #include <cassert>
 
@@ -19,13 +20,6 @@ Manager::Manager(const cmd_t &command, process_t process_type,
     m_process_type(process_type),
     m_p_program_terminated(p_program_terminated)
 {
-}
-
-// Destructor
-Manager::~Manager()
-{
-    if (m_p_process_handler)
-        delete m_p_process_handler;
 }
 
 // Get state of Manager
@@ -67,7 +61,7 @@ void Manager::iterate()
 void Manager::doIdleStuff()
 {
     // Sanity check: m_p_process_handler should be the null pointer
-    assert(m_p_process_handler == nullptr);
+    assert(!m_p_process_handler);
 
     // Check for program termination interrupt
     if (*m_p_program_terminated)
@@ -117,7 +111,7 @@ void Manager::doIdleStuff()
 void Manager::doBusyStuff()
 {
     // Sanity check: m_p_process_handler should not be the null pointer
-    assert(m_p_process_handler != nullptr);
+    assert(m_p_process_handler);
 
     // Check for program termination interrupt
     if (*m_p_program_terminated)
@@ -189,7 +183,7 @@ void Manager::doBusyStuff()
 void Manager::createProcess(const std::string& input_string)
 {
     // Sanity check: m_p_process_handler should be the null pointer
-    assert(m_p_process_handler == nullptr);
+    assert(!m_p_process_handler);
 
     // Switch on process type
     switch (m_process_type)
@@ -197,13 +191,15 @@ void Manager::createProcess(const std::string& input_string)
         // Fork process
         case forked_process:
             m_p_process_handler =
-                new ForkedProcessHandler(m_command, input_string);
+                std::unique_ptr<ForkedProcessHandler>(
+                        new ForkedProcessHandler(m_command, input_string));
             break;
 
         // Spawn MPI process
         case mpi_process:
             m_p_process_handler =
-                new MPIProcessHandler(m_command, input_string);
+                std::unique_ptr<MPIProcessHandler>(
+                        new MPIProcessHandler(m_command, input_string));
             break;
 
         default:
@@ -216,11 +212,10 @@ void Manager::terminateProcess()
 {
     // Sanity check: This function should not be called when
     // m_p_process_handler is the null pointer
-    assert(m_p_process_handler != nullptr);
+    assert(m_p_process_handler);
 
-    // Delete process handler and reset m_p_process_handler to null pointer
-    delete m_p_process_handler;
-    m_p_process_handler = nullptr;
+    // Reset m_p_process_handler to null pointer
+    m_p_process_handler.reset();
 }
 
 // Probe for message

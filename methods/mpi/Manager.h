@@ -1,6 +1,7 @@
 #ifndef MANAGER_H
 #define MANAGER_H
 
+#include <memory>
 #include <string>
 #include <cassert>
 
@@ -22,7 +23,7 @@ class Manager
                 bool *p_program_terminated);
 
         // Destructor
-        ~Manager();
+        ~Manager() = default;
 
         // Get state of Manager
         state_t getState() const;
@@ -80,7 +81,7 @@ class Manager
         bool *m_p_program_terminated;
 
         // Pointer to process handler
-        AbstractProcessHandler *m_p_process_handler = nullptr;
+        std::unique_ptr<AbstractProcessHandler> m_p_process_handler;
 
         // Message buffer
         std::string m_message_buffer;
