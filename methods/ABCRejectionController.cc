@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+#include <sstream>
 #include <cassert>
 
 #include "common.h"
@@ -39,14 +41,20 @@ void ABCRejectionController::iterate()
         // Check if parameter was accepted
         if (simulation_result(task.getOutputString()) == ACCEPT)
         {
-            // Get string
-            std::string input_string = task.getInputString();
+            // Declare parameter
+            parameter_t accepted_prmtr;
 
-            // Trim epsilon
-            input_string.erase(0, 2);
+            // Get input string
+            std::stringstream input_sstrm(task.getInputString());
+
+            // Discard epsilon
+            std::getline(input_sstrm, accepted_prmtr);
+
+            // Read accepted parameter
+            std::getline(input_sstrm, accepted_prmtr);
 
             // Push accepted parameter
-            m_prmtr_accepted.push_back(std::move(input_string));
+            m_prmtr_accepted.push_back(std::move(accepted_prmtr));
         }
 
 #ifndef NDEBUG
