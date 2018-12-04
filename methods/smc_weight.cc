@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <cassert>
 
 #include "types.h"
 #include "system_call.h"
@@ -19,6 +20,10 @@ double smc_weight(const cmd_t& perturbation_pdf,
                   const parameter_t& prmtr_perturbed) {
 
     using namespace std;
+
+    // Sanity check: prmtr_accepted_old and weights_old should have the same
+    // size
+    assert(prmtr_accepted_old.size() == weights_old.size());
 
     // If in generation 0, return uniform weight
     if (t == 0)
