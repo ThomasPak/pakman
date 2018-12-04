@@ -119,10 +119,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Initialize the MPI environment
-    int required = MPI_THREAD_MULTIPLE;
-    int provided = MPI::Init_thread(required);
-    if (provided < required)
-        std::cerr << "Warning: need MPI_THREAD_MULTIPLE thread support\n";
+    MPI::Init();
 
     // Get rank
     const int rank = MPI::COMM_WORLD.Get_rank();
