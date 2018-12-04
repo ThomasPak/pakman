@@ -1,7 +1,6 @@
 #ifndef ABCSMCCONTROLLER_H
 #define ABCSMCCONTROLLER_H
 
-#include <memory>
 #include <random>
 #include <vector>
 #include <string>
