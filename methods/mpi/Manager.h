@@ -18,7 +18,7 @@ class Manager
 
         // Construct from command, pointer to program terminated flag, and
         // process type (forked vs MPI)
-        Manager(cmd_t command, process_t process_type,
+        Manager(const cmd_t &command, process_t process_type,
                 bool *p_program_terminated) :
             m_command(command),
             m_process_type(process_type),
