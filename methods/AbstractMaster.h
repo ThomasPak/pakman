@@ -58,12 +58,6 @@ class AbstractMaster
         // Getter for m_p_program_terminated
         bool programTerminated() const;
 
-        // Do normal stuff
-        virtual void doNormalStuff() = 0;
-
-        // Do flushing stuff
-        virtual void doFlushingStuff() = 0;
-
         /**** Member variables ****/
         // Weak pointer to AbstractController
         std::weak_ptr<AbstractController> m_p_controller;

@@ -54,10 +54,10 @@ class MPIMaster : public AbstractMaster
 
         /**** Member functions ****/
         // Do normal stuff
-        virtual void doNormalStuff() override;
+        void doNormalStuff();
 
         // Do flushing stuff
-        virtual void doFlushingStuff() override;
+        void doFlushingStuff();
 
         // Listen to messages from Managers.
         void listenToManagers();
