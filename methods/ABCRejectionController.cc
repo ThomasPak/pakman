@@ -71,6 +71,7 @@ void ABCRejectionController::iterate()
 
         // Terminate Master
         m_p_master->terminate();
+        entered = false;
         return;
     }
 
