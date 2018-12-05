@@ -47,6 +47,18 @@ DEPFILES+= $(MAINOBJS:.o=.d)
 
 all: $(EXECUTABLES)
 
+install: all
+	[ $(INSTALLDIR) ] || { echo "Please set environment variable INSTALLDIR"; exit 2; }
+	cp pakman $(EXECUTABLES) $(INSTALLDIR)/bin
+
+softinstall: all
+	[ $(INSTALLDIR) ] || { echo "Please set environment variable INSTALLDIR"; exit 2; }
+	ln -s `echo pakman $(EXECUTABLES) | xargs realpath` $(INSTALLDIR)/bin
+
+uninstall:
+	[ $(INSTALLDIR) ] || { echo "Please set environment variable INSTALLDIR"; exit 2; }
+	cd $(INSTALLDIR)/bin && rm -rf pakman $(EXECUTABLES)
+
 -include $(DEPFILES)
 
 # Serial executables
