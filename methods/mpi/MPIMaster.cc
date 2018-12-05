@@ -334,7 +334,7 @@ bool MPIMaster::probeMessage() const
 // Probe for signal
 bool MPIMaster::probeSignal() const
 {
-    MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG);
+    return MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG);
 }
 
 // Probe for Manager rank of incoming message
