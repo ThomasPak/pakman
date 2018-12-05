@@ -90,4 +90,6 @@ sweep-mpi: $(OBJFILES) $(MPIOBJFILES) sweep-mpi.o
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 clean:
-	rm -rf $(OBJFILES) $(MPIOBJFILES) $(DEPFILES) $(MAINOBJS) $(EXECUTABLES)
+	find . -name "*.o" | xargs rm
+	find . -name "*.d" | xargs rm
+	rm -rf $(EXECUTABLES)
