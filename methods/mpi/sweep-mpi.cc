@@ -29,15 +29,17 @@ bool tolerate_rejections = false;
 bool tolerate_errors = false;
 bool program_terminated = false;
 
-void usage(int status) {
+void usage(int status)
+{
     if (status != EXIT_SUCCESS)
         fprintf(stdout, "Try '%s --help' for more info.\n", program_name);
-    else {
-        printf("Usage: %s [OPTION]... [INPUT]\n", program_name);
+    else
+    {
+        printf("Usage: %s [OPTION]... INPUT_FILE\n", program_name);
         std::cout <<
-"Run the parameter sweep as specified by INPUT (default stdin).\n";
+"Run the parameter sweep as specified by INPUT_FILE.\n";
         std::cout <<
-"\nINPUT must contain the following lines:\n"
+"\nINPUT_FILE must contain the following lines:\n"
 "  SIMULATOR                    simulator command\n"
 "  PARAMETER_NAMES              comma-separated list of parameter names\n"
 "  GENERATOR                    generator command\n";
@@ -55,7 +57,8 @@ void usage(int status) {
     exit(status);
 }
 
-static struct option const long_options[] = {
+static struct option const long_options[] =
+{
     {"main-timeout", required_argument, nullptr, 't'},
     {"kill-timeout", required_argument, nullptr, 'k'},
     {"tolerate-errors", no_argument, nullptr, 'o'},
@@ -65,17 +68,23 @@ static struct option const long_options[] = {
     {nullptr, 0, nullptr, 0}
 };
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
+    // Initialize the MPI environment
+    MPI::Init();
 
-    using namespace sweep;
+    // Get rank
+    const int rank = MPI::COMM_WORLD.Get_rank();
 
     // Set program name
     program_name = argv[0];
 
     // Process optional arguments
     int c;
-    while ((c = getopt_long(argc, argv, "hk:t:omf", long_options, nullptr)) != -1) {
-        switch (c) {
+    while ((c = getopt_long(argc, argv, "hk:t:omf", long_options, nullptr)) != -1)
+    {
+        switch (c)
+        {
             case 't':
                 MAIN_TIMEOUT = std::chrono::milliseconds(std::stoi(optarg));
                 break;
@@ -100,43 +109,39 @@ int main(int argc, char *argv[]) {
     }
 
     // If force_host_spawn, mpi_simulator must also be set
-    if (force_host_spawn && ! mpi_simulator) {
+    if (force_host_spawn && ! mpi_simulator)
+    {
         std::cerr << "Option -m must be set if -f is set\n";
         usage(EXIT_FAILURE);
     }
 
-    // Read optional file instead of stdin
-    std::ifstream file;
-    if (optind < argc) {
-        file.open(argv[optind]);
-        std::cin.rdbuf(file.rdbuf());
+    // Process positional arguments
+    int argind = optind;
+    if (argind == argc)
+    {
+        std::cerr << "File INPUT_FILE not given.\n";
+        usage(EXIT_FAILURE);
     }
 
-    // Check if too many arguments were given
-    if (optind + 1 < argc) {
+    // Open input file
+    std::ifstream input_file(argv[argind]);
+    if (!input_file.good())
+    {
+        std::cerr << "An error occured while opening " << argv[argind] << ".\n";
+        usage(EXIT_FAILURE);
+    }
+
+    // Check if there are any positional arguments left
+    argind++;
+    if (argind < argc)
+    {
         std::cerr << "Too many arguments given.\n";
         usage(EXIT_FAILURE);
     }
 
-    // Initialize the MPI environment
-    MPI::Init();
-
-    // Get rank
-    const int rank = MPI::COMM_WORLD.Get_rank();
-
-    // Master: read and broadcast stdin
-    // Manager: receive stdin from master
-    std::string raw_input;
-    if (rank == 0) {
-        raw_input = std::string(std::istreambuf_iterator<char>(std::cin), {});
-        broadcast_raw_input(raw_input);
-    } else
-        receive_raw_input(raw_input);
-
     // Parse stdin and store in input_obj
-    input_t input_obj;
-    std::stringstream sstrm(raw_input);
-    read_input(sstrm, input_obj);
+    sweep::input_t input_obj;
+    sweep::read_input(input_file, input_obj);
 
     // Set signal handler
     set_signal_handler();

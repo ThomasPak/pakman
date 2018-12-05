@@ -29,14 +29,18 @@ bool tolerate_rejections = true;
 bool tolerate_errors = false;
 bool program_terminated = false;
 
-void usage(int status) {
+void usage(int status)
+{
     if (status != EXIT_SUCCESS)
         fprintf(stdout, "Try '%s --help' for more info.\n", program_name);
-    else {
-        printf("Usage: %s [OPTION]... N [INPUT]\n", program_name);
-        std::cout << "Runs the ABC-SMC method as specified by INPUT (default stdin) "
-                     "with a population size N.\n";
-        std::cout << "\nINPUT must contain the following lines:\n"
+    else
+    {
+        printf("Usage: %s [OPTION]... INPUT_FILE N\n", program_name);
+        std::cout <<
+"Runs the ABC-SMC method as specified by INPUT_FILE"
+"with a population size N.\n";
+        std::cout <<
+"\nINPUT_FILE must contain the following lines:\n"
 "  EPSILONS                     comma-separated list of epsilons\n"
 "  SIMULATOR                    simulator command\n"
 "  PARAMETER_NAMES              comma-separated list of parameter names\n"
@@ -58,7 +62,8 @@ void usage(int status) {
     exit(status);
 }
 
-static struct option const long_options[] = {
+static struct option const long_options[] =
+{
     {"main-timeout", required_argument, nullptr, 't'},
     {"kill-timeout", required_argument, nullptr, 'k'},
     {"mpi-simulation", no_argument, nullptr, 'm'},
@@ -68,17 +73,23 @@ static struct option const long_options[] = {
     {nullptr, 0, nullptr, 0}
 };
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
+    // Initialize the MPI environment
+    MPI::Init();
 
-    using namespace smc;
+    // Get rank
+    const int rank = MPI::COMM_WORLD.Get_rank();
 
     // Set program name
     program_name = argv[0];
 
     // Process optional arguments
     int c;
-    while ((c = getopt_long(argc, argv, "hk:t:omf", long_options, nullptr)) != -1) {
-        switch (c) {
+    while ((c = getopt_long(argc, argv, "hk:t:omf", long_options, nullptr)) != -1)
+    {
+        switch (c)
+        {
             case 't':
                 MAIN_TIMEOUT = std::chrono::milliseconds(std::stoi(optarg));
                 break;
@@ -103,50 +114,55 @@ int main(int argc, char *argv[]) {
     }
 
     // If force_host_spawn, mpi_simulator must also be set
-    if (force_host_spawn && ! mpi_simulator) {
+    if (force_host_spawn && ! mpi_simulator)
+    {
         std::cerr << "Option -m must be set if -f is set\n";
         usage(EXIT_FAILURE);
     }
 
     // Process positional arguments
-    if (optind >= argc) {
-        std::cerr << "No population size given.\n";
+    int argind = optind;
+    if (argind == argc)
+    {
+        std::cerr << "File INPUT_FILE not given.\n";
+        usage(EXIT_FAILURE);
+    }
+
+    // Open input file
+    std::ifstream input_file(argv[argind]);
+    if (!input_file.good())
+    {
+        std::cerr << "An error occured while opening " << argv[argind] << ".\n";
+        usage(EXIT_FAILURE);
+    }
+
+    // Next positional argument
+    argind++;
+    if (argind == argc)
+    {
+        std::cerr << "Population size N not given.\n";
         usage(EXIT_FAILURE);
     }
 
     // Read population size
-    const int pop_size = std::stoi(argv[optind]);
-    if (pop_size <= 0) {
-        std::cerr << "Population size must be nonnegative integer.\n";
+    const int pop_size = std::stoi(argv[argind]);
+    if (pop_size <= 0)
+    {
+        std::cerr << "Population size must be positive integer.\n";
         usage(EXIT_FAILURE);
     }
 
-    // Read optional file instead of stdin
-    std::ifstream file;
-    if (optind + 1 < argc) {
-        file.open(argv[optind + 1]);
-        std::cin.rdbuf(file.rdbuf());
+    // Check if there are any positional arguments left
+    argind++;
+    if (argind < argc)
+    {
+        std::cerr << "Too many arguments given.\n";
+        usage(EXIT_FAILURE);
     }
 
-    // Initialize the MPI environment
-    MPI::Init();
-
-    // Get rank
-    const int rank = MPI::COMM_WORLD.Get_rank();
-
-    // Master: read and broadcast stdin
-    // Manager: receive stdin from master
-    std::string raw_input;
-    if (rank == 0) {
-        raw_input = std::string(std::istreambuf_iterator<char>(std::cin), {});
-        broadcast_raw_input(raw_input);
-    } else
-        receive_raw_input(raw_input);
-
     // Parse stdin and store in input_obj
-    input_t input_obj;
-    std::stringstream sstrm(raw_input);
-    read_input(sstrm, input_obj);
+    smc::input_t input_obj;
+    smc::read_input(input_file, input_obj);
 
     // Set signal handler
     set_signal_handler();
