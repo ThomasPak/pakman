@@ -1,5 +1,4 @@
-FOLDERS =models
-FOLDERS+=samplers
+FOLDERS =samplers
 FOLDERS+=simulators
 FOLDERS+=methods
 FOLDERS+=densities
