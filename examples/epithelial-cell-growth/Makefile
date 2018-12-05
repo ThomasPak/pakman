@@ -2,6 +2,8 @@
 
 EXECUTABLES =VertexBasedMonolayerSimulator
 EXECUTABLES+=uniform-sampler
+EXECUTABLES+=normal-sampler
+EXECUTABLES+=normal-pdf
 
 all: $(EXECUTABLES)
 
