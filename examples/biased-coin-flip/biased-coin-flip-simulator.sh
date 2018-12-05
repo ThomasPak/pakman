@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # Process arguments
 usage="Usage: $0 DATAFILE"
@@ -21,7 +21,7 @@ read parameter
 data=$(cat $datafile)
 
 # Simulate binomial model
-sim=$(models/binomial <<< $parameter)
+sim=$(./binomial-sampler <<< $parameter)
 
 # Compare
 diff=$((data - sim))

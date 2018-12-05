@@ -8,9 +8,10 @@
 /methods/mcmc-mpi
 /methods/smc-mpi
 /methods/sweep-mpi
-/models/binomial
 /samplers/uniform
 /samplers/normal
 /densities/uniform_pdf
 /densities/normal_pdf
 /simulators/mpi_simulator
+/examples/biased-coin-flip/binomial-sampler
+/examples/biased-coin-flip/uniform-sampler
