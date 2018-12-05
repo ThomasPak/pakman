@@ -15,3 +15,5 @@
 /simulators/mpi_simulator
 /examples/biased-coin-flip/binomial-sampler
 /examples/biased-coin-flip/uniform-sampler
+/examples/epithelial-cell-growth/VertexBasedMonolayerSimulator
+/examples/epithelial-cell-growth/uniform-sampler
