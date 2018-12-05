@@ -102,6 +102,6 @@ sweep-mpi: $(OBJFILES) $(MPIOBJFILES) sweep-mpi.o
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 clean:
-	find . -name "*.o" | xargs rm
-	find . -name "*.d" | xargs rm
+	find . -name "*.o" | xargs rm -rf
+	find . -name "*.d" | xargs rm -rf
 	rm -rf $(EXECUTABLES)
