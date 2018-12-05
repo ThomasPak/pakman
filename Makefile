@@ -2,6 +2,7 @@ FOLDERS =samplers
 FOLDERS+=simulators
 FOLDERS+=methods
 FOLDERS+=densities
+FOLDERS+=examples
 
 .PHONY: all very_clean clean release debug
 
