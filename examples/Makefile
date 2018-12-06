@@ -3,10 +3,10 @@
 DIRS=$(shell echo */)
 
 all:
-	echo -n */ | xargs -I{} -n 1 -d" " $(MAKE) -C {} all
+	echo */ | tr " \n\t" "\0" | xargs -0 -I {} $(MAKE) -C {} all
 
 test:
-	echo -n */ | xargs -I{} -n 1 -d" " $(MAKE) -C {} test
+	echo */ | tr " \n\t" "\0" | xargs -0 -I {} $(MAKE) -C {} test
 
 clean:
-	echo -n */ | xargs -I{} -n 1 -d" " $(MAKE) -C {} clean
+	echo */ | tr " \n\t" "\0" | xargs -0 -I {} $(MAKE) -C {} clean
