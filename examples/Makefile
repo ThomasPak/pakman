@@ -2,7 +2,7 @@
 
 DIRS=$(shell echo */)
 
-ll:
+all:
 	echo -n */ | xargs -I{} -n 1 -d" " $(MAKE) -C {} all
 
 test:
