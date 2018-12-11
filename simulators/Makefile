@@ -1,8 +1,9 @@
 .PHONY: all clean
 
-EXECUTABLES=$(shell ls *.cc | awk -F. '{print $$1}')
+EXECUTABLES =mpi_worker
 
 CXX=mpic++
+CC=mpicc
 
 all: $(EXECUTABLES)
 

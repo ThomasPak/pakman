@@ -8,6 +8,7 @@
 /methods/mcmc-mpi
 /methods/smc-mpi
 /methods/sweep-mpi
+/simulators/mpi_worker
 /samplers/uniform
 /samplers/normal
 /densities/uniform_pdf
