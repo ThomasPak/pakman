@@ -21,8 +21,8 @@ MPICXX ?= mpic++
 
 MPIFLAGS = -pthread
 
-EXECUTABLES = rejection 
-EXECUTABLES+= mcmc 
+EXECUTABLES = rejection
+EXECUTABLES+= mcmc
 EXECUTABLES+= smc
 EXECUTABLES+= sweep
 

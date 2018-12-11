@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     }
 
     const int num_accept = stoi(argv[1]);
-        
+
     // Extract simulator and parameter specification from standard input
     input_t input_obj;
     read_input(cin, input_obj);
