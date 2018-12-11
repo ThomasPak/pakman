@@ -8,7 +8,8 @@ EXECUTABLES+=normal-pdf
 all: $(EXECUTABLES)
 
 VertexBasedMonolayerSimulator:
-	$(MAKE) -C $(CHASTE_BUILD) VertexBasedMonolayerSimulator
+	[ -z $${CHASTE_BUILD+x} ] && exit ; \
+	$(MAKE) -C $(CHASTE_BUILD) VertexBasedMonolayerSimulator ; \
 	cp $(CHASTE_BUILD)/projects/cell-chaste/apps/VertexBasedMonolayerSimulator .
 
 test:
