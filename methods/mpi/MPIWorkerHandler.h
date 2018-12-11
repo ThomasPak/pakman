@@ -38,6 +38,12 @@ class MPIWorkerHandler : public AbstractWorkerHandler
 
     private:
 
+        // Receive message from Worker
+        std::string receiveMessage() const;
+
+        // Receive error code from Worker
+        int receiveErrorCode() const;
+
         // Intercomm with child
         MPI::Intercomm m_child_comm;
 

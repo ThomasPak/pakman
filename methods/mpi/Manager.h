@@ -68,6 +68,9 @@ class Manager
         // Send signal to Master
         void sendSignalToMaster(int signal);
 
+        // Send error code to Master
+        void sendErrorCodeToMaster(int error_code);
+
         /**** Member variables ****/
         // Initial state is idle
         state_t m_state = idle;
@@ -95,6 +98,12 @@ class Manager
 
         // Signal request
         MPI::Request m_signal_request;
+
+        // Error code buffer
+        int m_error_code_buffer;
+
+        // Error code request
+        MPI::Request m_error_code_request;
 };
 
 #endif // MANAGER_H

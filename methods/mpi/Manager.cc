@@ -166,8 +166,14 @@ void Manager::doBusyStuff()
         // Get output string
         std::string output_string = m_p_worker_handler->getOutput();
 
+        // Get error code
+        int error_code = m_p_worker_handler->getErrorCode();
+
         // Send output string to master
         sendMessageToMaster(output_string);
+
+        // Send error code to master
+        sendErrorCodeToMaster(error_code);
 
         // Terminate Worker handler
         terminateWorker();
@@ -308,4 +314,19 @@ void Manager::sendSignalToMaster(int signal)
     // Manager are executed by the same process
     m_signal_request = MPI::COMM_WORLD.Isend(&m_signal_buffer, 1, MPI::INT,
             MASTER_RANK, MANAGER_SIGNAL_TAG);
+}
+
+// Send error code to Master
+void Manager::sendErrorCodeToMaster(int error_code)
+{
+    // Ensure previous error code has finished sending
+    m_error_code_request.Wait();
+
+    // Store error_code in buffer
+    m_error_code_buffer = error_code;
+
+    // Note: Isend is used here to avoid deadlock since the Master and the root
+    // Manager are executed by the same process
+    m_error_code_request = MPI::COMM_WORLD.Isend(&m_error_code_buffer, 1, MPI::INT,
+            MASTER_RANK, MANAGER_ERROR_CODE_TAG);
 }

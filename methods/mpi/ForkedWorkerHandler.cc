@@ -52,6 +52,9 @@ void ForkedWorkerHandler::terminate()
     std::cerr << "Terminating...\n";
 #endif
 
+    // If already terminated, return immediately
+    if (!m_child_pid) return;
+
 #ifndef NDEBUG
     std::cerr << "Checking whether child process has finished...\n";
 #endif
@@ -116,6 +119,11 @@ bool ForkedWorkerHandler::isDone()
             poll_read_from_pipe(m_pipe_read_fd, m_output_buffer) )
     {
         close_check(m_pipe_read_fd);
+
+        // Get error code
+        waitpid_success(m_child_pid, m_error_code, 0);
+        m_child_pid = 0;
+
         m_read_done = true;
     }
 

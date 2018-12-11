@@ -22,10 +22,15 @@ class AbstractWorkerHandler
         // Virtual function isDone() to check whether Worker has finished
         virtual bool isDone() = 0;
 
-        // Function getOutput() to get output of running command
+        // Function getOutput() to get output of finished Worker
         // Running this command before Worker is finished will result in
         // an error, so always check with isDone() first.
         std::string getOutput();
+
+        // Function getErrorCode() to get error code of finished Worker
+        // Running this command before Worker is finished will result in
+        // an error, so always check with isDone() first.
+        int getErrorCode();
 
     protected:
 
@@ -37,6 +42,9 @@ class AbstractWorkerHandler
 
         // Output buffer
         std::string m_output_buffer;
+
+        // Error code
+        int m_error_code = -1;
 };
 
 #endif // ABSTRACTWORKERHANDLER_H

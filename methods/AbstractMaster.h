@@ -76,7 +76,7 @@ class AbstractMaster
             public:
 
                 // Enumerate type for TaskHandler states
-                enum state_t { pending, finished, error };
+                enum state_t { pending, finished };
 
                 // Construct from input string
                 TaskHandler(const std::string& input_string);
@@ -96,8 +96,11 @@ class AbstractMaster
                 // Probe whether task is finished
                 bool isFinished() const;
 
-                // Probe whether error occured
+                // Probe whether error occurred
                 bool didErrorOccur() const;
+
+                // Get error code
+                int getErrorCode() const;
 
                 // Get input string
                 std::string getInputString() const;
@@ -105,11 +108,9 @@ class AbstractMaster
                 // Get output string
                 std::string getOutputString() const;
 
-                // Record output
-                void recordOutput(const std::string& output_string);
-
-                // Record error
-                void recordError();
+                // Record output and error code
+                void recordOutputAndErrorCode(const std::string& output_string,
+                        int error_code);
 
             private:
 
@@ -121,6 +122,9 @@ class AbstractMaster
 
                 // Output string, only valid in finished state
                 std::string m_output_string;
+
+                // Error code, only valid in finished state
+                int m_error_code;
         };
 };
 

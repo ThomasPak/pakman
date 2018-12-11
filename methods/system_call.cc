@@ -45,9 +45,9 @@ bool waitpid_success(pid_t pid, int options, const cmd_t& cmd,
 
     // Check exit status of child
     if (child_err_opt == throw_error) {
-        if (!WIFEXITED(status)) { // Program did not exit successfully
+        if (!WIFEXITED(status)) { // Program did not exit normally
             string error_msg(cmd);
-            error_msg += " did not exit successfully";
+            error_msg += " did not exit normally";
             runtime_error e(error_msg);
             throw e;
         }
@@ -59,6 +59,42 @@ bool waitpid_success(pid_t pid, int options, const cmd_t& cmd,
             throw e;
         }
     }
+
+    // Wait was successful
+    return true;
+}
+
+bool waitpid_success(pid_t pid, int& error_code, int options, const cmd_t& cmd)
+{
+
+    using namespace std;
+
+    // Wait on child
+    int status;
+    pid_t retval = waitpid(pid, &status, options);
+
+    // Check exit status of retval
+    if (retval == 0) // No state change with WNOHANG
+        return false;
+
+    if (retval == -1) {
+        string error_msg("waitpid of ");
+        error_msg += cmd;
+        error_msg += " failed";
+        runtime_error e(error_msg);
+        throw e;
+    }
+
+    // Check exit status of child
+    if (!WIFEXITED(status)) { // Program did not exit normally
+        string error_msg(cmd);
+        error_msg += " did not exit normally";
+        runtime_error e(error_msg);
+        throw e;
+    }
+
+    // Record exit status
+    error_code = WEXITSTATUS(status);
 
     // Wait was successful
     return true;

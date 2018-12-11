@@ -33,6 +33,7 @@ AbstractMaster::TaskHandler::TaskHandler(const std::string& input_string) :
 AbstractMaster::TaskHandler::TaskHandler(TaskHandler &&t) :
     m_input_string(std::move(t.m_input_string)),
     m_output_string(std::move(t.m_output_string)),
+    m_error_code(t.m_error_code),
     m_state(t.m_state)
 {
 }
@@ -64,7 +65,10 @@ bool AbstractMaster::TaskHandler::isFinished() const
 // Probe whether error occured
 bool AbstractMaster::TaskHandler::didErrorOccur() const
 {
-    return m_state == error;
+    // This should only be called in the finished state
+    assert(m_state == finished);
+
+    return m_error_code != 0;
 }
 
 // Get input string
@@ -85,22 +89,14 @@ std::string AbstractMaster::TaskHandler::getOutputString() const
 }
 
 // Record output
-void AbstractMaster::TaskHandler::recordOutput(const std::string& output_string)
+void AbstractMaster::TaskHandler::recordOutputAndErrorCode(
+        const std::string& output_string, int error_code)
 {
     // This should only be called in the pending state
     assert(m_state == pending);
 
-    // Record output string and set state to finished
+    // Record output string, error code and set state to finished
     m_output_string.assign(output_string);
+    m_error_code = error_code;
     m_state = finished;
-}
-
-// Record error
-void AbstractMaster::TaskHandler::recordError()
-{
-    // This should only be called in the pending state
-    assert(m_state == pending);
-
-    // Set state to finished
-    m_state = error;
 }

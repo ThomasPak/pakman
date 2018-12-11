@@ -19,3 +19,10 @@ std::string AbstractWorkerHandler::getOutput()
 
     return m_output_buffer;
 }
+
+int AbstractWorkerHandler::getErrorCode()
+{
+    assert(isDone());
+
+    return m_error_code;
+}

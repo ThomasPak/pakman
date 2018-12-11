@@ -43,7 +43,7 @@ MPIWorkerHandler::MPIWorkerHandler(
 
     // Write input string to spawned MPI process
     m_child_comm.Send(input_string.c_str(), input_string.size() + 1, MPI::CHAR,
-            0, 0);
+            WORKER_RANK, MANAGER_MSG_TAG);
 }
 
 MPIWorkerHandler::~MPIWorkerHandler()
@@ -71,22 +71,14 @@ void MPIWorkerHandler::terminate()
     // if it has not finished yet
     if (!m_result_received)
     {
-        // Source and tag are both zero
-        const int source = 0, tag = 0;
+        // Receive message
+        receiveMessage();
 
-        MPI::Status status;
-        while (!m_child_comm.Iprobe(0, 0, status))
-            // Sleep for MAIN_TIMEOUT
-            std::this_thread::sleep_for(MAIN_TIMEOUT);
+        // Receive error code
+        receiveErrorCode();
 
-        const int count = status.Get_count(MPI::CHAR);
-        char *buffer = new char[count];
-
-        m_child_comm.Recv(buffer, count, MPI::CHAR, source, tag);
-
+        // Set flag
         m_result_received = true;
-
-        delete[] buffer;
     }
 }
 
@@ -95,21 +87,45 @@ bool MPIWorkerHandler::isDone()
     // Probe for result if result has not yet been received
     MPI::Status status;
     if (    !m_result_received &&
-            m_child_comm.Iprobe(0, 0, status) )
+            m_child_comm.Iprobe(WORKER_RANK, WORKER_MSG_TAG, status) )
     {
-        // Source and tag are both zero
-        const int source = 0, tag = 0;
+        // Receive message
+        m_output_buffer.assign(receiveMessage());
 
-        const int count = status.Get_count(MPI::CHAR);
-        char *buffer = new char[count];
+        // Receive error code
+        m_error_code = receiveErrorCode();
 
-        m_child_comm.Recv(buffer, count, MPI::CHAR, source, tag);
-
-        m_output_buffer.assign(buffer);
-        delete[] buffer;
-
+        // Set flag
         m_result_received = true;
     }
 
     return m_result_received;
+}
+
+std::string MPIWorkerHandler::receiveMessage() const
+{
+    // Probe message to get status
+    MPI::Status status;
+    m_child_comm.Probe(WORKER_RANK, WORKER_MSG_TAG, status);
+
+    // Receive message from Worker
+    int count = status.Get_count(MPI::CHAR);
+    char *buffer = new char[count];
+    m_child_comm.Recv(buffer, count, MPI::CHAR, WORKER_RANK, WORKER_MSG_TAG);
+
+    // Return message as string
+    std::string message(buffer);
+    delete[] buffer;
+    return message;
+}
+
+int MPIWorkerHandler::receiveErrorCode() const
+{
+    // Receive error code from Worker
+    int error_code;
+    m_child_comm.Recv(&error_code, 1, MPI::INT, WORKER_RANK,
+            WORKER_ERROR_CODE_TAG);
+
+    // Return error code as integer
+    return error_code;
 }

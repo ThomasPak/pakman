@@ -9,6 +9,7 @@ typedef enum { throw_error, ignore_error } child_err_opt_t;
 
 bool waitpid_success(pid_t pid, int options = 0, const cmd_t& cmd = "cmd",
                      child_err_opt_t child_err_opt = throw_error);
+bool waitpid_success(pid_t pid, int& error_code, int options = 0, const cmd_t& cmd = "cmd");
 
 void dup2_check(int oldfd, int newfd);
 void close_check(int fd);

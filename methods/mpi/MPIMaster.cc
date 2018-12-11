@@ -210,8 +210,12 @@ void MPIMaster::listenToManagers()
         // Receive message
         std::string&& output_string = receiveMessage(manager_rank);
 
+        // Receive error code
+        int error_code = receiveErrorCode(manager_rank);
+
         // Record output string
-        m_map_manager_to_task[manager_rank]->recordOutput(output_string);
+        m_map_manager_to_task[manager_rank]->recordOutputAndErrorCode(output_string,
+                error_code);
 
         // Mark manager as idle
         m_idle_managers.insert(manager_rank);
@@ -337,6 +341,11 @@ bool MPIMaster::probeSignal() const
     return MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG);
 }
 
+// Probe for error code
+bool MPIMaster::probeErrorCode() const
+{
+    return MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_ERROR_CODE_TAG);
+}
 // Probe for Manager rank of incoming message
 int MPIMaster::probeMessageManager() const
 {
@@ -400,6 +409,30 @@ int MPIMaster::receiveSignal(int manager_rank) const
 
     // Return signal as integer
     return signal;
+}
+
+// Receive error code from Manager
+int MPIMaster::receiveErrorCode(int manager_rank) const
+{
+    // Sanity check: probeErrorCode must return true
+    assert(probeErrorCode());
+
+    // Probe signal message to get status
+    MPI::Status status;
+    MPI::COMM_WORLD.Probe(manager_rank, MANAGER_ERROR_CODE_TAG, status);
+
+    // Sanity check on signal, which has to be a single integer
+    assert(status.Get_tag() == MANAGER_ERROR_CODE_TAG);
+    assert(status.Get_source() == manager_rank);
+    assert(status.Get_count(MPI::INT) == 1);
+
+    // Receive error code from Manager
+    int error_code;
+    MPI::COMM_WORLD.Recv(&error_code, 1, MPI::INT, manager_rank,
+            MANAGER_ERROR_CODE_TAG);
+
+    // Return signal as integer
+    return error_code;
 }
 
 // Send message to a Manager
