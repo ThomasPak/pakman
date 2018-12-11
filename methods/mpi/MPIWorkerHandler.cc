@@ -71,9 +71,8 @@ void MPIWorkerHandler::terminate()
 bool MPIWorkerHandler::isDone()
 {
     // Probe for result if result has not yet been received
-    MPI::Status status;
     if (    !m_result_received &&
-            m_child_comm.Iprobe(WORKER_RANK, WORKER_MSG_TAG, status) )
+            m_child_comm.Iprobe(WORKER_RANK, WORKER_MSG_TAG) )
     {
         // Receive message
         m_output_buffer.assign(receiveMessage());
