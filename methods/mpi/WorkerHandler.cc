@@ -13,13 +13,13 @@
 
 #include "mpi_common.h"
 #include "spawn.h"
-#include "ProcessHandler.h"
+#include "WorkerHandler.h"
 
 #ifndef NDEBUG
 #include <iostream>
 #endif
 
-AbstractProcessHandler::AbstractProcessHandler(
+AbstractWorkerHandler::AbstractWorkerHandler(
         const cmd_t& command,
         const std::string& input_string) :
     m_command(command),
@@ -27,17 +27,17 @@ AbstractProcessHandler::AbstractProcessHandler(
 {
 }
 
-std::string AbstractProcessHandler::getOutput()
+std::string AbstractWorkerHandler::getOutput()
 {
     assert(isDone());
 
     return m_output_buffer;
 }
 
-ForkedProcessHandler::ForkedProcessHandler(
+ForkedWorkerHandler::ForkedWorkerHandler(
         const cmd_t& command,
         const std::string& input_string) :
-    AbstractProcessHandler(command, input_string)
+    AbstractWorkerHandler(command, input_string)
 {
 
     // Start process
@@ -51,7 +51,7 @@ ForkedProcessHandler::ForkedProcessHandler(
     close_check(m_pipe_write_fd);
 }
 
-ForkedProcessHandler::~ForkedProcessHandler()
+ForkedWorkerHandler::~ForkedWorkerHandler()
 {
 
 #ifndef NDEBUG
@@ -64,7 +64,7 @@ ForkedProcessHandler::~ForkedProcessHandler()
     if (!m_read_done) close_check(m_pipe_read_fd);
 }
 
-void ForkedProcessHandler::terminate()
+void ForkedWorkerHandler::terminate()
 {
 
 #ifndef NDEBUG
@@ -127,7 +127,7 @@ void ForkedProcessHandler::terminate()
      m_child_pid = 0;
 }
 
-bool ForkedProcessHandler::isDone()
+bool ForkedWorkerHandler::isDone()
 {
     // Poll pipe if m_read_done flag is false. If pipe is finished reading,
     // close pipe and set m_read_done flag to true
@@ -141,10 +141,10 @@ bool ForkedProcessHandler::isDone()
     return m_read_done;
 }
 
-MPIProcessHandler::MPIProcessHandler(
+MPIWorkerHandler::MPIWorkerHandler(
         const cmd_t& command,
         const std::string& input_string) :
-    AbstractProcessHandler(command, input_string)
+    AbstractWorkerHandler(command, input_string)
 {
 #ifndef NDEBUG
     const int rank = MPI::COMM_WORLD.Get_rank();
@@ -173,7 +173,7 @@ MPIProcessHandler::MPIProcessHandler(
             0, 0);
 }
 
-MPIProcessHandler::~MPIProcessHandler()
+MPIWorkerHandler::~MPIWorkerHandler()
 {
 #ifndef NDEBUG
     const int rank = MPI::COMM_WORLD.Get_rank();
@@ -186,7 +186,7 @@ MPIProcessHandler::~MPIProcessHandler()
     m_child_comm.Disconnect();
 }
 
-void MPIProcessHandler::terminate()
+void MPIWorkerHandler::terminate()
 {
 #ifndef NDEBUG
     const int rank = MPI::COMM_WORLD.Get_rank();
@@ -217,7 +217,7 @@ void MPIProcessHandler::terminate()
     }
 }
 
-bool MPIProcessHandler::isDone()
+bool MPIWorkerHandler::isDone()
 {
     // Probe for result if result has not yet been received
     MPI::Status status;

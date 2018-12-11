@@ -9,8 +9,8 @@ const int CANCEL = 3;
 
 typedef enum
 {
-    forked_process,
-    mpi_process
-} process_t;
+    forked_worker,
+    mpi_worker
+} worker_t;
 
 #endif // COMMON_H

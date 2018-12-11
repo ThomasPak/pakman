@@ -6,7 +6,7 @@
 
 #include "../common.h"
 #include "mpi_common.h"
-#include "ProcessHandler.h"
+#include "WorkerHandler.h"
 #include "Manager.h"
 
 #ifndef NDEBUG
@@ -14,11 +14,11 @@
 #endif
 
 // Construct from command, pointer to program terminated flag, and
-// process type (forked vs MPI)
-Manager::Manager(const cmd_t &command, process_t process_type,
+// Worker type (forked vs MPI)
+Manager::Manager(const cmd_t &command, worker_t worker_type,
         bool *p_program_terminated) :
     m_command(command),
-    m_process_type(process_type),
+    m_worker_type(worker_type),
     m_p_program_terminated(p_program_terminated)
 {
 }
@@ -61,8 +61,8 @@ void Manager::iterate()
 // Do idle stuff
 void Manager::doIdleStuff()
 {
-    // Sanity check: m_p_process_handler should be the null pointer
-    assert(!m_p_process_handler);
+    // Sanity check: m_p_worker_handler should be the null pointer
+    assert(!m_p_worker_handler);
 
     // Check for program termination interrupt
     if (*m_p_program_terminated)
@@ -82,13 +82,13 @@ void Manager::doIdleStuff()
                 m_state = terminated;
                 return;
 
-            // An idle Manager can receive TERMINATE_PROCESS_SIGNAL when the
+            // An idle Manager can receive TERMINATE_WORKER_SIGNAL when the
             // Master has not yet checked for the Manager's message.
             // In this case, nothing needs to be done
-            case TERMINATE_PROCESS_SIGNAL:
+            case TERMINATE_WORKER_SIGNAL:
                 return;
 
-            // TERMINATE_MANAGER_SIGNAL and TERMINATE_PROCESS_SIGNAL are the
+            // TERMINATE_MANAGER_SIGNAL and TERMINATE_WORKER_SIGNAL are the
             // only valid Master signals
             default:
                 throw;
@@ -98,9 +98,9 @@ void Manager::doIdleStuff()
     // Check for message
     if (probeMessage())
     {
-        // Receive input string and create new process
+        // Receive input string and create new Worker
         std::string input_string = receiveMessage();
-        createProcess(input_string);
+        createWorker(input_string);
 
         // Switch to busy state
         m_state = busy;
@@ -111,65 +111,65 @@ void Manager::doIdleStuff()
 // Do busy stuff
 void Manager::doBusyStuff()
 {
-    // Sanity check: m_p_process_handler should not be the null pointer
-    assert(m_p_process_handler);
+    // Sanity check: m_p_worker_handler should not be the null pointer
+    assert(m_p_worker_handler);
 
     // Check for program termination interrupt
     if (*m_p_program_terminated)
     {
-        // Terminate process
-        terminateProcess();
+        // Terminate Worker
+        terminateWorker();
 
         // Terminate Manager
         m_state = terminated;
         return;
     }
 
-    // Check for Manager or process termination signal
+    // Check for Manager or Worker termination signal
     if (probeSignal())
     {
         switch (receiveSignal())
         {
             case TERMINATE_MANAGER_SIGNAL:
-                // Terminate process
-                terminateProcess();
+                // Terminate Worker
+                terminateWorker();
 
                 // Terminate Manager
                 m_state = terminated;
                 return;
 
-            case TERMINATE_PROCESS_SIGNAL:
+            case TERMINATE_WORKER_SIGNAL:
 #ifndef NDEBUG
-                std::cerr << "Manager: sending PROCESS_CANCELLED_SIGNAL to Master\n";
+                std::cerr << "Manager: sending WORKER_CANCELLED_SIGNAL to Master\n";
 #endif
-                // Terminate process
-                terminateProcess();
+                // Terminate Worker
+                terminateWorker();
 
-                // Send PROCESS_CANCELLED_SIGNAL result
-                sendSignalToMaster(PROCESS_CANCELLED_SIGNAL);
+                // Send WORKER_CANCELLED_SIGNAL result
+                sendSignalToMaster(WORKER_CANCELLED_SIGNAL);
 
                 // Switch to idle state
                 m_state = idle;
                 return;
 
-            // TERMINATE_MANAGER_SIGNAL and TERMINATE_PROCESS_SIGNAL are the
+            // TERMINATE_MANAGER_SIGNAL and TERMINATE_WORKER_SIGNAL are the
             // only valid Master signals
             default:
                 throw;
         }
     }
 
-    // Check if process has finished
-    if (m_p_process_handler->isDone())
+    // Check if Worker has finished
+    if (m_p_worker_handler->isDone())
     {
         // Get output string
-        std::string output_string = m_p_process_handler->getOutput();
+        std::string output_string = m_p_worker_handler->getOutput();
 
         // Send output string to master
         sendMessageToMaster(output_string);
 
-        // Terminate process handler
-        terminateProcess();
+        // Terminate Worker handler
+        terminateWorker();
 
         // Switch to idle state
         m_state = idle;
@@ -180,27 +180,27 @@ void Manager::doBusyStuff()
     assert(probeMessage() == false);
 }
 
-// Create process
-void Manager::createProcess(const std::string& input_string)
+// Create Worker
+void Manager::createWorker(const std::string& input_string)
 {
-    // Sanity check: m_p_process_handler should be the null pointer
-    assert(!m_p_process_handler);
+    // Sanity check: m_p_worker_handler should be the null pointer
+    assert(!m_p_worker_handler);
 
-    // Switch on process type
-    switch (m_process_type)
+    // Switch on Worker type
+    switch (m_worker_type)
     {
-        // Fork process
-        case forked_process:
-            m_p_process_handler =
-                std::unique_ptr<ForkedProcessHandler>(
-                        new ForkedProcessHandler(m_command, input_string));
+        // Fork Worker
+        case forked_worker:
+            m_p_worker_handler =
+                std::unique_ptr<ForkedWorkerHandler>(
+                        new ForkedWorkerHandler(m_command, input_string));
             break;
 
-        // Spawn MPI process
-        case mpi_process:
-            m_p_process_handler =
-                std::unique_ptr<MPIProcessHandler>(
-                        new MPIProcessHandler(m_command, input_string));
+        // Spawn MPI Worker
+        case mpi_worker:
+            m_p_worker_handler =
+                std::unique_ptr<MPIWorkerHandler>(
+                        new MPIWorkerHandler(m_command, input_string));
             break;
 
         default:
@@ -208,15 +208,15 @@ void Manager::createProcess(const std::string& input_string)
     }
 }
 
-// Terminate process
-void Manager::terminateProcess()
+// Terminate Worker
+void Manager::terminateWorker()
 {
     // Sanity check: This function should not be called when
-    // m_p_process_handler is the null pointer
-    assert(m_p_process_handler);
+    // m_p_worker_handler is the null pointer
+    assert(m_p_worker_handler);
 
-    // Reset m_p_process_handler to null pointer
-    m_p_process_handler.reset();
+    // Reset m_p_worker_handler to null pointer
+    m_p_worker_handler.reset();
 }
 
 // Probe for message

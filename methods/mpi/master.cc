@@ -101,7 +101,7 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
 
         // Set parameter status appropriately according to signal received
         switch (signal) {
-            case PROCESS_CANCELLED_SIGNAL:
+            case WORKER_CANCELLED_SIGNAL:
                 manager_map[manager]->setStatus(cancelled);
                 idle_managers.insert(manager);
                 break;

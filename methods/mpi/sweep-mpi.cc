@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
 
     // Create Manager object
     Manager manager_obj(input_obj.simulator,
-            mpi_simulator ? mpi_process : forked_process, &program_terminated);
+            mpi_simulator ? mpi_worker : forked_worker, &program_terminated);
 
     if (rank == 0)
     {

@@ -8,7 +8,7 @@
 #include <mpi.h>
 
 #include "../common.h"
-#include "ProcessHandler.h"
+#include "WorkerHandler.h"
 #include "../types.h"
 
 class Manager
@@ -19,8 +19,8 @@ class Manager
         enum state_t { idle, busy, terminated };
 
         // Construct from command, pointer to program terminated flag, and
-        // process type (forked vs MPI)
-        Manager(const cmd_t &command, process_t process_type,
+        // Worker type (forked vs MPI)
+        Manager(const cmd_t &command, worker_t worker_type,
                 bool *p_program_terminated);
 
         // Destructor
@@ -44,11 +44,11 @@ class Manager
         // Do busy stuff
         void doBusyStuff();
 
-        // Create process
-        void createProcess(const std::string& input_string);
+        // Create Worker
+        void createWorker(const std::string& input_string);
 
-        // Terminate process
-        void terminateProcess();
+        // Terminate Worker
+        void terminateWorker();
 
         // Probe for message
         bool probeMessage() const;
@@ -72,17 +72,17 @@ class Manager
         // Initial state is idle
         state_t m_state = idle;
 
-        // Command for process
+        // Command for Worker
         const std::string m_command;
 
-        // Process type (forked process vs MPI process)
-        const process_t m_process_type;
+        // Worker type (forked Worker vs MPI Worker)
+        const worker_t m_worker_type;
 
         // Pointer to program terminated flag
         bool *m_p_program_terminated;
 
-        // Pointer to process handler
-        std::unique_ptr<AbstractProcessHandler> m_p_process_handler;
+        // Pointer to Worker handler
+        std::unique_ptr<AbstractWorkerHandler> m_p_worker_handler;
 
         // Message buffer
         std::string m_message_buffer;

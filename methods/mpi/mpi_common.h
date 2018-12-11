@@ -25,12 +25,12 @@ const int MANAGER_SIGNAL_TAG = 3;
 /**** Master signals ****/
 // Terminate Manager
 const int TERMINATE_MANAGER_SIGNAL = 0;
-// Terminate process
-const int TERMINATE_PROCESS_SIGNAL = 1;
+// Terminate Worker
+const int TERMINATE_WORKER_SIGNAL = 1;
 
 /**** Manager signals ****/
-// Process is cancelled
-const int PROCESS_CANCELLED_SIGNAL = 0;
+// Worker is cancelled
+const int WORKER_CANCELLED_SIGNAL = 0;
 
 /*** Sampled parameter status ***/
 typedef enum {

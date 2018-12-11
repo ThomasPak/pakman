@@ -96,8 +96,8 @@ void MPIMaster::doNormalStuff()
     // Check for termination of Workers
     if (m_worker_terminated)
     {
-        // Send TERMINATE_PROCESS_SIGNAL to all Managers
-        sendSignalToAllManagers(TERMINATE_PROCESS_SIGNAL);
+        // Send TERMINATE_WORKER_SIGNAL to all Managers
+        sendSignalToAllManagers(TERMINATE_WORKER_SIGNAL);
 
         // Flush all TaskHandler queues
         flushQueues();
@@ -320,7 +320,7 @@ void MPIMaster::discardMessagesAndSignals()
         int manager_rank = probeSignalManager();
 
         // If it a cancellation signal, mark manager as idle
-        if (receiveSignal(manager_rank) == PROCESS_CANCELLED_SIGNAL)
+        if (receiveSignal(manager_rank) == WORKER_CANCELLED_SIGNAL)
             m_idle_managers.insert(manager_rank);
     }
 }
