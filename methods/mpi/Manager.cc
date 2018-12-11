@@ -6,7 +6,8 @@
 
 #include "../common.h"
 #include "mpi_common.h"
-#include "WorkerHandler.h"
+#include "ForkedWorkerHandler.h"
+#include "MPIWorkerHandler.h"
 #include "Manager.h"
 
 #ifndef NDEBUG

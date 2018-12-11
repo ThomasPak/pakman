@@ -8,7 +8,7 @@
 #include <mpi.h>
 
 #include "../common.h"
-#include "WorkerHandler.h"
+#include "AbstractWorkerHandler.h"
 #include "../types.h"
 
 class Manager
