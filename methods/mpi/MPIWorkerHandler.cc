@@ -1,8 +1,6 @@
 #include <string>
 #include <thread>
 
-#include <sys/utsname.h>
-
 #include "../types.h"
 
 #include "mpi_utils.h"
@@ -26,21 +24,8 @@ MPIWorkerHandler::MPIWorkerHandler(
     std::cerr << "Manager " << rank << "/" << size << ": MPI process constructing...\n";
 #endif
 
-    // Create MPI::Info object
-    MPI::Info info = MPI::Info::Create();
-
-    // Ensure process is spawned on same node if force_host_spawn is set
-    if (force_host_spawn)
-    {
-        struct utsname buf;
-        uname(&buf);
-        info.Set("host", buf.nodename);
-    }
-
-    m_child_comm = spawn(m_command, info);
-
-    // Free MPI::Info object
-    info.Free();
+    // Spawn MPI child process
+    m_child_comm = spawn_worker(m_command);
 
     // Write input string to spawned MPI process
     m_child_comm.Send(input_string.c_str(), input_string.size() + 1, MPI::CHAR,

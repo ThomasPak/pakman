@@ -1,11 +1,13 @@
 #include <vector>
 #include <string>
+#include <sys/utsname.h>
 
 #include <mpi.h>
 
 #include "../parse_cmd.h"
 #include "../vector_argv.h"
 #include "../types.h"
+#include "mpi_common.h"
 #include "spawn.h"
 
 #ifndef NDEBUG
@@ -35,4 +37,26 @@ MPI::Intercomm spawn(const cmd_t& cmd, MPI::Info info) {
     std::cerr << "Spawn of " << argv[0] << " complete\n";
 #endif
     return spawn_intercomm;
+}
+
+MPI::Intercomm spawn_worker(const cmd_t& cmd)
+{
+    // Create MPI::Info object
+    MPI::Info info = MPI::Info::Create();
+
+    // Ensure process is spawned on same node if force_host_spawn is set
+    if (force_host_spawn)
+    {
+        struct utsname buf;
+        uname(&buf);
+        info.Set("host", buf.nodename);
+    }
+
+    // Spawn Worker
+    MPI::Intercomm child_comm = spawn(cmd, info);
+
+    // Free MPI::Info object
+    info.Free();
+
+    return child_comm;
 }
