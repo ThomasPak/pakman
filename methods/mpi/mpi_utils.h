@@ -10,6 +10,9 @@ void set_signal_handler();
 void broadcast_raw_input(const std::string& raw_input);
 void receive_raw_input(std::string& raw_input);
 
+std::string receive_string(const MPI::Comm& comm, int source, int tag);
+int receive_integer(const MPI::Comm& comm, int source, int tag);
+
 /*** Templates ***/
 template <class T>
 void Dynamic_Bcast(const MPI::Comm& comm, T*& buffer,
@@ -26,5 +29,6 @@ void Dynamic_Bcast(const MPI::Comm& comm, T*& buffer,
     // Root broadcasts "count" number of elements of datatype
     comm.Bcast(buffer, count, datatype, root);
 }
+
 
 #endif // MPI_UTILS_H

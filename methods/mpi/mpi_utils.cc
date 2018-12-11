@@ -54,3 +54,30 @@ void receive_raw_input(std::string& raw_input) {
     raw_input.assign(buffer);
     delete[] buffer;
 }
+
+std::string receive_string(const MPI::Comm& comm, int source, int tag)
+{
+    // Probe to get status
+    MPI::Status status;
+    comm.Probe(source, tag, status);
+
+    // Receive string
+    int count = status.Get_count(MPI::CHAR);
+    char *buffer = new char[count];
+    comm.Recv(buffer, count, MPI::CHAR, source, tag);
+
+    // Return string
+    std::string message(buffer);
+    delete[] buffer;
+    return message;
+}
+
+int receive_integer(const MPI::Comm& comm, int source, int tag)
+{
+    // Receive integer
+    int integer;
+    comm.Recv(&integer, 1, MPI::INT, source, tag);
+
+    // Return integer
+    return integer;
+}

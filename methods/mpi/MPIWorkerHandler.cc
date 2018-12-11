@@ -5,6 +5,7 @@
 
 #include "../types.h"
 
+#include "mpi_utils.h"
 #include "mpi_common.h"
 #include "spawn.h"
 #include "MPIWorkerHandler.h"
@@ -104,28 +105,10 @@ bool MPIWorkerHandler::isDone()
 
 std::string MPIWorkerHandler::receiveMessage() const
 {
-    // Probe message to get status
-    MPI::Status status;
-    m_child_comm.Probe(WORKER_RANK, WORKER_MSG_TAG, status);
-
-    // Receive message from Worker
-    int count = status.Get_count(MPI::CHAR);
-    char *buffer = new char[count];
-    m_child_comm.Recv(buffer, count, MPI::CHAR, WORKER_RANK, WORKER_MSG_TAG);
-
-    // Return message as string
-    std::string message(buffer);
-    delete[] buffer;
-    return message;
+    return receive_string(m_child_comm, WORKER_RANK, WORKER_MSG_TAG);
 }
 
 int MPIWorkerHandler::receiveErrorCode() const
 {
-    // Receive error code from Worker
-    int error_code;
-    m_child_comm.Recv(&error_code, 1, MPI::INT, WORKER_RANK,
-            WORKER_ERROR_CODE_TAG);
-
-    // Return error code as integer
-    return error_code;
+    return receive_integer(m_child_comm, WORKER_RANK, WORKER_ERROR_CODE_TAG);
 }

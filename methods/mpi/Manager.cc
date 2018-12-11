@@ -6,6 +6,7 @@
 
 #include "../common.h"
 #include "mpi_common.h"
+#include "mpi_utils.h"
 #include "ForkedWorkerHandler.h"
 #include "MPIWorkerHandler.h"
 #include "Manager.h"
@@ -244,23 +245,7 @@ std::string Manager::receiveMessage() const
     // Sanity check: probeMessage must return true
     assert(probeMessage());
 
-    // Probe message to get status
-    MPI::Status status;
-    MPI::COMM_WORLD.Probe(MASTER_RANK, MASTER_MSG_TAG, status);
-
-    // Sanity check on message
-    assert(status.Get_tag() == MASTER_MSG_TAG);
-    assert(status.Get_source() == MASTER_RANK);
-
-    // Receive message from Master
-    int count = status.Get_count(MPI::CHAR);
-    char *buffer = new char[count];
-    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, MASTER_RANK, MASTER_MSG_TAG);
-
-    // Return message as string
-    std::string message(buffer);
-    delete[] buffer;
-    return message;
+    return receive_string(MPI::COMM_WORLD, MASTER_RANK, MASTER_MSG_TAG);
 }
 
 // Receive signal
@@ -269,21 +254,7 @@ int Manager::receiveSignal() const
     // Sanity check: probeSignal must return true
     assert(probeSignal());
 
-    // Probe signal message to get status
-    MPI::Status status;
-    MPI::COMM_WORLD.Probe(MASTER_RANK, MASTER_SIGNAL_TAG, status);
-
-    // Sanity check on signal, which has to be a single integer
-    assert(status.Get_tag() == MASTER_SIGNAL_TAG);
-    assert(status.Get_source() == MASTER_RANK);
-    assert(status.Get_count(MPI::INT) == 1);
-
-    // Receive signal from Master
-    int signal = 0;
-    MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, MASTER_RANK, MASTER_SIGNAL_TAG);
-
-    // Return signal as integer
-    return signal;
+    return receive_integer(MPI::COMM_WORLD, MASTER_RANK, MASTER_SIGNAL_TAG);
 }
 
 // Send message to Master

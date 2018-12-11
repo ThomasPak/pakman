@@ -4,6 +4,7 @@
 #include <cassert>
 #include <mpi.h>
 
+#include "mpi_utils.h"
 #include "mpi_common.h"
 
 #include "MPIMaster.h"
@@ -368,23 +369,7 @@ std::string MPIMaster::receiveMessage(int manager_rank) const
     // Sanity check: probeMessage must return true
     assert(probeMessage());
 
-    // Probe message to get status
-    MPI::Status status;
-    MPI::COMM_WORLD.Probe(manager_rank, MANAGER_MSG_TAG, status);
-
-    // Sanity check on message
-    assert(status.Get_tag() == MANAGER_MSG_TAG);
-    assert(status.Get_source() == manager_rank);
-
-    // Receive message from Manager
-    int count = status.Get_count(MPI::CHAR);
-    char *buffer = new char[count];
-    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, manager_rank, MANAGER_MSG_TAG);
-
-    // Return input as string
-    std::string input_string(buffer);
-    delete[] buffer;
-    return input_string;
+    return receive_string(MPI::COMM_WORLD, manager_rank, MANAGER_MSG_TAG);
 }
 
 // Receive signal from Manager
@@ -393,22 +378,7 @@ int MPIMaster::receiveSignal(int manager_rank) const
     // Sanity check: probeSignal must return true
     assert(probeSignal());
 
-    // Probe signal message to get status
-    MPI::Status status;
-    MPI::COMM_WORLD.Probe(manager_rank, MANAGER_SIGNAL_TAG, status);
-
-    // Sanity check on signal, which has to be a single integer
-    assert(status.Get_tag() == MANAGER_SIGNAL_TAG);
-    assert(status.Get_source() == manager_rank);
-    assert(status.Get_count(MPI::INT) == 1);
-
-    // Receive signal from Manager
-    int signal;
-    MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, manager_rank,
-            MANAGER_SIGNAL_TAG);
-
-    // Return signal as integer
-    return signal;
+    return receive_integer(MPI::COMM_WORLD, manager_rank, MANAGER_SIGNAL_TAG);
 }
 
 // Receive error code from Manager
@@ -417,22 +387,7 @@ int MPIMaster::receiveErrorCode(int manager_rank) const
     // Sanity check: probeErrorCode must return true
     assert(probeErrorCode());
 
-    // Probe signal message to get status
-    MPI::Status status;
-    MPI::COMM_WORLD.Probe(manager_rank, MANAGER_ERROR_CODE_TAG, status);
-
-    // Sanity check on signal, which has to be a single integer
-    assert(status.Get_tag() == MANAGER_ERROR_CODE_TAG);
-    assert(status.Get_source() == manager_rank);
-    assert(status.Get_count(MPI::INT) == 1);
-
-    // Receive error code from Manager
-    int error_code;
-    MPI::COMM_WORLD.Recv(&error_code, 1, MPI::INT, manager_rank,
-            MANAGER_ERROR_CODE_TAG);
-
-    // Return signal as integer
-    return error_code;
+    return receive_integer(MPI::COMM_WORLD, manager_rank, MANAGER_ERROR_CODE_TAG);
 }
 
 // Send message to a Manager
