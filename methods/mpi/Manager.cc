@@ -223,7 +223,7 @@ void Manager::terminateWorker()
 // Probe for message
 bool Manager::probeMessage() const
 {
-    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, INPUT_TAG);
+    return MPI::COMM_WORLD.Iprobe(MASTER_RANK, MASTER_MSG_TAG);
 }
 
 // Probe for signal
@@ -240,16 +240,16 @@ std::string Manager::receiveMessage() const
 
     // Probe message to get status
     MPI::Status status;
-    MPI::COMM_WORLD.Probe(MASTER_RANK, INPUT_TAG, status);
+    MPI::COMM_WORLD.Probe(MASTER_RANK, MASTER_MSG_TAG, status);
 
     // Sanity check on message
-    assert(status.Get_tag() == INPUT_TAG);
+    assert(status.Get_tag() == MASTER_MSG_TAG);
     assert(status.Get_source() == MASTER_RANK);
 
     // Receive message from Master
     int count = status.Get_count(MPI::CHAR);
     char *buffer = new char[count];
-    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, MASTER_RANK, INPUT_TAG);
+    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, MASTER_RANK, MASTER_MSG_TAG);
 
     // Return message as string
     std::string message(buffer);
@@ -292,7 +292,7 @@ void Manager::sendMessageToMaster(const std::string& message_string)
     // Note: Isend is used here to avoid deadlock since the Master and the root
     // Manager are executed by the same process
     m_message_request = MPI::COMM_WORLD.Isend(m_message_buffer.c_str(),
-            m_message_buffer.size() + 1, MPI::CHAR, MASTER_RANK, OUTPUT_TAG);
+            m_message_buffer.size() + 1, MPI::CHAR, MASTER_RANK, MANAGER_MSG_TAG);
 }
 
 // Send signal to Master

@@ -328,7 +328,7 @@ void MPIMaster::discardMessagesAndSignals()
 // Probe for message
 bool MPIMaster::probeMessage() const
 {
-    return MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, OUTPUT_TAG);
+    return MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_MSG_TAG);
 }
 
 // Probe for signal
@@ -341,7 +341,7 @@ bool MPIMaster::probeSignal() const
 int MPIMaster::probeMessageManager() const
 {
     MPI::Status status;
-    MPI::COMM_WORLD.Probe(MPI_ANY_SOURCE, OUTPUT_TAG, status);
+    MPI::COMM_WORLD.Probe(MPI_ANY_SOURCE, MANAGER_MSG_TAG, status);
     return status.Get_source();
 }
 
@@ -361,16 +361,16 @@ std::string MPIMaster::receiveMessage(int manager_rank) const
 
     // Probe message to get status
     MPI::Status status;
-    MPI::COMM_WORLD.Probe(manager_rank, OUTPUT_TAG, status);
+    MPI::COMM_WORLD.Probe(manager_rank, MANAGER_MSG_TAG, status);
 
     // Sanity check on message
-    assert(status.Get_tag() == OUTPUT_TAG);
+    assert(status.Get_tag() == MANAGER_MSG_TAG);
     assert(status.Get_source() == manager_rank);
 
     // Receive message from Manager
     int count = status.Get_count(MPI::CHAR);
     char *buffer = new char[count];
-    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, manager_rank, OUTPUT_TAG);
+    MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, manager_rank, MANAGER_MSG_TAG);
 
     // Return input as string
     std::string input_string(buffer);
@@ -425,7 +425,7 @@ void MPIMaster::sendMessageToManager(int manager_rank,
     m_message_requests[manager_rank] = MPI::COMM_WORLD.Isend(
             m_message_buffers[manager_rank].c_str(),
             m_message_buffers[manager_rank].size() + 1,
-            MPI::CHAR, manager_rank, INPUT_TAG);
+            MPI::CHAR, manager_rank, MASTER_MSG_TAG);
 }
 
 // Send signal to all Managers

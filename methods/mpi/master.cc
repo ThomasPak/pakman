@@ -32,13 +32,13 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
 
     // While there are any incoming output messages
     MPI::Status status;
-    while (MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, OUTPUT_TAG, status)) {
+    while (MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_MSG_TAG, status)) {
 
         // Receive output message
         int count = status.Get_count(MPI::CHAR);
         int manager = status.Get_source();
         char *buffer = new char[count];
-        MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, manager, OUTPUT_TAG);
+        MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, manager, MANAGER_MSG_TAG);
 
 #ifndef NDEBUG
         const int rank = MPI::COMM_WORLD.Get_rank();
@@ -132,7 +132,7 @@ void delegate_managers(const AbstractSampler& sampler_obj,
         // Send input message to manager
         MPI::COMM_WORLD.Isend(input_str.c_str(),
                               input_str.size() + 1,
-                              MPI::CHAR, *it, INPUT_TAG);
+                              MPI::CHAR, *it, MASTER_MSG_TAG);
 
 #ifndef NDEBUG
         const int rank = MPI::COMM_WORLD.Get_rank();

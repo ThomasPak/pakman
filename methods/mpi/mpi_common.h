@@ -17,9 +17,9 @@ extern bool tolerate_errors;
 const int MASTER_RANK = 0;
 
 /**** Tags ****/
-const int INPUT_TAG = 0;
+const int MASTER_MSG_TAG = 0;
 const int MASTER_SIGNAL_TAG = 1;
-const int OUTPUT_TAG = 2;
+const int MANAGER_MSG_TAG = 2;
 const int MANAGER_SIGNAL_TAG = 3;
 
 /**** Master signals ****/
