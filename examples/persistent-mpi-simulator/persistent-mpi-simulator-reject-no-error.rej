@@ -1,0 +1,11 @@
+# Epsilon
+0
+
+# Simulator
+./persistent-mpi-simulator 0 0
+
+# Parameter names
+p
+
+# Prior sampler
+echo 1
