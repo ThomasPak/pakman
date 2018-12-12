@@ -12,11 +12,11 @@
 #define PAKMAN_O_INITIALIZE_MPI 0b010
 #define PAKMAN_O_FINALIZE_MPI   0b100
 
-#define PAKMAN_ROOT                 0
-#define PAKMAN_MANAGER_MSG_TAG      2
-#define PAKMAN_MANAGER_SIGNAL_TAG   3
-#define PAKMAN_WORKER_MSG_TAG       5
-#define PAKMAN_WORKER_ERROR_CODE_TAG   6
+#define PAKMAN_ROOT                     0
+#define PAKMAN_MANAGER_MSG_TAG          2
+#define PAKMAN_MANAGER_SIGNAL_TAG       3
+#define PAKMAN_WORKER_MSG_TAG           5
+#define PAKMAN_WORKER_ERROR_CODE_TAG    6
 
 #define PAKMAN_TERMINATE_WORKER_SIGNAL  0
 
@@ -153,6 +153,10 @@ int pakman_run_mpi_worker(
                 switch (signal)
                 {
                     case PAKMAN_TERMINATE_WORKER_SIGNAL:
+#ifndef NDEBUG
+                        fputs("DEBUG: Pakman Worker: received "
+                                "PAKMAN_TERMINATE_WORKER_SIGNAL\n", stderr);
+#endif
                         /* Set loop condition to false */
                         continue_loop = 0;
                         break;
