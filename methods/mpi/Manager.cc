@@ -81,6 +81,14 @@ void Manager::doIdleStuff()
         switch (receiveSignal())
         {
             case TERMINATE_MANAGER_SIGNAL:
+#ifndef NDEBUG
+                {
+                const int rank = MPI::COMM_WORLD.Get_rank();
+                const int size = MPI::COMM_WORLD.Get_size();
+                std::cerr << "Idle manager " << rank << "/" << size <<
+                    ": received TERMINATE_MANAGER_SIGNAL!\n";
+                }
+#endif
                 // Terminate Manager
                 m_state = terminated;
                 return;
@@ -89,6 +97,14 @@ void Manager::doIdleStuff()
             // has not yet checked for the Manager's message.  In this case,
             // nothing needs to be done
             case FLUSH_WORKER_SIGNAL:
+#ifndef NDEBUG
+                {
+                const int rank = MPI::COMM_WORLD.Get_rank();
+                const int size = MPI::COMM_WORLD.Get_size();
+                std::cerr << "Idle manager " << rank << "/" << size <<
+                    ": received FLUSH_WORKER_SIGNAL!\n";
+                }
+#endif
                 return;
 
             // TERMINATE_MANAGER_SIGNAL and FLUSH_WORKER_SIGNAL are the
@@ -101,6 +117,14 @@ void Manager::doIdleStuff()
     // Check for message
     if (probeMessage())
     {
+#ifndef NDEBUG
+    {
+    const int rank = MPI::COMM_WORLD.Get_rank();
+    const int size = MPI::COMM_WORLD.Get_size();
+    std::cerr << "Idle manager " << rank << "/" << size <<
+        ": received message!\n";
+    }
+#endif
         // Receive input string and create new Worker
         std::string input_string = receiveMessage();
         createWorker(input_string);
@@ -134,6 +158,14 @@ void Manager::doBusyStuff()
         switch (receiveSignal())
         {
             case TERMINATE_MANAGER_SIGNAL:
+#ifndef NDEBUG
+                {
+                const int rank = MPI::COMM_WORLD.Get_rank();
+                const int size = MPI::COMM_WORLD.Get_size();
+                std::cerr << "Busy manager " << rank << "/" << size <<
+                    ": received TERMINATE_MANAGER_SIGNAL\n";
+                }
+#endif
                 // Terminate Worker
                 terminateWorker();
 
@@ -143,7 +175,12 @@ void Manager::doBusyStuff()
 
             case FLUSH_WORKER_SIGNAL:
 #ifndef NDEBUG
-                std::cerr << "Manager: sending WORKER_FLUSHED_SIGNAL to Master\n";
+                {
+                const int rank = MPI::COMM_WORLD.Get_rank();
+                const int size = MPI::COMM_WORLD.Get_size();
+                std::cerr << "Busy manager " << rank << "/" << size <<
+                    ": received FLUSH_WORKER_SIGNAL\n";
+                }
 #endif
                 // Flush Worker
                 flushWorker();
@@ -165,6 +202,14 @@ void Manager::doBusyStuff()
     // Check if Worker has finished
     if (m_p_worker_handler->isDone())
     {
+#ifndef NDEBUG
+    {
+    const int rank = MPI::COMM_WORLD.Get_rank();
+    const int size = MPI::COMM_WORLD.Get_size();
+    std::cerr << "Busy manager " << rank << "/" << size <<
+        ": Worker is done!\n";
+    }
+#endif
         // Get output string
         std::string output_string = m_p_worker_handler->getOutput();
 
@@ -239,6 +284,11 @@ void Manager::createWorker(const std::string& input_string)
 // Flush Worker
 void Manager::flushWorker()
 {
+#ifndef NDEBUG
+    const int rank = MPI::COMM_WORLD.Get_rank();
+    const int size = MPI::COMM_WORLD.Get_size();
+    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::flushWorker\n";
+#endif
     // Sanity check: This function should not be called when
     // m_p_worker_handler is the null pointer
     assert(m_p_worker_handler);
@@ -246,11 +296,19 @@ void Manager::flushWorker()
     // Reset m_p_worker_handler to null pointer,
     // this flushes the worker
     m_p_worker_handler.reset();
+#ifndef NDEBUG
+    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::flushWorker\n";
+#endif
 }
 
 // Terminate Worker
 void Manager::terminateWorker()
 {
+#ifndef NDEBUG
+    const int rank = MPI::COMM_WORLD.Get_rank();
+    const int size = MPI::COMM_WORLD.Get_size();
+    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::terminateWorker\n";
+#endif
     // Sanity check: This function should not be called when
     // m_p_worker_handler is the null pointer
     assert(m_p_worker_handler);
@@ -260,6 +318,9 @@ void Manager::terminateWorker()
 
     // Reset m_p_worker_handler to null pointer
     m_p_worker_handler.reset();
+#ifndef NDEBUG
+    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::terminateWorker\n";
+#endif
 }
 
 // Probe for message
@@ -295,6 +356,11 @@ int Manager::receiveSignal() const
 // Send message to Master
 void Manager::sendMessageToMaster(const std::string& message_string)
 {
+#ifndef NDEBUG
+    const int rank = MPI::COMM_WORLD.Get_rank();
+    const int size = MPI::COMM_WORLD.Get_size();
+    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::sendMessageToMaster\n";
+#endif
     // Ensure previous message has finished sending
     m_message_request.Wait();
 
@@ -305,11 +371,19 @@ void Manager::sendMessageToMaster(const std::string& message_string)
     // Manager are executed by the same process
     m_message_request = MPI::COMM_WORLD.Isend(m_message_buffer.c_str(),
             m_message_buffer.size() + 1, MPI::CHAR, MASTER_RANK, MANAGER_MSG_TAG);
+#ifndef NDEBUG
+    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::sendMessageToMaster\n";
+#endif
 }
 
 // Send signal to Master
 void Manager::sendSignalToMaster(int signal)
 {
+#ifndef NDEBUG
+    const int rank = MPI::COMM_WORLD.Get_rank();
+    const int size = MPI::COMM_WORLD.Get_size();
+    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::sendSignalToMaster\n";
+#endif
     // Ensure previous signal has finished sending
     m_signal_request.Wait();
 
@@ -320,11 +394,19 @@ void Manager::sendSignalToMaster(int signal)
     // Manager are executed by the same process
     m_signal_request = MPI::COMM_WORLD.Isend(&m_signal_buffer, 1, MPI::INT,
             MASTER_RANK, MANAGER_SIGNAL_TAG);
+#ifndef NDEBUG
+    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::sendSignalToMaster\n";
+#endif
 }
 
 // Send error code to Master
 void Manager::sendErrorCodeToMaster(int error_code)
 {
+#ifndef NDEBUG
+    const int rank = MPI::COMM_WORLD.Get_rank();
+    const int size = MPI::COMM_WORLD.Get_size();
+    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::sendErrorCodeToMaster\n";
+#endif
     // Ensure previous error code has finished sending
     m_error_code_request.Wait();
 
@@ -335,4 +417,7 @@ void Manager::sendErrorCodeToMaster(int error_code)
     // Manager are executed by the same process
     m_error_code_request = MPI::COMM_WORLD.Isend(&m_error_code_buffer, 1, MPI::INT,
             MASTER_RANK, MANAGER_ERROR_CODE_TAG);
+#ifndef NDEBUG
+    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::sendErrorCodeToMaster\n";
+#endif
 }

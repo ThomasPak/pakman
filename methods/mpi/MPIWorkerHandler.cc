@@ -42,7 +42,13 @@ MPIWorkerHandler::~MPIWorkerHandler()
     terminate();
 
     // Free communicator
+#ifndef NDEBUG
+    std::cerr << "Manager " << rank << "/" << size << ": disconnecting child communicator...\n";
+#endif
     m_child_comm.Disconnect();
+#ifndef NDEBUG
+    std::cerr << "Manager " << rank << "/" << size << ": child communicator disconnected!\n";
+#endif
 }
 
 void MPIWorkerHandler::terminate()
@@ -66,6 +72,9 @@ void MPIWorkerHandler::terminate()
         // Set flag
         m_result_received = true;
     }
+#ifndef NDEBUG
+    std::cerr << "Manager " << rank << "/" << size << ": MPI simulation terminated!\n";
+#endif
 }
 
 bool MPIWorkerHandler::isDone()

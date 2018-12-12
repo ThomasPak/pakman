@@ -71,6 +71,9 @@ bool MPIMaster::needMorePendingTasks() const
 // Do normal stuff
 void MPIMaster::doNormalStuff()
 {
+#ifndef NDEBUG
+    std::cerr << "MPIMaster::doNormalStuff: entered\n";
+#endif
     // This function should never be called if the Master has
     // terminated
     assert(m_state != terminated);
@@ -97,6 +100,9 @@ void MPIMaster::doNormalStuff()
     // Check for flushing of Workers
     if (m_worker_flushed)
     {
+#ifndef NDEBUG
+        std::cerr << "MPIMaster::doNormalStuff: Flushing workers!\n";
+#endif
         // Send FLUSH_WORKER_SIGNAL to all Managers
         sendSignalToAllManagers(FLUSH_WORKER_SIGNAL);
 
@@ -124,11 +130,17 @@ void MPIMaster::doNormalStuff()
 
     // Delegate tasks to Managers
     delegateToManagers();
+#ifndef NDEBUG
+    std::cerr << "MPIMaster::doNormalStuff: exiting\n";
+#endif
 }
 
 // Do flushing stuff
 void MPIMaster::doFlushingStuff()
 {
+#ifndef NDEBUG
+    std::cerr << "MPIMaster::doFlushingStuff: entered\n";
+#endif
     // This function should never be called if the Master has
     // terminated
     assert(m_state != terminated);
@@ -158,9 +170,19 @@ void MPIMaster::doFlushingStuff()
     // If all Managers are idle, transition to normal state
     if (m_idle_managers.size() == m_comm_size)
     {
+#ifndef NDEBUG
+        std::cerr << "MPIMaster::doFlushingStuff: transition to normal state!\n";
+        std::cerr << "Idle managers:\n";
+        for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+            std::cerr << *it << std::endl;
+        std::cerr << "-- END --\n";
+#endif
         m_state = normal;
         return;
     }
+#ifndef NDEBUG
+    std::cerr << "MPIMaster::doFlushingStuff: exiting\n";
+#endif
 }
 
 // Push pending task
@@ -202,9 +224,15 @@ void MPIMaster::terminate()
 // Listen to messages from Managers.
 void MPIMaster::listenToManagers()
 {
+#ifndef NDEBUG
+    std::cerr << "MPIMaster::listenToManagers: entered\n";
+#endif
     // While there are any incoming messages
     while (probeMessage())
     {
+#ifndef NDEBUG
+        std::cerr << "MPIMaster::listenToManagers: receiving message!\n";
+#endif
         // Probe manager
         int manager_rank = probeMessageManager();
 
@@ -259,6 +287,13 @@ void MPIMaster::popBusyQueue()
 // Delegate to Managers
 void MPIMaster::delegateToManagers()
 {
+#ifndef NDEBUG
+    std::cerr << "MPIMaster::delegateToManagers: entered!\n";
+    std::cerr << "Idle managers:\n";
+    for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+        std::cerr << *it << std::endl;
+    std::cerr << "-- END --\n";
+#endif
     // While there are idle managers
     auto it = m_idle_managers.begin();
     for (; (it != m_idle_managers.end()) && !m_pending_tasks.empty(); it++)
@@ -292,6 +327,13 @@ void MPIMaster::delegateToManagers()
 
     // Mark Managers as busy
     m_idle_managers.erase(m_idle_managers.begin(), it);
+#ifndef NDEBUG
+    std::cerr << "MPIMaster::delegateToManagers: exiting\n";
+    std::cerr << "Idle managers:\n";
+    for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+        std::cerr << *it << std::endl;
+    std::cerr << "-- END --\n";
+#endif
 }
 
 // Flush all task queues (finished, busy, pending)
@@ -305,6 +347,9 @@ void MPIMaster::flushQueues()
 // Discard any messages and signals until all Managers are idle
 void MPIMaster::discardMessagesAndSignals()
 {
+#ifndef NDEBUG
+    std::cerr << "MPIMaster::discardMessagesAndSignals: entered!\n";
+#endif
     // While there are any incoming messages
     while (probeMessage())
     {
