@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cassert>
 
 #include "write_parameters.h"
 #include "types.h"
@@ -54,6 +55,12 @@ void SweepController::iterate()
     {
         // Increment counter
         m_num_finished++;
+
+        // Get reference to front finished task
+        AbstractMaster::TaskHandler& task = m_p_master->frontFinishedTask();
+
+        // Do not accept any errors for now
+        assert(!task.didErrorOccur());
 
         // Pop finished parameters
         m_p_master->popFinishedTask();
