@@ -18,6 +18,7 @@
 #include "MPIMaster.h"
 #include "../ABCSMCController.h"
 #include "Manager.h"
+#include "PersistentMPIWorkerHandler.h"
 
 static const char *program_name;
 
@@ -222,6 +223,9 @@ int main(int argc, char *argv[])
             std::this_thread::sleep_for(MAIN_TIMEOUT);
         }
     }
+
+    // Terminate any remaining persistent Workers
+    PersistentMPIWorkerHandler::terminatePersistent();
 
     // Finalize
     MPI::Finalize();

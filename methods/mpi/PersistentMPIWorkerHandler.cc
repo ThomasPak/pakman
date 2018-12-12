@@ -95,3 +95,21 @@ void PersistentMPIWorkerHandler::discardResults()
         m_result_received = true;
     }
 }
+
+void PersistentMPIWorkerHandler::terminatePersistent()
+{
+    // If this function is called, the persistent Worker must be in an idle
+    // state, so it is not necessary to discard results from Worker.
+
+    // If m_child_comm is the null communicator, the persistent Worker has
+    // already been terminated, so nothing needs to be done.
+    if (m_child_comm == MPI::COMM_NULL)
+        return;
+
+    // Else, send termination signal to persistent Worker
+    int signal = TERMINATE_WORKER_SIGNAL;
+    m_child_comm.Send(&signal, 1, MPI::INT, WORKER_RANK, MANAGER_SIGNAL_TAG);
+
+    // Free communicator
+    m_child_comm.Disconnect();
+}

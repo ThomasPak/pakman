@@ -48,6 +48,13 @@ class PersistentMPIWorkerHandler : public AbstractWorkerHandler
         // ready.
         virtual bool isDone() override;
 
+        // Static termination function to terminate any Workers that were in an
+        // idle state when their Manager terminated.  Since the Managers only
+        // call terminate() on busy Workers, any remaining idle persistent
+        // Workers stall the termination of the entire program so they need to
+        // be explicitly terminated.
+        static void terminatePersistent();
+
     private:
 
         // Receive message from Worker
