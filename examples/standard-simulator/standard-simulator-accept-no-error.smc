@@ -11,10 +11,10 @@ p
 echo 1
 
 # Perturber
-echo 1
+bash -c 'cat >/dev/null; echo 1'
 
 # Prior pdf
-echo 1
+bash -c 'cat >/dev/null; echo 1'
 
 # Perturbation pdf
 bash -c 'read t; \
