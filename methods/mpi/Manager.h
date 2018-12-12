@@ -50,6 +50,9 @@ class Manager
         // Terminate Worker
         void terminateWorker();
 
+        // Flush Worker
+        void flushWorker();
+
         // Probe for message
         bool probeMessage() const;
 

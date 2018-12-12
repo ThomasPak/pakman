@@ -115,8 +115,8 @@ class MPIMaster : public AbstractMaster
         // Flag for terminating Master and Managers
         bool m_master_manager_terminated = false;
 
-        // Flag for terminating Workers
-        bool m_worker_terminated = false;
+        // Flag for flushing Workers
+        bool m_worker_flushed = false;
 
         // Set of idle managers
         std::set<int> m_idle_managers;

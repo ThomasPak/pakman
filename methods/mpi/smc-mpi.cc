@@ -14,6 +14,7 @@
 #include "../read_input.h"
 #include "mpi_utils.h"
 #include "mpi_common.h"
+#include "main_utils.h"
 #include "MPIMaster.h"
 #include "../ABCSMCController.h"
 #include "Manager.h"
@@ -24,6 +25,7 @@ std::chrono::milliseconds MAIN_TIMEOUT(1);
 std::chrono::milliseconds KILL_TIMEOUT(100);
 
 bool mpi_simulator = false;
+bool persistent_simulator = false;
 bool force_host_spawn = false;
 bool tolerate_rejections = true;
 bool tolerate_errors = false;
@@ -55,6 +57,7 @@ void usage(int status)
 "  -k, --kill-timeout=TIME      wait for TIME ms before sending SIGKILL\n"
 "                               (default 100)\n"
 "  -o, --tolerate-errors        tolerate error result from simulator\n"
+"  -p, --persistent             simulator is persistent\n"
 "  -m, --mpi-simulation         simulator is spawned using MPI\n"
 "  -f, --force-host-spawn       force simulator to spawn on same host\n"
 "                               as manager (needs -m option)\n";
@@ -66,6 +69,7 @@ static struct option const long_options[] =
 {
     {"main-timeout", required_argument, nullptr, 't'},
     {"kill-timeout", required_argument, nullptr, 'k'},
+    {"persistent", no_argument, nullptr, 'p'},
     {"mpi-simulation", no_argument, nullptr, 'm'},
     {"tolerate-errors", no_argument, nullptr, 'o'},
     {"force-host-spawn", no_argument, nullptr, 'f'},
@@ -86,7 +90,7 @@ int main(int argc, char *argv[])
 
     // Process optional arguments
     int c;
-    while ((c = getopt_long(argc, argv, "hk:t:omf", long_options, nullptr)) != -1)
+    while ((c = getopt_long(argc, argv, "hk:t:opmf", long_options, nullptr)) != -1)
     {
         switch (c)
         {
@@ -101,6 +105,9 @@ int main(int argc, char *argv[])
                 break;
             case 'o':
                 tolerate_errors = true;
+                break;
+            case 'p':
+                persistent_simulator = true;
                 break;
             case 'f':
                 force_host_spawn = true;
@@ -167,9 +174,12 @@ int main(int argc, char *argv[])
     // Set signal handler
     set_signal_handler();
 
+    // Determine Worker type
+    worker_t worker_type = determine_worker_type(mpi_simulator,
+            persistent_simulator);
+
     // Create Manager object
-    Manager manager_obj(input_obj.simulator,
-            mpi_simulator ? mpi_worker : forked_worker, &program_terminated);
+    Manager manager_obj(input_obj.simulator, worker_type, &program_terminated);
 
     if (rank == 0)
     {

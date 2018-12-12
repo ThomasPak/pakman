@@ -9,7 +9,6 @@ extern std::chrono::milliseconds KILL_TIMEOUT;
 
 extern bool program_terminated;
 
-extern bool mpi_simulator;
 extern bool force_host_spawn;
 extern bool tolerate_rejections;
 extern bool tolerate_errors;
@@ -29,12 +28,16 @@ const int WORKER_ERROR_CODE_TAG = 6;
 /**** Master signals ****/
 // Terminate Manager
 const int TERMINATE_MANAGER_SIGNAL = 0;
-// Terminate Worker
-const int TERMINATE_WORKER_SIGNAL = 1;
+// Flush Worker
+const int FLUSH_WORKER_SIGNAL = 1;
 
 /**** Manager signals ****/
 // Worker is cancelled
-const int WORKER_CANCELLED_SIGNAL = 0;
+const int WORKER_FLUSHED_SIGNAL = 0;
+
+/**** Manager to Worker signals ****/
+// Terminate worker
+const int TERMINATE_WORKER_SIGNAL = 0;
 
 /*** Sampled parameter status ***/
 typedef enum {

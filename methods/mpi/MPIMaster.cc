@@ -94,17 +94,17 @@ void MPIMaster::doNormalStuff()
         return;
     }
 
-    // Check for termination of Workers
-    if (m_worker_terminated)
+    // Check for flushing of Workers
+    if (m_worker_flushed)
     {
-        // Send TERMINATE_WORKER_SIGNAL to all Managers
-        sendSignalToAllManagers(TERMINATE_WORKER_SIGNAL);
+        // Send FLUSH_WORKER_SIGNAL to all Managers
+        sendSignalToAllManagers(FLUSH_WORKER_SIGNAL);
 
         // Flush all TaskHandler queues
         flushQueues();
 
         // Reset flag
-        m_worker_terminated = false;
+        m_worker_flushed = false;
 
         // Switch to flushing state
         m_state = flushing;
@@ -190,7 +190,7 @@ void MPIMaster::popFinishedTask()
 // Flush finished, busy and pending tasks
 void MPIMaster::flush()
 {
-    m_worker_terminated = true;
+    m_worker_flushed = true;
 }
 
 // Terminate Master
@@ -325,7 +325,7 @@ void MPIMaster::discardMessagesAndSignals()
         int manager_rank = probeSignalManager();
 
         // If it a cancellation signal, mark manager as idle
-        if (receiveSignal(manager_rank) == WORKER_CANCELLED_SIGNAL)
+        if (receiveSignal(manager_rank) == WORKER_FLUSHED_SIGNAL)
             m_idle_managers.insert(manager_rank);
     }
 }

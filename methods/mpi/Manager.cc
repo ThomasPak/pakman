@@ -9,6 +9,7 @@
 #include "mpi_utils.h"
 #include "ForkedWorkerHandler.h"
 #include "MPIWorkerHandler.h"
+#include "PersistentMPIWorkerHandler.h"
 #include "Manager.h"
 
 #ifndef NDEBUG
@@ -84,13 +85,13 @@ void Manager::doIdleStuff()
                 m_state = terminated;
                 return;
 
-            // An idle Manager can receive TERMINATE_WORKER_SIGNAL when the
-            // Master has not yet checked for the Manager's message.
-            // In this case, nothing needs to be done
-            case TERMINATE_WORKER_SIGNAL:
+            // An idle Manager can receive FLUSH_WORKER_SIGNAL when the Master
+            // has not yet checked for the Manager's message.  In this case,
+            // nothing needs to be done
+            case FLUSH_WORKER_SIGNAL:
                 return;
 
-            // TERMINATE_MANAGER_SIGNAL and TERMINATE_WORKER_SIGNAL are the
+            // TERMINATE_MANAGER_SIGNAL and FLUSH_WORKER_SIGNAL are the
             // only valid Master signals
             default:
                 throw;
@@ -140,21 +141,21 @@ void Manager::doBusyStuff()
                 m_state = terminated;
                 return;
 
-            case TERMINATE_WORKER_SIGNAL:
+            case FLUSH_WORKER_SIGNAL:
 #ifndef NDEBUG
-                std::cerr << "Manager: sending WORKER_CANCELLED_SIGNAL to Master\n";
+                std::cerr << "Manager: sending WORKER_FLUSHED_SIGNAL to Master\n";
 #endif
-                // Terminate Worker
-                terminateWorker();
+                // Flush Worker
+                flushWorker();
 
-                // Send WORKER_CANCELLED_SIGNAL result
-                sendSignalToMaster(WORKER_CANCELLED_SIGNAL);
+                // Send WORKER_FLUSHED_SIGNAL result
+                sendSignalToMaster(WORKER_FLUSHED_SIGNAL);
 
                 // Switch to idle state
                 m_state = idle;
                 return;
 
-            // TERMINATE_MANAGER_SIGNAL and TERMINATE_WORKER_SIGNAL are the
+            // TERMINATE_MANAGER_SIGNAL and FLUSH_WORKER_SIGNAL are the
             // only valid Master signals
             default:
                 throw;
@@ -176,8 +177,8 @@ void Manager::doBusyStuff()
         // Send error code to master
         sendErrorCodeToMaster(error_code);
 
-        // Terminate Worker handler
-        terminateWorker();
+        // Flush Worker
+        flushWorker();
 
         // Switch to idle state
         m_state = idle;
@@ -204,6 +205,15 @@ void Manager::createWorker(const std::string& input_string)
                         new ForkedWorkerHandler(m_command, input_string));
             break;
 
+        // Fork persistent Worker
+        case persistent_forked_worker:
+            {
+            std::runtime_error e("persistent forked Worker type not yet "
+                    "implemented\n");
+            throw e;
+            }
+            break;
+
         // Spawn MPI Worker
         case mpi_worker:
             m_p_worker_handler =
@@ -211,9 +221,31 @@ void Manager::createWorker(const std::string& input_string)
                         new MPIWorkerHandler(m_command, input_string));
             break;
 
+        // Spawn persistent MPI Worker
+        case persistent_mpi_worker:
+            m_p_worker_handler =
+                std::unique_ptr<PersistentMPIWorkerHandler>(
+                        new PersistentMPIWorkerHandler(m_command, input_string));
+            break;
+
         default:
-            throw;
+            {
+            std::runtime_error e("Worker type not recognised");
+            throw e;
+            }
     }
+}
+
+// Flush Worker
+void Manager::flushWorker()
+{
+    // Sanity check: This function should not be called when
+    // m_p_worker_handler is the null pointer
+    assert(m_p_worker_handler);
+
+    // Reset m_p_worker_handler to null pointer,
+    // this flushes the worker
+    m_p_worker_handler.reset();
 }
 
 // Terminate Worker
@@ -222,6 +254,9 @@ void Manager::terminateWorker()
     // Sanity check: This function should not be called when
     // m_p_worker_handler is the null pointer
     assert(m_p_worker_handler);
+
+    // Call terminate on Worker handler
+    m_p_worker_handler->terminate();
 
     // Reset m_p_worker_handler to null pointer
     m_p_worker_handler.reset();
