@@ -164,8 +164,8 @@ void MPIMaster::doFlushingStuff()
         return;
     }
 
-    // Discard message and signals
-    discardMessagesAndSignals();
+    // Discard messages, error codes and signals
+    discardMessagesErrorCodesAndSignals();
 
     // If all Managers are idle, transition to normal state
     if (m_idle_managers.size() == m_comm_size)
@@ -345,7 +345,7 @@ void MPIMaster::flushQueues()
 }
 
 // Discard any messages and signals until all Managers are idle
-void MPIMaster::discardMessagesAndSignals()
+void MPIMaster::discardMessagesErrorCodesAndSignals()
 {
 #ifndef NDEBUG
     std::cerr << "MPIMaster::discardMessagesAndSignals: entered!\n";
@@ -358,6 +358,9 @@ void MPIMaster::discardMessagesAndSignals()
 
         // Receive and discard message
         receiveMessage(manager_rank);
+
+        // Receive and discard error code
+        receiveErrorCode(manager_rank);
 
         // Mark manager as idle
         m_idle_managers.insert(manager_rank);

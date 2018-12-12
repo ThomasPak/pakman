@@ -71,8 +71,9 @@ class MPIMaster : public AbstractMaster
         // Flush all task queues (finished, busy, pending)
         void flushQueues();
 
-        // Discard any messages and signals until all Managers are idle
-        void discardMessagesAndSignals();
+        // Discard any messages, error codes and signals until all Managers are
+        // idle
+        void discardMessagesErrorCodesAndSignals();
 
         // Probe for message
         bool probeMessage() const;
