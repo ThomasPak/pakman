@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <iostream>
+#include <stdexcept>
 #include <cassert>
 
 #include "common.h"
@@ -10,10 +12,6 @@
 #include "smc_weight.h"
 
 #include "ABCSMCController.h"
-
-#ifndef NDEBUG
-#include <iostream>
-#endif
 
 // Constructor
 ABCSMCController::ABCSMCController(const smc::input_t &input_obj,
@@ -48,7 +46,11 @@ void ABCSMCController::iterate()
         AbstractMaster::TaskHandler& task = m_p_master->frontFinishedTask();
 
         // Do not accept any errors for now
-        assert(!task.didErrorOccur());
+        if (task.didErrorOccur())
+        {
+            std::runtime_error e("Task finished with error!");
+            throw e;
+        }
 
         // Check if parameter was accepted
         if (simulation_result(task.getOutputString()) == ACCEPT)

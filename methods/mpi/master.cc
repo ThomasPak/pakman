@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 #include <cassert>
 #include <string>
@@ -22,10 +23,6 @@
 #include "mpi_utils.h"
 #include "mpi_common.h"
 #include "ParameterHandler.h"
-
-#ifndef NDEBUG
-#include <iostream>
-#endif
 
 void check_managers(const std::vector<ParameterHandler*>& manager_map,
                     std::set<int>& idle_managers) {

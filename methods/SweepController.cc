@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <stdexcept>
 #include <cassert>
 
 #include "write_parameters.h"
@@ -60,7 +61,11 @@ void SweepController::iterate()
         AbstractMaster::TaskHandler& task = m_p_master->frontFinishedTask();
 
         // Do not accept any errors for now
-        assert(!task.didErrorOccur());
+        if (task.didErrorOccur())
+        {
+            std::runtime_error e("Task finished with error!");
+            throw e;
+        }
 
         // Pop finished parameters
         m_p_master->popFinishedTask();
