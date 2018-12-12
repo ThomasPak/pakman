@@ -14,6 +14,7 @@
 /samplers/normal
 /densities/uniform_pdf
 /densities/normal_pdf
+/examples/standard-simulator/standard-simulator
 /examples/biased-coin-flip/binomial-sampler
 /examples/biased-coin-flip/uniform-sampler
 /examples/epithelial-cell-growth/VertexBasedMonolayerSimulator
