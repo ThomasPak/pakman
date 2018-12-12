@@ -342,11 +342,6 @@ bool MPIMaster::probeSignal() const
     return MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG);
 }
 
-// Probe for error code
-bool MPIMaster::probeErrorCode() const
-{
-    return MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_ERROR_CODE_TAG);
-}
 // Probe for Manager rank of incoming message
 int MPIMaster::probeMessageManager() const
 {
@@ -384,9 +379,6 @@ int MPIMaster::receiveSignal(int manager_rank) const
 // Receive error code from Manager
 int MPIMaster::receiveErrorCode(int manager_rank) const
 {
-    // Sanity check: probeErrorCode must return true
-    assert(probeErrorCode());
-
     return receive_integer(MPI::COMM_WORLD, manager_rank, MANAGER_ERROR_CODE_TAG);
 }
 

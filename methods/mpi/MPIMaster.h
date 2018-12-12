@@ -80,9 +80,6 @@ class MPIMaster : public AbstractMaster
         // Probe for signal
         bool probeSignal() const;
 
-        // Probe for error code
-        bool probeErrorCode() const;
-
         // Probe for Manager rank of incoming message
         int probeMessageManager() const;
 
