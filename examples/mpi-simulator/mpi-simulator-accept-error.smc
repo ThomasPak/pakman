@@ -1,0 +1,22 @@
+# Epsilon
+2,1,0
+
+# Simulator
+./mpi-simulator 1 1
+
+# Parameter names
+p
+
+# Prior sampler
+echo 1
+
+# Perturber
+echo 1
+
+# Prior pdf
+echo 1
+
+# Perturbation pdf
+bash -c 'read t; \
+         read new_p; \
+         cat'
