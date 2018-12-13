@@ -2,6 +2,8 @@
 #include <thread>
 #include <stdexcept>
 #include <signal.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
 #include "../types.h"
 #include "../system_call.h"
