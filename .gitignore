@@ -17,8 +17,8 @@
 /examples/standard-simulator/standard-simulator
 /examples/mpi-simulator/mpi-simulator
 /examples/persistent-mpi-simulator/persistent-mpi-simulator
-/examples/biased-coin-flip/binomial-sampler
-/examples/biased-coin-flip/uniform-sampler
+/examples/biased-coin-flip/biased-coin-flip.out
+/examples/biased-coin-flip/histogram.png
 /examples/epithelial-cell-growth/VertexBasedMonolayerSimulator
 /examples/epithelial-cell-growth/uniform-sampler
 /examples/epithelial-cell-growth/normal-pdf
