@@ -29,7 +29,9 @@ void pakman_send_message(MPI_Comm comm, const char *message);
 void pakman_send_error_code(MPI_Comm comm, int error_code);
 
 int pakman_run_mpi_worker(
-        int (*simulator)(const char *input_string, char **p_output_string),
+        int argc, char *argv[],
+        int (*simulator)(int argc, char *argv[],
+            const char *input_string, char **p_output_string),
         int flags);
 
 MPI_Comm pakman_get_parent_comm()
@@ -97,7 +99,9 @@ void pakman_send_error_code(MPI_Comm comm, int error_code)
 }
 
 int pakman_run_mpi_worker(
-        int (*simulator)(const char *input_string, char **p_output_string),
+        int argc, char *argv[],
+        int (*simulator)(int argc, char *argv[],
+            const char *input_string, char **p_output_string),
         int flags)
 {
     /* Initialize MPI if flag is set */
@@ -131,7 +135,8 @@ int pakman_run_mpi_worker(
 
                 /* Run simulation */
                 char *output_string;
-                int error_code = (*simulator)(input_string, &output_string);
+                int error_code = (*simulator)(argc, argv,
+                        input_string, &output_string);
 
                 /* Send output */
                 pakman_send_message(parent_comm, output_string);

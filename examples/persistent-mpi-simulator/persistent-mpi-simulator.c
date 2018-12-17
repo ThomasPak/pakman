@@ -5,26 +5,15 @@
 
 #include "../../include/pakman_mpi_worker.h"
 
-/* Default output string and error code correspond to simulator that always
- * accepts and exits without error */
-char *output_string = "1\n";
-int error_code = 0;
-
 /* Define mpi_simulator */
-int mpi_simulator(const char* input_string, char **p_output_string)
+int mpi_simulator(int argc, char *argv[],
+        const char* input_string, char **p_output_string)
 {
-    /* Allocate memory for output_string */
-    *p_output_string = malloc((strlen(output_string) + 1) * sizeof(char));
+    /* Default output string and error code correspond to simulator that always
+     * accepts and exits without error */
+    char *output_string = "1\n";
+    int error_code = 0;
 
-    /* Copy string */
-    strcpy(*p_output_string, output_string);
-
-    /* Return exit code */
-    return error_code;
-}
-
-int main(int argc, char *argv[])
-{
     /* Print help */
     if (argc == 2 &&
             ( strcmp(argv[1], "--help") == 0
@@ -50,11 +39,23 @@ int main(int argc, char *argv[])
         return 2;
     }
 
+    /* Allocate memory for output_string */
+    *p_output_string = malloc((strlen(output_string) + 1) * sizeof(char));
+
+    /* Copy string */
+    strcpy(*p_output_string, output_string);
+
+    /* Return exit code */
+    return error_code;
+}
+
+int main(int argc, char *argv[])
+{
     /* Initialize MPI */
     MPI_Init(NULL, NULL);
 
     /* Run MPI Worker */
-    pakman_run_mpi_worker(&mpi_simulator, PAKMAN_O_PERSISTENT);
+    pakman_run_mpi_worker(argc, argv, &mpi_simulator, PAKMAN_O_PERSISTENT);
 
     /* Finalize MPI */
     MPI_Finalize();
