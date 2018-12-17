@@ -1,3 +1,6 @@
+#ifndef PAKMAN_MPI_WORKER_H
+#define PAKMAN_MPI_WORKER_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -193,3 +196,5 @@ int pakman_run_mpi_worker(
     /* Return successful error code */
     return PAKMAN_EXIT_SUCCESS;
 }
+
+#endif /* PAKMAN_MPI_WORKER_H */
