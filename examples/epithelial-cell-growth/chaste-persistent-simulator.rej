@@ -1,0 +1,11 @@
+# Epsilon
+0
+
+# Persistent simulator
+./PersistentSimulator
+
+# Parameter names
+p
+
+# Prior sampler
+./uniform-sampler 0 1
