@@ -132,7 +132,8 @@ int pakman_run_mpi_worker(
         /* Check tag */
         switch (status.MPI_TAG)
         {
-            case PAKMAN_MANAGER_MSG_TAG: ;
+            case PAKMAN_MANAGER_MSG_TAG:
+                {
                 /* Receive message */
                 char* input_string = pakman_receive_message(parent_comm);
 
@@ -152,8 +153,9 @@ int pakman_run_mpi_worker(
                 free(output_string);
 
                 break;
-
-            case PAKMAN_MANAGER_SIGNAL_TAG: ;
+                }
+            case PAKMAN_MANAGER_SIGNAL_TAG:
+                {
                 /* Receive signal */
                 int signal = pakman_receive_signal(parent_comm);
 
@@ -161,6 +163,7 @@ int pakman_run_mpi_worker(
                 switch (signal)
                 {
                     case PAKMAN_TERMINATE_WORKER_SIGNAL:
+                        {
 #ifndef NDEBUG
                         fputs("DEBUG: Pakman Worker: received "
                                 "PAKMAN_TERMINATE_WORKER_SIGNAL\n", stderr);
@@ -169,16 +172,22 @@ int pakman_run_mpi_worker(
                         continue_loop = 0;
                         break;
 
+                        }
                     default:
+                        {
                         fputs("Pakman Worker error: signal not recognised, "
                                 "exiting...\n", stderr);
                         return PAKMAN_EXIT_FAILURE;
+                        }
                 }
                 break;
+                }
             default:
+                {
                 fputs("Pakman Worker error: tag not recognised, exiting...\n",
                         stderr);
                 return PAKMAN_EXIT_FAILURE;
+                }
         }
 
         /* If not persistent Worker, set loop condition to false */
