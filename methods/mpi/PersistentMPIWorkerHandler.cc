@@ -85,6 +85,10 @@ void PersistentMPIWorkerHandler::discardResults()
     // if it has not finished yet
     if (!m_result_received)
     {
+        // Timeout if message is not ready yet
+        while (!m_child_comm.Iprobe(WORKER_RANK, WORKER_MSG_TAG))
+            std::this_thread::sleep_for(MAIN_TIMEOUT);
+
         // Receive message
         receiveMessage();
 
