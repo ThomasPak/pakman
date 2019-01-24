@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-int simple_simulator(const char* input_string, char **p_output_string)
+int simple_simulator(int argc, char *argv[],
+        const char* input_string, char **p_output_string)
 {
     /* Always accept */
     char *output_string = "1\n";
