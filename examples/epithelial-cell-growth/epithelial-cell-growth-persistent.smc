@@ -1,0 +1,29 @@
+# Epsilon
+2,1,0
+
+# Simulator
+./VertexBasedMonolayerSimulator epithelial-cell-growth.data --persistent
+
+# Parameter names
+cell-cycle-time
+
+# Prior sampler
+./uniform-sampler 0 30
+
+# Perturber
+bash -c 's=2; \
+         read t; \
+         read p; \
+         mu=$p; \
+         echo $mu $s | ./normal-sampler'
+
+# Prior pdf: 1/30 for p in [0, 30], 0 elsewhere
+bash -c 'read p; \
+         python -c "print 1.0/30.0 if ((0 <= $p) and ($p <= 30)) else 0"'
+
+# Perturbation pdf:
+bash -c 's=2; \
+         read t; \
+         read new_p N; \
+         cat <(printf %s "$new_p ") <(printf %s "$s ") - | \
+         ./normal-pdf'
