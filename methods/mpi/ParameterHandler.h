@@ -7,7 +7,7 @@
 // deallocates said buffer.
 
 #include "mpi_common.h"
-#include "../types.h"
+#include "types.h"
 
 class ParameterHandler {
 

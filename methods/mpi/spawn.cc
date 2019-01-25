@@ -4,9 +4,9 @@
 
 #include <mpi.h>
 
-#include "../parse_cmd.h"
-#include "../vector_argv.h"
-#include "../types.h"
+#include "parse_cmd.h"
+#include "vector_argv.h"
+#include "types.h"
 #include "mpi_common.h"
 #include "spawn.h"
 

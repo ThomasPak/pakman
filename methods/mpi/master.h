@@ -6,8 +6,8 @@
 #include <set>
 #include <string>
 
-#include "../types.h"
-#include "../Sampler.h"
+#include "types.h"
+#include "Sampler.h"
 #include "ParameterHandler.h"
 
 void check_managers(const std::vector<ParameterHandler*>& manager_map,

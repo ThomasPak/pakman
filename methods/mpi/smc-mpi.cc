@@ -10,13 +10,13 @@
 #include <getopt.h>
 #include <stdio.h>
 
-#include "../types.h"
-#include "../read_input.h"
+#include "types.h"
+#include "read_input.h"
 #include "mpi_utils.h"
 #include "mpi_common.h"
 #include "main_utils.h"
 #include "MPIMaster.h"
-#include "../ABCSMCController.h"
+#include "ABCSMCController.h"
 #include "Manager.h"
 #include "PersistentMPIWorkerHandler.h"
 

@@ -6,7 +6,7 @@
 #include <set>
 #include <string>
 
-#include "../AbstractMaster.h"
+#include "AbstractMaster.h"
 
 #include "mpi_common.h"
 

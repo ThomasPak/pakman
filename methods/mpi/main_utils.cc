@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "common.h"
 #include "main_utils.h"
 
 worker_t determine_worker_type(bool mpi_simulator, bool persistent_simulator)

@@ -4,7 +4,7 @@
 
 #include <mpi.h>
 
-#include "../common.h"
+#include "common.h"
 #include "mpi_common.h"
 #include "mpi_utils.h"
 #include "ForkedWorkerHandler.h"
