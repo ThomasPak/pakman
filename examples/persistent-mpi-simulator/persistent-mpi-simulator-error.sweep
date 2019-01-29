@@ -1,8 +1,0 @@
-# Simulator
-./persistent-mpi-simulator '' 1
-
-# Parameter names
-p
-
-# Generator
-printf '1\n2\n3\n4\n5\n'

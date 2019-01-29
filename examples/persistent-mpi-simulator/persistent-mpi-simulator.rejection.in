@@ -1,0 +1,11 @@
+# Epsilon
+0
+
+# Simulator
+./persistent-mpi-simulator 1 @return_code@
+
+# Parameter names
+@parameter_name@
+
+# Prior sampler
+echo @sampled_parameter@

@@ -1,0 +1,8 @@
+# Simulator
+./persistent-mpi-simulator '' @return_code@
+
+# Parameter names
+@parameter_name@
+
+# Generator
+echo -e "@parameter_list@"

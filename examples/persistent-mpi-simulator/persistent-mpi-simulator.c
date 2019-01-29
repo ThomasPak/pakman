@@ -3,7 +3,7 @@
 #include <string.h>
 #include <mpi.h>
 
-#include "../../include/pakman_mpi_worker.h"
+#include "pakman_mpi_worker.h"
 
 /* Define mpi_simulator */
 int mpi_simulator(int argc, char *argv[],
