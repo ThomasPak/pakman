@@ -2,13 +2,13 @@
 2,1,0
 
 # Simulator
-./standard-simulator 0 0
+./standard-simulator 1 @return_code@
 
 # Parameter names
-p
+@parameter_name@
 
 # Prior sampler
-echo 1
+echo @sampled_parameter@
 
 # Perturber
 bash -c 'cat >/dev/null; echo 1'
