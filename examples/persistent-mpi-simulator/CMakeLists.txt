@@ -1,6 +1,3 @@
-# Find MPI
-include (FindMPI)
-
 if (NOT MPI_C_FOUND)
     message (FATAL_ERROR "MPI installation with C++ bindings was not found")
 endif (NOT MPI_C_FOUND)

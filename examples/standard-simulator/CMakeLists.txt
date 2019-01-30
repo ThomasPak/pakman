@@ -1,6 +1,3 @@
-# Find MPI
-include (FindMPI)
-
 # Add standard-simulator
 add_executable (standard-simulator standard-simulator.c)
 
