@@ -33,9 +33,10 @@ string (REPLACE "\\n" "\n" expected_output "${parameter_name}\n${parameter_list}
 # pop up in the stdout results.  Hence we need to throw away stderr in order
 # for CTest to match the expected output string successfully.
 add_test (MPISimulatorSweepNoError
-    sh -c "${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS} \
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/sweep-mpi ${MPIEXEC_POSTFLAGS} \
-    ${input_file} --mpi-simulation 2>/dev/null")
+    ${PROJECT_BINARY_DIR}/utils/discard_stderr.sh
+    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
+    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/sweep-mpi ${MPIEXEC_POSTFLAGS}
+    ${input_file} --mpi-simulation)
 set_property (TEST MPISimulatorSweepNoError
     PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
 
@@ -83,9 +84,10 @@ endwhile ()
 
 # Add test
 add_test (MPISimulatorRejectionNoError
-    sh -c "${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS} \
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/rejection-mpi ${MPIEXEC_POSTFLAGS} \
-    ${input_file} ${number_of_parameters} --mpi-simulation 2>/dev/null")
+    ${PROJECT_BINARY_DIR}/utils/discard_stderr.sh
+    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
+    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/rejection-mpi ${MPIEXEC_POSTFLAGS}
+    ${input_file} ${number_of_parameters} --mpi-simulation)
 set_property (TEST MPISimulatorRejectionNoError
     PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
 
@@ -133,9 +135,10 @@ endwhile ()
 
 # Add test
 add_test (MPISimulatorSMCNoError
-    sh -c "${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS} \
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/smc-mpi ${MPIEXEC_POSTFLAGS} \
-    ${input_file} ${number_of_parameters} --mpi-simulation 2>/dev/null")
+    ${PROJECT_BINARY_DIR}/utils/discard_stderr.sh
+    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
+    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/smc-mpi ${MPIEXEC_POSTFLAGS}
+    ${input_file} ${number_of_parameters} --mpi-simulation)
 set_property (TEST MPISimulatorSMCNoError
     PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
 

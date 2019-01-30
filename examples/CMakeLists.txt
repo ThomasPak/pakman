@@ -13,6 +13,10 @@ if (mpiexec_version MATCHES "OpenRTE")
     string (STRIP "${MPIEXEC_PREFLAGS}" MPIEXEC_PREFLAGS)
 endif ()
 
+# Separate MPIEXEC_PREFLAGS and MPIEXEC_POSTFLAGS
+separate_arguments (MPIEXEC_PREFLAGS)
+separate_arguments (MPIEXEC_POSTFLAGS)
+
 # Add example subdirectories
 add_subdirectory (standard-simulator)
 add_subdirectory (mpi-simulator)
