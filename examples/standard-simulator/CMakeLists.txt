@@ -1,3 +1,6 @@
+# Find MPI
+include (FindMPI)
+
 # Add standard-simulator
 add_executable (standard-simulator standard-simulator.c)
 
@@ -24,7 +27,8 @@ string (REPLACE "\\n" "\n" expected_output "${parameter_name}\n${parameter_list}
 # pop up in the stdout results.  Hence we need to throw away stderr in order
 # for CTest to match the expected output string successfully.
 add_test (StandardSimulatorSweepNoError
-    sh -c "mpirun -n ${NCPU} ${PROJECT_BINARY_DIR}/methods/sweep-mpi \
+    sh -c "${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS} \
+    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/sweep-mpi \
     ${input_file} 2>/dev/null")
 set_property (TEST StandardSimulatorSweepNoError
     PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
@@ -41,7 +45,8 @@ configure_file (
 
 # Add test
 add_test (StandardSimulatorSweepWithError
-    mpirun -n ${NCPU} ${PROJECT_BINARY_DIR}/methods/sweep-mpi
+    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
+    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/sweep-mpi
     ${input_file})
 set_property (TEST StandardSimulatorSweepWithError
     PROPERTY WILL_FAIL TRUE)
@@ -72,7 +77,8 @@ endwhile ()
 
 # Add test
 add_test (StandardSimulatorRejectionNoError
-    sh -c "mpirun -n ${NCPU} ${PROJECT_BINARY_DIR}/methods/rejection-mpi \
+    sh -c "${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS} \
+    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/rejection-mpi \
     ${input_file} ${number_of_parameters} 2>/dev/null")
 set_property (TEST StandardSimulatorRejectionNoError
     PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
@@ -89,7 +95,8 @@ configure_file (
 
 # Add test
 add_test (StandardSimulatorRejectionWithError
-    mpirun -n ${NCPU} ${PROJECT_BINARY_DIR}/methods/rejection-mpi
+    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
+    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/rejection-mpi
     ${input_file} ${number_of_parameters})
 set_property (TEST StandardSimulatorRejectionWithError
     PROPERTY WILL_FAIL TRUE)
@@ -120,7 +127,8 @@ endwhile ()
 
 # Add test
 add_test (StandardSimulatorSMCNoError
-    sh -c "mpirun -n ${NCPU} ${PROJECT_BINARY_DIR}/methods/smc-mpi \
+    sh -c "${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS} \
+    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/smc-mpi \
     ${input_file} ${number_of_parameters} 2>/dev/null")
 set_property (TEST StandardSimulatorSMCNoError
     PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
@@ -137,7 +145,8 @@ configure_file (
 
 # Add test
 add_test (StandardSimulatorSMCWithError
-    mpirun -n ${NCPU} ${PROJECT_BINARY_DIR}/methods/smc-mpi
+    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
+    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/smc-mpi
     ${input_file} ${number_of_parameters})
 set_property (TEST StandardSimulatorSMCWithError
     PROPERTY WILL_FAIL TRUE)
