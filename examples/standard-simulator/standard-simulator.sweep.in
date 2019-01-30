@@ -5,4 +5,4 @@
 @parameter_name@
 
 # Generator
-echo -e "@parameter_list@"
+printf "@parameter_list@\n"
