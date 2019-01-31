@@ -76,10 +76,11 @@ static struct option const long_options[] =
 int main(int argc, char *argv[])
 {
     // Initialize the MPI environment
-    MPI::Init();
+    MPI_Init(nullptr, nullptr);
 
     // Get rank
-    const int rank = MPI::COMM_WORLD.Get_rank();
+    int rank = 0;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     // Set program name
     program_name = argv[0];
@@ -201,5 +202,5 @@ int main(int argc, char *argv[])
     PersistentMPIWorkerHandler::terminatePersistent();
 
     // Finalize
-    MPI::Finalize();
+    MPI_Finalize();
 }
