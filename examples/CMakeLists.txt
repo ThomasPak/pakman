@@ -1,6 +1,3 @@
-# Find MPI
-include (FindMPI)
-
 # If hosts flags are given, add them to MPIEXEC_PREFLAGS
 if (MPIEXEC_HOSTS_FLAGS)
     set (MPIEXEC_PREFLAGS "${MPIEXEC_PREFLAGS} ${MPIEXEC_HOSTS_FLAGS}")

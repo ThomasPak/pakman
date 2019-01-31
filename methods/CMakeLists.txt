@@ -1,10 +1,3 @@
-# Find MPI
-include (FindMPI)
-
-if (NOT MPI_MPICXX_FOUND)
-    message (FATAL_ERROR "MPI installation with C++ bindings was not found")
-endif (NOT MPI_MPICXX_FOUND)
-
 add_subdirectory (mpi)
 
 add_library (pakman_base

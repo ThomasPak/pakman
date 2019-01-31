@@ -1,10 +1,3 @@
-# Find MPI
-include (FindMPI)
-
-if (NOT MPI_C_FOUND)
-    message (FATAL_ERROR "MPI installation with C++ bindings was not found")
-endif (NOT MPI_C_FOUND)
-
 include_directories (${MPI_C_INCLUDE_DIRS} "${PROJECT_BINARY_DIR}/include")
 add_compile_options (${MPI_C_COMPILE_OPTIONS})
 link_libraries (${MPI_CXX_LIBRARIES})

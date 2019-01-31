@@ -1,10 +1,3 @@
-# Find MPI
-include (FindMPI)
-
-if (NOT MPI_MPICXX_FOUND)
-    message (FATAL_ERROR "MPI installation with C++ bindings was not found")
-endif (NOT MPI_MPICXX_FOUND)
-
 include_directories (${MPI_CXX_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/methods)
 add_compile_options (${MPI_CXX_COMPILE_OPTIONS})
 link_libraries (${MPI_CXX_LIBRARIES} pakman_base)
