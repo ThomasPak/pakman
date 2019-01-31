@@ -385,19 +385,13 @@ void MPIMaster::discardMessagesErrorCodesAndSignals()
 // Probe for message
 bool MPIMaster::probeMessage() const
 {
-    int flag = 0;
-    MPI_Iprobe(MPI_ANY_SOURCE, MANAGER_MSG_TAG, MPI_COMM_WORLD, &flag,
-            MPI_STATUS_IGNORE);
-    return static_cast<bool>(flag);
+    return iprobe_wrapper(MPI_ANY_SOURCE, MANAGER_MSG_TAG, MPI_COMM_WORLD);
 }
 
 // Probe for signal
 bool MPIMaster::probeSignal() const
 {
-    int flag = 0;
-    MPI_Iprobe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG, MPI_COMM_WORLD, &flag,
-            MPI_STATUS_IGNORE);
-    return static_cast<bool>(flag);
+    return iprobe_wrapper(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG, MPI_COMM_WORLD);
 }
 
 // Probe for Manager rank of incoming message

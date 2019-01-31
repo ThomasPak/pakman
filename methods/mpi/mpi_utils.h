@@ -5,6 +5,9 @@
 #include <mpi.h>
 
 int get_mpi_comm_world_size();
+int get_mpi_comm_world_rank();
+
+bool iprobe_wrapper(int source, int tag, MPI_Comm comm);
 
 void string_to_buffer(char*& buffer, const std::string& str);
 void set_terminate_flag(int signal);

@@ -45,7 +45,7 @@ class MPIWorkerHandler : public AbstractWorkerHandler
         int receiveErrorCode() const;
 
         // Intercomm with child
-        MPI::Intercomm m_child_comm;
+        MPI_Comm m_child_comm;
 
         // Flag for receiving result
         bool m_result_received = false;

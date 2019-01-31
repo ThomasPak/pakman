@@ -13,21 +13,21 @@
 #include <iostream>
 #endif
 
-// Static child communicator of PersistentMPIWorkerHandler is default
-// MPI::Intercomm (MPI::COMM_NULL)
-MPI::Intercomm PersistentMPIWorkerHandler::m_child_comm;
+// Initialize static child communicator of PersistentMPIWorkerHandler to the
+// null communicators (MPI_COMM_NULL)
+MPI_Comm PersistentMPIWorkerHandler::m_child_comm = MPI_COMM_NULL;
 
 PersistentMPIWorkerHandler::PersistentMPIWorkerHandler(const cmd_t& command,
         const std::string& input_string) :
     AbstractWorkerHandler(command, input_string)
 {
     // Spawn persistent MPI child process if it has not yet been spawned
-    if (m_child_comm == MPI::COMM_NULL)
+    if (m_child_comm == MPI_COMM_NULL)
         m_child_comm = spawn_worker(m_command);
 
     // Write input string to spawned MPI process
-    m_child_comm.Send(input_string.c_str(), input_string.size() + 1, MPI::CHAR,
-            WORKER_RANK, MANAGER_MSG_TAG);
+    MPI_Send(input_string.c_str(), input_string.size() + 1, MPI_CHAR,
+            WORKER_RANK, MANAGER_MSG_TAG, m_child_comm);
 }
 
 PersistentMPIWorkerHandler::~PersistentMPIWorkerHandler()
@@ -43,17 +43,17 @@ void PersistentMPIWorkerHandler::terminate()
 
     // Send termination signal
     int signal = TERMINATE_WORKER_SIGNAL;
-    m_child_comm.Send(&signal, 1, MPI::INT, WORKER_RANK, MANAGER_SIGNAL_TAG);
+    MPI_Send(&signal, 1, MPI_INT, WORKER_RANK, MANAGER_SIGNAL_TAG, m_child_comm);
 
     // Free communicator
-    m_child_comm.Disconnect();
+    MPI_Comm_disconnect(&m_child_comm);
 }
 
 bool PersistentMPIWorkerHandler::isDone()
 {
     // Probe for result if result has not yet been received
     if (    !m_result_received &&
-            m_child_comm.Iprobe(WORKER_RANK, WORKER_MSG_TAG) )
+            iprobe_wrapper(WORKER_RANK, WORKER_MSG_TAG, m_child_comm))
     {
         // Receive message
         m_output_buffer.assign(receiveMessage());
@@ -86,7 +86,7 @@ void PersistentMPIWorkerHandler::discardResults()
     if (!m_result_received)
     {
         // Timeout if message is not ready yet
-        while (!m_child_comm.Iprobe(WORKER_RANK, WORKER_MSG_TAG))
+        while (!iprobe_wrapper(WORKER_RANK, WORKER_MSG_TAG, m_child_comm))
             std::this_thread::sleep_for(MAIN_TIMEOUT);
 
         // Receive message
@@ -107,13 +107,13 @@ void PersistentMPIWorkerHandler::terminatePersistent()
 
     // If m_child_comm is the null communicator, the persistent Worker has
     // already been terminated, so nothing needs to be done.
-    if (m_child_comm == MPI::COMM_NULL)
+    if (m_child_comm == MPI_COMM_NULL)
         return;
 
     // Else, send termination signal to persistent Worker
     int signal = TERMINATE_WORKER_SIGNAL;
-    m_child_comm.Send(&signal, 1, MPI::INT, WORKER_RANK, MANAGER_SIGNAL_TAG);
+    MPI_Send(&signal, 1, MPI_INT, WORKER_RANK, MANAGER_SIGNAL_TAG, m_child_comm);
 
     // Free communicator
-    m_child_comm.Disconnect();
+    MPI_Comm_disconnect(&m_child_comm);
 }

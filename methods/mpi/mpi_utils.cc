@@ -14,6 +14,20 @@ int get_mpi_comm_world_size()
     return size;
 }
 
+int get_mpi_comm_world_rank()
+{
+    int rank = 0;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    return rank;
+}
+
+bool iprobe_wrapper(int source, int tag, MPI_Comm comm)
+{
+    int flag = 0;
+    MPI_Iprobe(source, tag, comm, &flag, MPI_STATUS_IGNORE);
+    return static_cast<bool>(flag);
+}
+
 void string_to_buffer(char*& buffer, const std::string& str) {
 
     // Create buffer to hold string data

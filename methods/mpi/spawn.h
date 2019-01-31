@@ -4,7 +4,7 @@
 #include <mpi.h>
 #include "types.h"
 
-MPI::Intercomm spawn(const cmd_t& cmd, MPI::Info info = {});
-MPI::Intercomm spawn_worker(const cmd_t& cmd);
+MPI_Comm spawn(const cmd_t& cmd, MPI_Info info = MPI_INFO_NULL);
+MPI_Comm spawn_worker(const cmd_t& cmd);
 
 #endif // SPAWN_H
