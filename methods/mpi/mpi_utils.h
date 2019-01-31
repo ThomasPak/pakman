@@ -13,9 +13,6 @@ bool iprobe_wrapper(int source, int tag, MPI_Comm comm,
 void set_terminate_flag(int signal);
 void set_signal_handler();
 
-std::string receive_string(const MPI::Comm& comm, int source, int tag);
-int receive_integer(const MPI::Comm& comm, int source, int tag);
-
 std::string receive_string(MPI_Comm comm, int source, int tag);
 int receive_integer(MPI_Comm comm, int source, int tag);
 

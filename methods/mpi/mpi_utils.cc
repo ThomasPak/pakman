@@ -49,33 +49,6 @@ void set_signal_handler() {
     sigaction(SIGTERM, &act, nullptr);
 }
 
-std::string receive_string(const MPI::Comm& comm, int source, int tag)
-{
-    // Probe to get status
-    MPI::Status status;
-    comm.Probe(source, tag, status);
-
-    // Receive string
-    int count = status.Get_count(MPI::CHAR);
-    char *buffer = new char[count];
-    comm.Recv(buffer, count, MPI::CHAR, source, tag);
-
-    // Return string
-    std::string message(buffer);
-    delete[] buffer;
-    return message;
-}
-
-int receive_integer(const MPI::Comm& comm, int source, int tag)
-{
-    // Receive integer
-    int integer;
-    comm.Recv(&integer, 1, MPI::INT, source, tag);
-
-    // Return integer
-    return integer;
-}
-
 std::string receive_string(MPI_Comm comm, int source, int tag)
 {
     // Probe to get status
