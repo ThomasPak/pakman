@@ -28,18 +28,22 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
                     std::set<int>& idle_managers) {
 
     // While there are any incoming output messages
-    MPI::Status status;
-    while (MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_MSG_TAG, status)) {
+    MPI_Status status;
+    while (iprobe_wrapper(MPI_ANY_SOURCE, MANAGER_MSG_TAG,
+                MPI_COMM_WORLD, &status))
+    {
 
         // Receive output message
-        int count = status.Get_count(MPI::CHAR);
-        int manager = status.Get_source();
+        int count = 0, manager = 0;
+        MPI_Get_count(&status, MPI_CHAR, &count);
+        manager = status.MPI_SOURCE;
         char *buffer = new char[count];
-        MPI::COMM_WORLD.Recv(buffer, count, MPI::CHAR, manager, MANAGER_MSG_TAG);
+        MPI_Recv(buffer, count, MPI_CHAR, manager, MANAGER_MSG_TAG,
+                MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 #ifndef NDEBUG
-        const int rank = MPI::COMM_WORLD.Get_rank();
-        const int size = MPI::COMM_WORLD.Get_size();
+        const int rank = get_mpi_comm_world_rank();
+        const int size = get_mpi_comm_world_size();
         std::cerr << "Master " << rank << "/" << size
                   << ": received result message from manager "
                   << manager << std::endl;
@@ -81,16 +85,17 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
     }
 
     // Check for Manager signals
-    while (MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG, status)) {
+    while (iprobe_wrapper(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG,
+                MPI_COMM_WORLD, &status)) {
 
         // Receive Manager signal
-        int signal, manager = status.Get_source();
-        MPI::COMM_WORLD.Recv(&signal, 1, MPI::INT, manager,
-                MANAGER_SIGNAL_TAG);
+        int signal, manager = status.MPI_SOURCE;
+        MPI_Recv(&signal, 1, MPI_INT, manager, MANAGER_SIGNAL_TAG,
+                MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 #ifndef NDEBUG
-        const int rank = MPI::COMM_WORLD.Get_rank();
-        const int size = MPI::COMM_WORLD.Get_size();
+        const int rank = get_mpi_comm_world_rank();
+        const int size = get_mpi_comm_world_size();
         std::cerr << "Master " << rank << "/" << size
                   << ": received signal from manager "
                   << manager << std::endl;
@@ -127,13 +132,14 @@ void delegate_managers(const AbstractSampler& sampler_obj,
             simulator_input(epsilon, prmtr_sampled.back().getCString());
 
         // Send input message to manager
-        MPI::COMM_WORLD.Isend(input_str.c_str(),
-                              input_str.size() + 1,
-                              MPI::CHAR, *it, MASTER_MSG_TAG);
+        MPI_Request dummy_request;
+        MPI_Isend(input_str.c_str(), input_str.size() + 1, MPI_CHAR, *it,
+                MASTER_MSG_TAG, MPI_COMM_WORLD, &dummy_request);
+        MPI_Request_free(&dummy_request);
 
 #ifndef NDEBUG
-        const int rank = MPI::COMM_WORLD.Get_rank();
-        const int size = MPI::COMM_WORLD.Get_size();
+        const int rank = get_mpi_comm_world_rank();
+        const int size = get_mpi_comm_world_size();
         std::cerr << "Master " << rank << "/" << size
                   << ": sent parameter message to manager "
                   << *it << std::endl;
@@ -182,14 +188,20 @@ void check_parameters(std::queue<ParameterHandler>& prmtr_sampled,
 
 void send_signal_to_managers(const int signal) {
 
-    const int size = MPI::COMM_WORLD.Get_size();
+    const int size = get_mpi_comm_world_size();
 
-    std::vector<MPI::Request> reqs;
+    std::vector<MPI_Request> reqs;
 
     for (int manager_idx = 0; manager_idx < size; manager_idx++)
-        reqs.push_back(MPI::COMM_WORLD.Isend(&signal, 1, MPI::INT, manager_idx, MASTER_SIGNAL_TAG));
+    {
+        MPI_Request request;
+        MPI_Isend(&signal, 1, MPI_INT, manager_idx, MASTER_SIGNAL_TAG,
+                MPI_COMM_WORLD, &request);
+        reqs.push_back(request);
+    }
 
-    for (auto& req : reqs) req.Wait();
+    for (auto& req : reqs)
+        MPI_Wait(&req, MPI_STATUS_IGNORE);
 }
 
 namespace mcmc {
@@ -197,8 +209,8 @@ namespace mcmc {
 void master() {
 
     // Get rank and size
-    const int size = MPI::COMM_WORLD.Get_size();
-    const int rank = MPI::COMM_WORLD.Get_rank();
+    const int size = get_mpi_comm_world_size();
+    const int rank = get_mpi_comm_world_rank();
 
     std::cerr << "Master: rank " << rank << "/" << size << std::endl;
 }
@@ -210,7 +222,7 @@ namespace sweep {
 void master(const input_t& input_obj) {
 
     // Get size
-    const int size = MPI::COMM_WORLD.Get_size();
+    const int size = get_mpi_comm_world_size();
 
     // Create generator object
     Generator generator_obj(input_obj.generator);
