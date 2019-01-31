@@ -4,7 +4,8 @@ if (MPIEXEC_HOSTS_FLAGS)
     message ("Host flags are: ${MPIEXEC_HOSTS_FLAGS}")
 endif ()
 
-# If the MPI installation is OpenMPI, make sure to add --oversubscribe flags
+# If the MPI installation is OpenMPI, make sure to add `--oversubscribe` flags
+# to MPIEXEC_PREFLAGS
 execute_process (COMMAND ${MPIEXEC_EXECUTABLE} --version
     OUTPUT_VARIABLE mpiexec_version)
 
