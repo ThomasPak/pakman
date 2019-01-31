@@ -94,19 +94,19 @@ class Manager
         std::string m_message_buffer;
 
         // Message request
-        MPI::Request m_message_request;
+        MPI_Request m_message_request = MPI_REQUEST_NULL;
 
         // Signal buffer
         int m_signal_buffer;
 
         // Signal request
-        MPI::Request m_signal_request;
+        MPI_Request m_signal_request = MPI_REQUEST_NULL;
 
         // Error code buffer
         int m_error_code_buffer;
 
         // Error code request
-        MPI::Request m_error_code_request;
+        MPI_Request m_error_code_request = MPI_REQUEST_NULL;
 };
 
 #endif // MANAGER_H
