@@ -62,7 +62,7 @@ MPI_Comm spawn_worker(const cmd_t& cmd)
     // Spawn Worker
     MPI_Comm child_comm = spawn(cmd, info);
 
-    // Free MPI::Info object
+    // Free MPI_Info object
     MPI_Info_free(&info);
 
     return child_comm;
