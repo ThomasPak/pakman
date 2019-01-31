@@ -7,7 +7,8 @@
 int get_mpi_comm_world_size();
 int get_mpi_comm_world_rank();
 
-bool iprobe_wrapper(int source, int tag, MPI_Comm comm);
+bool iprobe_wrapper(int source, int tag, MPI_Comm comm,
+        MPI_Status *status = MPI_STATUS_IGNORE);
 
 void set_terminate_flag(int signal);
 void set_signal_handler();

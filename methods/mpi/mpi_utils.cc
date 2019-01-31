@@ -21,10 +21,10 @@ int get_mpi_comm_world_rank()
     return rank;
 }
 
-bool iprobe_wrapper(int source, int tag, MPI_Comm comm)
+bool iprobe_wrapper(int source, int tag, MPI_Comm comm, MPI_Status *p_status)
 {
     int flag = 0;
-    MPI_Iprobe(source, tag, comm, &flag, MPI_STATUS_IGNORE);
+    MPI_Iprobe(source, tag, comm, &flag, p_status);
     return static_cast<bool>(flag);
 }
 
