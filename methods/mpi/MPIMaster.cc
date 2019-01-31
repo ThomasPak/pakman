@@ -16,14 +16,18 @@
 // Construct from pointer to program terminated flag
 MPIMaster::MPIMaster(bool *p_program_terminated) :
     AbstractMaster(p_program_terminated),
-    m_comm_size(MPI::COMM_WORLD.Get_size()),
-    m_map_manager_to_task(MPI::COMM_WORLD.Get_size()),
-    m_message_buffers(MPI::COMM_WORLD.Get_size()),
-    m_message_requests(MPI::COMM_WORLD.Get_size()),
-    m_signal_requests(MPI::COMM_WORLD.Get_size())
+    m_comm_size(get_mpi_comm_world_size()),
+    m_map_manager_to_task(get_mpi_comm_world_size()),
+    m_message_buffers(get_mpi_comm_world_size())
 {
+    // Initialize requests to MPI_REQUEST_NULL
+    // and initialize idle managers
     for (int i = 0; i < m_comm_size; i++)
+    {
+        m_message_requests.push_back(MPI_REQUEST_NULL);
+        m_signal_requests.push_back(MPI_REQUEST_NULL);
         m_idle_managers.insert(i);
+    }
 }
 
 // Probe whether Master is active
@@ -381,29 +385,35 @@ void MPIMaster::discardMessagesErrorCodesAndSignals()
 // Probe for message
 bool MPIMaster::probeMessage() const
 {
-    return MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_MSG_TAG);
+    int flag = 0;
+    MPI_Iprobe(MPI_ANY_SOURCE, MANAGER_MSG_TAG, MPI_COMM_WORLD, &flag,
+            MPI_STATUS_IGNORE);
+    return static_cast<bool>(flag);
 }
 
 // Probe for signal
 bool MPIMaster::probeSignal() const
 {
-    return MPI::COMM_WORLD.Iprobe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG);
+    int flag = 0;
+    MPI_Iprobe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG, MPI_COMM_WORLD, &flag,
+            MPI_STATUS_IGNORE);
+    return static_cast<bool>(flag);
 }
 
 // Probe for Manager rank of incoming message
 int MPIMaster::probeMessageManager() const
 {
-    MPI::Status status;
-    MPI::COMM_WORLD.Probe(MPI_ANY_SOURCE, MANAGER_MSG_TAG, status);
-    return status.Get_source();
+    MPI_Status status;
+    MPI_Probe(MPI_ANY_SOURCE, MANAGER_MSG_TAG, MPI_COMM_WORLD, &status);
+    return static_cast<int>(status.MPI_SOURCE);
 }
 
 // Probe for Manager rank of incoming signal
 int MPIMaster::probeSignalManager() const
 {
-    MPI::Status status;
-    MPI::COMM_WORLD.Probe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG, status);
-    return status.Get_source();
+    MPI_Status status;
+    MPI_Probe(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG, MPI_COMM_WORLD, &status);
+    return static_cast<int>(status.MPI_SOURCE);
 }
 
 // Receive message from Manager
@@ -412,7 +422,7 @@ std::string MPIMaster::receiveMessage(int manager_rank) const
     // Sanity check: probeMessage must return true
     assert(probeMessage());
 
-    return receive_string(MPI::COMM_WORLD, manager_rank, MANAGER_MSG_TAG);
+    return receive_string(MPI_COMM_WORLD, manager_rank, MANAGER_MSG_TAG);
 }
 
 // Receive signal from Manager
@@ -421,13 +431,13 @@ int MPIMaster::receiveSignal(int manager_rank) const
     // Sanity check: probeSignal must return true
     assert(probeSignal());
 
-    return receive_integer(MPI::COMM_WORLD, manager_rank, MANAGER_SIGNAL_TAG);
+    return receive_integer(MPI_COMM_WORLD, manager_rank, MANAGER_SIGNAL_TAG);
 }
 
 // Receive error code from Manager
 int MPIMaster::receiveErrorCode(int manager_rank) const
 {
-    return receive_integer(MPI::COMM_WORLD, manager_rank, MANAGER_ERROR_CODE_TAG);
+    return receive_integer(MPI_COMM_WORLD, manager_rank, MANAGER_ERROR_CODE_TAG);
 }
 
 // Send message to a Manager
@@ -442,18 +452,21 @@ void MPIMaster::sendMessageToManager(int manager_rank,
         std::cerr << *it << std::endl;
     std::cerr << "-- END --\n";
 #endif
+
     // Ensure previous message has finished sending
-    m_message_requests[manager_rank].Wait();
+    MPI_Wait(&m_message_requests[manager_rank], MPI_STATUS_IGNORE);
 
     // Store message string in buffer
     m_message_buffers[manager_rank].assign(message_string);
 
     // Note: Isend is used here to avoid deadlock since the Master and the root
     // Manager are executed by the same process
-    m_message_requests[manager_rank] = MPI::COMM_WORLD.Isend(
+    MPI_Isend(
             m_message_buffers[manager_rank].c_str(),
             m_message_buffers[manager_rank].size() + 1,
-            MPI::CHAR, manager_rank, MASTER_MSG_TAG);
+            MPI_CHAR, manager_rank, MASTER_MSG_TAG,
+            MPI_COMM_WORLD,
+            &m_message_requests[manager_rank]);
 }
 
 // Send signal to all Managers
@@ -461,7 +474,7 @@ void MPIMaster::sendSignalToAllManagers(int signal)
 {
     // Ensure previous signals have finished sending
     for (int manager_rank = 0; manager_rank < m_comm_size; manager_rank++)
-        m_signal_requests[manager_rank].Wait();
+        MPI_Wait(&m_signal_requests[manager_rank], MPI_STATUS_IGNORE);
 
     // Store signal in buffer
     m_signal_buffer = signal;
@@ -469,7 +482,7 @@ void MPIMaster::sendSignalToAllManagers(int signal)
     // Note: Isend is used here to avoid deadlock since the Master and the root
     // Manager are executed by the same process
     for (int manager_rank = 0; manager_rank < m_comm_size; manager_rank++)
-        m_signal_requests[manager_rank] =
-            MPI::COMM_WORLD.Isend(&m_signal_buffer, 1, MPI::INT, manager_rank,
-                    MASTER_SIGNAL_TAG);
+        MPI_Isend(&m_signal_buffer, 1, MPI_INT, manager_rank,
+                MASTER_SIGNAL_TAG, MPI_COMM_WORLD,
+                &m_signal_requests[manager_rank]);
 }

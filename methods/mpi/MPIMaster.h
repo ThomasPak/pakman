@@ -135,14 +135,14 @@ class MPIMaster : public AbstractMaster
         std::vector<std::string> m_message_buffers;
 
         // Message requests
-        std::vector<MPI::Request> m_message_requests;
+        std::vector<MPI_Request> m_message_requests;
 
         // Signal buffer (assumption: every signal goes to all Managers, so
         // only one signal buffer is required)
         int m_signal_buffer;
 
         // Signal requests
-        std::vector<MPI::Request> m_signal_requests;
+        std::vector<MPI_Request> m_signal_requests;
 };
 
 #endif // MPIMASTER_H

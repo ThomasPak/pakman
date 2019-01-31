@@ -4,6 +4,8 @@
 #include <string>
 #include <mpi.h>
 
+int get_mpi_comm_world_size();
+
 void string_to_buffer(char*& buffer, const std::string& str);
 void set_terminate_flag(int signal);
 void set_signal_handler();
@@ -12,6 +14,9 @@ void receive_raw_input(std::string& raw_input);
 
 std::string receive_string(const MPI::Comm& comm, int source, int tag);
 int receive_integer(const MPI::Comm& comm, int source, int tag);
+
+std::string receive_string(MPI_Comm comm, int source, int tag);
+int receive_integer(MPI_Comm comm, int source, int tag);
 
 /*** Templates ***/
 template <class T>
