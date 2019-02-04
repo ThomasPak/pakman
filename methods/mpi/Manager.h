@@ -24,7 +24,7 @@ class Manager
                 bool *p_program_terminated);
 
         // Destructor
-        ~Manager() = default;
+        ~Manager();
 
         // Get state of Manager
         state_t getState() const;

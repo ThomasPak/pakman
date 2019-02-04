@@ -21,7 +21,7 @@ class MPIMaster : public AbstractMaster
         MPIMaster(bool *p_program_terminated);
 
         // Destructor
-        virtual ~MPIMaster() override = default;
+        virtual ~MPIMaster() override;
 
         // Probe whether Master is active
         virtual bool isActive() const override;

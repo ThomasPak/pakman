@@ -26,6 +26,25 @@ Manager::Manager(const cmd_t &command, worker_t worker_type,
 {
 }
 
+// Destroy MPI_Request objects
+Manager::~Manager()
+{
+    // If MPI_Finalize has been called, nothing needs to be done
+    int finalized = 0;
+    MPI_Finalized(&finalized);
+
+    if (finalized)
+        return;
+
+    // Else free any non-null requests
+    if (m_message_request != MPI_REQUEST_NULL)
+        MPI_Request_free(&m_message_request);
+    if (m_signal_request != MPI_REQUEST_NULL)
+        MPI_Request_free(&m_signal_request);
+    if (m_error_code_request != MPI_REQUEST_NULL)
+        MPI_Request_free(&m_error_code_request);
+}
+
 // Get state of Manager
 Manager::state_t Manager::getState() const
 {

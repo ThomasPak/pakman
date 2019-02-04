@@ -160,7 +160,9 @@ int main(int argc, char *argv[])
             persistent_simulator);
 
     // Create Manager object
-    Manager manager_obj(input_obj.simulator, worker_type, &program_terminated);
+    std::shared_ptr<Manager> p_manager =
+        std::make_shared<Manager>(input_obj.simulator, worker_type,
+                &program_terminated);
 
     if (rank == 0)
     {
@@ -175,14 +177,14 @@ int main(int argc, char *argv[])
         p_master->assignController(p_controller);
         p_controller->assignMaster(p_master);
 
-        // Master & Manger event loop
-        while (p_master->isActive() || manager_obj.isActive())
+        // Master & Manager event loop
+        while (p_master->isActive() || p_manager->isActive())
         {
             if (p_master->isActive())
                 p_master->iterate();
 
-            if (manager_obj.isActive())
-                manager_obj.iterate();
+            if (p_manager->isActive())
+                p_manager->iterate();
 
             std::this_thread::sleep_for(MAIN_TIMEOUT);
         }
@@ -190,13 +192,16 @@ int main(int argc, char *argv[])
     else
     {
         // Manager event loop
-        while (manager_obj.isActive())
+        while (p_manager->isActive())
         {
-            manager_obj.iterate();
+            p_manager->iterate();
 
             std::this_thread::sleep_for(MAIN_TIMEOUT);
         }
     }
+
+    // Destroy Manager
+    p_manager.reset();
 
     // Terminate any remaining persistent Workers
     PersistentMPIWorkerHandler::terminatePersistent();

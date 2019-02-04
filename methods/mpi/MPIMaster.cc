@@ -30,6 +30,26 @@ MPIMaster::MPIMaster(bool *p_program_terminated) :
     }
 }
 
+// Destroy MPI_Request objects
+MPIMaster::~MPIMaster()
+{
+    // If MPI_Finalize has been called, nothing needs to be done
+    int finalized = 0;
+    MPI_Finalized(&finalized);
+
+    if (finalized)
+        return;
+
+    // Else free any non-null requests
+    for (int i = 0; i < m_comm_size; i++)
+    {
+        if (m_message_requests[i] != MPI_REQUEST_NULL)
+            MPI_Request_free(&m_message_requests[i]);
+        if (m_signal_requests[i] != MPI_REQUEST_NULL)
+            MPI_Request_free(&m_signal_requests[i]);
+    }
+}
+
 // Probe whether Master is active
 bool MPIMaster::isActive() const
 {
