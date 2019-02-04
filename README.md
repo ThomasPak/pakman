@@ -31,31 +31,6 @@ To test Pakman, run:
 $ ctest
 ```
 
-# Installation
-
-To install Pakman, run:
-
-```
-$ make install
-```
-
-Note that CMake installs Pakman in system directories by default.  To install
-in a user directory instead, add the flag
-`-DCMAKE_INSTALL_PREFIX="/path/to/user/directory"` when running `cmake`.
-
-For example, if you want to install to `$HOME/.local`, run:
-
-```
-$ mkdir build
-$ cd build
-$ cmake .. -DCMAKE_INSTALL_PREFIX="$HOME/.local"
-$ make
-$ make install
-```
-
-This will place Pakman binaries in `$HOME/.local/bin` and Pakman include files
-in `$HOME/.local/include`.
-
 # Testing on multiple nodes
 
 By default, running `ctest` will only test Pakman on the local node.  In order
