@@ -1,0 +1,8 @@
+# Simulator
+./persistent-mpi-simulator-cpp '' @return_code@
+
+# Parameter names
+@parameter_name@
+
+# Generator
+printf "@parameter_list@\n"
