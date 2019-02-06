@@ -17,7 +17,6 @@ include (CTest)
 # Subdirectories
 add_subdirectory (samplers)
 add_subdirectory (densities)
-add_subdirectory (simulators)
 add_subdirectory (methods)
 add_subdirectory (include)
 add_subdirectory (examples)
