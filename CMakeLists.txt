@@ -8,8 +8,12 @@ if (NOT MPI_C_FOUND)
     message (FATAL_ERROR "MPI installation with C bindings was not found")
 endif (NOT MPI_C_FOUND)
 
-# Set C++11 standard flag
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+# Set C++11 standard
+if (NOT CMAKE_CXX_COMPILE_FEATURES MATCHES "cxx_std_11")
+    message (FATAL_ERROR "Found compiler does not support C++11")
+endif ()
+
+set (CMAKE_CXX_STANDARD 11)
 
 # CTest
 include (CTest)
