@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <functional>
 #include <mpi.h>
 
 class PakmanMPIWorker
@@ -10,9 +11,8 @@ class PakmanMPIWorker
     public:
 
         // Constructor
-        PakmanMPIWorker(int (*simulator)(int argc, char *argv[], const
-                    std::string& input_string, std::string& output_string),
-                int flags);
+        PakmanMPIWorker(std::function<int(int, char**, const std::string&,
+                    std::string&)> simulator, int flags);
 
         // Destructor
         ~PakmanMPIWorker() = default;
@@ -51,8 +51,8 @@ class PakmanMPIWorker
         MPI_Comm m_parent_comm = MPI_COMM_NULL;
 
         // Simulator function
-        int (*m_simulator)(int argc, char *argv[],
-                const std::string& input_string, std::string& output_string);
+        std::function<int(int, char**, const std::string&, std::string&)>
+                m_simulator;
 
         // Flags
         int m_flags = 0;
@@ -68,8 +68,9 @@ class PakmanMPIWorker
 };
 
 // Constructor
-PakmanMPIWorker::PakmanMPIWorker(int (*simulator)(int argc, char *argv[], const
-            std::string& input_string, std::string& output_string), int flags)
+PakmanMPIWorker::PakmanMPIWorker(
+    std::function<int(int, char**, const std::string&, std::string&)> simulator,
+        int flags)
 : m_simulator(simulator), m_flags(flags)
 {
 }
@@ -109,8 +110,8 @@ int PakmanMPIWorker::run(int argc, char*argv[])
 
                 // Run simulation
                 std::string output_string;
-                int error_code = (*m_simulator)(argc, argv,
-                        input_string, output_string);
+                int error_code = m_simulator(argc, argv, input_string,
+                        output_string);
 
                 // Send output
                 sendMessage(output_string);
