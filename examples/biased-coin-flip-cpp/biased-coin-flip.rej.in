@@ -1,0 +1,12 @@
+# Epsilon
+0
+
+# Simulator
+@CMAKE_CURRENT_BINARY_DIR@/biased-coin-flip-simulator.sh \
+    @CMAKE_CURRENT_BINARY_DIR@/biased-coin-flip.data
+
+# Parameter names
+p,N
+
+# Prior sampler
+bash -c 'echo -n $(@PROJECT_BINARY_DIR@/samplers/uniform 0 1) $(printf 20)'

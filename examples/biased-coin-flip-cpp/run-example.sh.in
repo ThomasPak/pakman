@@ -1,0 +1,22 @@
+#!/bin/sh
+set -euo pipefail
+
+# Create data file
+echo 5 > biased-coin-flip.data
+
+# Run pakman rejection algorithm
+@MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ @MPIEXEC_MAX_NUMPROCS@ \
+    @PROJECT_BINARY_DIR@/methods/rejection-mpi @MPIEXEC_POSTFLAGS@ \
+    biased-coin-flip.rej 1000 > biased-coin-flip.out
+
+# Remove N
+cat biased-coin-flip.out | awk -F, '{ print $1 }' > biased-coin-flip.tmp
+mv biased-coin-flip.tmp biased-coin-flip.out
+
+# Create histogram
+@CMAKE_CURRENT_BINARY_DIR@/create-histogram.py \
+    5 20 --epsilon 0 --inputfile biased-coin-flip.out \
+    --bboxtight --outputfile histogram.png
+
+# Remove temporary files
+rm biased-coin-flip.data biased-coin-flip.rej

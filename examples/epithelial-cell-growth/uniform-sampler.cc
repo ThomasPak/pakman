@@ -1,1 +1,1 @@
-../uniform-sampler.cc
+../../samplers/uniform.cc
