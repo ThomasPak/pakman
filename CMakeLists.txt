@@ -15,6 +15,12 @@ endif ()
 
 set (CMAKE_CXX_STANDARD 11)
 
+# Export symbols for backtrace if build type is not given, Debug,
+# RelWithDebInfo
+if (CMAKE_BUILD_TYPE MATCHES "|Debug|RelWithDebInfo")
+    set (CMAKE_ENABLE_EXPORTS TRUE)
+endif()
+
 # CTest
 include (CTest)
 
