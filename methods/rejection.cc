@@ -1,31 +1,37 @@
+#include <memory>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
+#include "common.h"
+#include "signal_handler.h"
 #include "read_input.h"
 #include "run_simulation.h"
 #include "write_parameters.h"
 #include "types.h"
 #include "timer.h"
-#include "Sampler.h"
+#include "SerialMaster.h"
+#include "ABCRejectionController.h"
 
 #ifndef NDEBUG
 #include "debug.h"
 #endif
 
-int main(int argc, char *argv[]) {
+bool program_terminated = false;
+
+int main(int argc, char *argv[])
+{
 
 #ifndef NDEBUG
     set_handlers();
 #endif
 
-    using namespace std;
-    using namespace rejection;
-
     // Process arguments
-    if (argc != 2) {
-        cerr << "Usage: " << argv[0] << " NUM_ACCEPT" << endl;
-        cerr << "Accepts as stdin 4 lines:\n"
+    if (argc != 3)
+    {
+        std::cerr << "Usage: " << argv[0] << " INPUT_FILE NUM_ACCEPT" << std::endl;
+        std::cerr << "INPUT_FILE must contain the following lines:\n"
                 "EPSILON\n"
                 "SIMULATOR\n"
                 "PARAMETER_NAMES\n"
@@ -33,41 +39,36 @@ int main(int argc, char *argv[]) {
         return 2;
     }
 
-    const int num_accept = stoi(argv[1]);
+    std::ifstream input_file(argv[1]);
+    const int num_accept = std::stoi(argv[2]);
 
     // Extract simulator and parameter specification from standard input
-    input_t input_obj;
-    read_input(cin, input_obj);
+    rejection::input_t input_obj;
+    rejection::read_input(input_file, input_obj);
 
-    // Initialize PriorSampler
-    PriorSampler prior_sampler_obj(input_obj.prior_sampler);
+    // Set signal handler
+    set_signal_handler();
 
-    // Start main algorithm
-    cerr << "Computing with epsilon = " << input_obj.epsilon << endl;
-    start_timer();
-    int num_simulated = 0;
+    // Create SerialMaster and ABC rejection controller
+    std::shared_ptr<SerialMaster> p_master =
+        std::make_shared<SerialMaster>(input_obj.simulator, &program_terminated);
 
-    vector<parameter_t> prmtr_accepted;
-    while (prmtr_accepted.size() < num_accept) {
+    std::shared_ptr<ABCRejectionController> p_controller =
+        std::make_shared<ABCRejectionController>(input_obj, num_accept);
 
-        // Sample parameter from prior
-        parameter_t prmtr_sample = prior_sampler_obj.sampleParameter();
+    // Associate with each other
+    p_master->assignController(p_controller);
+    p_controller->assignMaster(p_master);
 
-        // Run simulator and add to prmtr_accepted if accepted
-        if (run_simulation(input_obj.epsilon, input_obj.simulator, prmtr_sample))
-            prmtr_accepted.push_back(prmtr_sample);
-
-        num_simulated++;
+    // Start event loop
+    while (p_master->isActive())
+    {
+        p_master->iterate();
     }
 
-    // Print time and number of simulations
-    stop_timer();
-    cerr << "Completed in " << elapsed_time() << " seconds\n";
-    fprintf(stderr, "Accepted/simulated: %d/%d (%5.2f%%)\n", num_accept, num_simulated,
-            (100.0 * num_accept / (double) num_simulated));
-
-    // Output accepted parameter values as comma-separated list
-    write_parameters(cout, input_obj.parameter_names, prmtr_accepted);
+    // Destroy Master and Controller
+    p_master.reset();
+    p_controller.reset();
 
     return 0;
 }

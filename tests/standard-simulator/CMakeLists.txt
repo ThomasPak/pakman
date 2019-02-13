@@ -1,6 +1,12 @@
 # Add standard-simulator
 add_executable (standard-simulator standard-simulator.c)
 
+#                     #
+##                   ##
+### Parallel Pakman ###
+##                   ##
+#                     #
+
 #####################
 ## Test sweep mode ##
 #####################
@@ -149,4 +155,149 @@ add_test (StandardSimulatorSMCWithError
     ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/smc-mpi ${MPIEXEC_POSTFLAGS}
     ${input_file} ${number_of_parameters})
 set_property (TEST StandardSimulatorSMCWithError
+    PROPERTY WILL_FAIL TRUE)
+
+#                   #
+##                 ##
+### Serial Pakman ###
+##                 ##
+#                   #
+
+#####################
+## Test sweep mode ##
+#####################
+## Simulator does not return error
+set (return_code 0)
+set (parameter_name p)
+set (parameter_list "1\\n2\\n3\\n4\\n5")
+set (input_file standard-simulator-no-error.sweep)
+
+# Generate input file
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/standard-simulator.sweep.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+    )
+
+# Compute expected output
+string (REPLACE "\\n" "\n" expected_output "${parameter_name}\n${parameter_list}")
+
+# Add test
+# Because pakman runs simulations in parallel, debugging messages in stderr may
+# pop up in the stdout results.  Hence we need to throw away stderr in order
+# for CTest to match the expected output string successfully.
+add_test (SerialStandardSimulatorSweepNoError
+    ${PROJECT_BINARY_DIR}/methods/sweep ${input_file})
+set_property (TEST SerialStandardSimulatorSweepNoError
+    PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
+
+## Simulator returns error
+set (return_code 1)
+set (input_file standard-simulator-with-error.sweep)
+
+# Generate input file
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/standard-simulator.sweep.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+    )
+
+# Add test
+add_test (SerialStandardSimulatorSweepWithError
+    ${PROJECT_BINARY_DIR}/methods/sweep ${input_file})
+set_property (TEST SerialStandardSimulatorSweepWithError
+    PROPERTY WILL_FAIL TRUE)
+
+#########################
+## Test rejection mode ##
+#########################
+# Simulator does not return error
+set (number_of_parameters 10)
+set (return_code 0)
+set (parameter_name p)
+set (sampled_parameter 1)
+set (input_file standard-simulator-no-error.rejection)
+
+# Generate input file
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/standard-simulator.rejection.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+    )
+
+# Compute expected output
+set (expected_output "${parameter_name}")
+set (i 0)
+while (i LESS number_of_parameters)
+    string (APPEND expected_output "\n${sampled_parameter}")
+    math (EXPR i "${i} + 1")
+endwhile ()
+
+# Add test
+add_test (SerialStandardSimulatorRejectionNoError
+    ${PROJECT_BINARY_DIR}/methods/rejection
+    ${input_file} ${number_of_parameters})
+set_property (TEST SerialStandardSimulatorRejectionNoError
+    PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
+
+# Simulator returns error
+set (return_code 1)
+set (input_file standard-simulator-with-error.rejection)
+
+# Generate input file
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/standard-simulator.rejection.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+    )
+
+# Add test
+add_test (SerialStandardSimulatorRejectionWithError
+    ${PROJECT_BINARY_DIR}/methods/rejection
+    ${input_file} ${number_of_parameters})
+set_property (TEST SerialStandardSimulatorRejectionWithError
+    PROPERTY WILL_FAIL TRUE)
+
+#####################
+## Test SMC mode ##
+#####################
+# Simulator does not return error
+set (number_of_parameters 10)
+set (return_code 0)
+set (parameter_name p)
+set (sampled_parameter 1)
+set (input_file standard-simulator-no-error.smc)
+
+# Generate input file
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/standard-simulator.smc.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+    )
+
+# Compute expected output
+set (expected_output "${parameter_name}")
+set (i 0)
+while (i LESS number_of_parameters)
+    string (APPEND expected_output "\n${sampled_parameter}")
+    math (EXPR i "${i} + 1")
+endwhile ()
+
+# Add test
+add_test (SerialStandardSimulatorSMCNoError
+    ${PROJECT_BINARY_DIR}/methods/smc
+    ${input_file} ${number_of_parameters})
+set_property (TEST SerialStandardSimulatorSMCNoError
+    PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
+
+# Simulator returns error
+set (return_code 1)
+set (input_file standard-simulator-with-error.smc)
+
+# Generate input file
+configure_file (
+    "${CMAKE_CURRENT_SOURCE_DIR}/standard-simulator.smc.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+    )
+
+# Add test
+add_test (SerialStandardSimulatorSMCWithError
+    ${PROJECT_BINARY_DIR}/methods/smc
+    ${input_file} ${number_of_parameters})
+set_property (TEST SerialStandardSimulatorSMCWithError
     PROPERTY WILL_FAIL TRUE)

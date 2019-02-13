@@ -1,75 +1,72 @@
+#include <memory>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
+#include "common.h"
+#include "signal_handler.h"
 #include "read_input.h"
 #include "run_simulation.h"
 #include "write_parameters.h"
 #include "types.h"
 #include "timer.h"
-#include "Sampler.h"
+#include "SerialMaster.h"
+#include "SweepController.h"
 
 #ifndef NDEBUG
 #include "debug.h"
 #endif
 
-int main(int argc, char *argv[]) {
+bool program_terminated = false;
+
+int main(int argc, char *argv[])
+{
 
 #ifndef NDEBUG
     set_handlers();
 #endif
 
-    using namespace std;
-    using namespace sweep;
-
     // Process arguments
-    if (argc != 1) {
-        cerr << "Usage: " << argv[0] << endl;
-        cerr << "Accepts as stdin 3 lines:\n"
+    if (argc != 2)
+    {
+        std::cerr << "Usage: " << argv[0] << "INPUT_FILE" << std::endl;
+        std::cerr << "INPUT_FILE must contain the following lines:\n"
                 "SIMULATOR\n"
                 "PARAMETER_NAMES\n"
                 "GENERATOR\n";
         return 2;
     }
 
+    std::ifstream input_file(argv[1]);
+
     // Extract simulator and parameter specification from standard input
-    input_t input_obj;
-    read_input(cin, input_obj);
+    sweep::input_t input_obj;
+    sweep::read_input(input_file, input_obj);
 
-    // Initialize Generator
-    Generator generator_obj(input_obj.generator);
+    // Set signal handler
+    set_signal_handler();
 
-    // Total number of parameters
-    int num_param = generator_obj.getNumberOfParameters();
+    // Create SerialMaster and Sweep controller
+    std::shared_ptr<SerialMaster> p_master =
+        std::make_shared<SerialMaster>(input_obj.simulator, &program_terminated);
 
-    // Start main algorithm
-    cerr << "Computing " << num_param << " parameters\n";
-    start_timer();
-    int num_simulated = 0;
+    std::shared_ptr<SweepController> p_controller =
+        std::make_shared<SweepController>(input_obj);
 
-    vector<parameter_t> prmtr_simulated;
-    while (prmtr_simulated.size() < num_param) {
+    // Associate with each other
+    p_master->assignController(p_controller);
+    p_controller->assignMaster(p_master);
 
-        // Get generated parameters
-        parameter_t prmtr = generator_obj.sampleParameter();
-
-        // Run simulator with dummy epsilon and add to prmtr_simulated
-        if (run_simulation("0", input_obj.simulator, prmtr) == 0) {
-            std::runtime_error e("simulator rejected parameter");
-            throw e;
-        }
-
-        prmtr_simulated.push_back(prmtr);
-
-        num_simulated++;
+    // Start event loop
+    while (p_master->isActive())
+    {
+        p_master->iterate();
     }
 
-    // Print time and number of simulations
-    stop_timer();
-    cerr << "Completed in " << elapsed_time() << " seconds\n";
-
-    // Output accepted parameter values as comma-separated list
-    write_parameters(cout, input_obj.parameter_names, prmtr_simulated);
+    // Destroy Master and Controller
+    p_master.reset();
+    p_controller.reset();
 
     return 0;
 }
