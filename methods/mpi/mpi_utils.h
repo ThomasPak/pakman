@@ -10,9 +10,6 @@ int get_mpi_comm_world_rank();
 bool iprobe_wrapper(int source, int tag, MPI_Comm comm,
         MPI_Status *status = MPI_STATUS_IGNORE);
 
-void set_terminate_flag(int signal);
-void set_signal_handler();
-
 std::string receive_string(MPI_Comm comm, int source, int tag);
 int receive_integer(MPI_Comm comm, int source, int tag);
 

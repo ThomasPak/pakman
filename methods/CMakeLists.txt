@@ -25,6 +25,7 @@ add_library (pakman_base
     vector_strtok.cc
     write_parameters.cc
     c_argv.cc
+    signal_handler.cc
     )
 
 add_executable (rejection rejection.cc)

@@ -12,6 +12,8 @@
 
 #include "types.h"
 #include "read_input.h"
+#include "common.h"
+#include "signal_handler.h"
 #include "mpi_utils.h"
 #include "mpi_common.h"
 #include "main_utils.h"

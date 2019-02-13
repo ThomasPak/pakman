@@ -2,7 +2,6 @@
 #include <cstring>
 
 #include <mpi.h>
-#include <signal.h>
 
 #include "mpi_utils.h"
 #include "mpi_common.h"
@@ -26,27 +25,6 @@ bool iprobe_wrapper(int source, int tag, MPI_Comm comm, MPI_Status *p_status)
     int flag = 0;
     MPI_Iprobe(source, tag, comm, &flag, p_status);
     return static_cast<bool>(flag);
-}
-
-void set_terminate_flag(int signal) {
-    switch (signal) {
-        case SIGINT:
-        case SIGTERM:
-            program_terminated = true;
-            break;
-    }
-}
-
-void set_signal_handler() {
-
-    struct sigaction act;
-
-    act.sa_handler = set_terminate_flag;
-    sigemptyset(&act.sa_mask);
-    act.sa_flags = 0;
-
-    sigaction(SIGINT, &act, nullptr);
-    sigaction(SIGTERM, &act, nullptr);
 }
 
 std::string receive_string(MPI_Comm comm, int source, int tag)

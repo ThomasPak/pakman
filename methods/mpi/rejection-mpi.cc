@@ -13,6 +13,8 @@
 
 #include "types.h"
 #include "read_input.h"
+#include "signal_handler.h"
+#include "common.h"
 #include "mpi_utils.h"
 #include "mpi_common.h"
 #include "main_utils.h"

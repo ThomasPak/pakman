@@ -15,4 +15,6 @@ typedef enum
     persistent_mpi_worker
 } worker_t;
 
+extern bool program_terminated;
+
 #endif // COMMON_H
