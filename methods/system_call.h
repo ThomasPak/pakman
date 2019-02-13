@@ -19,6 +19,9 @@ void system_call(const cmd_t& cmd, std::string& output,
 void system_call(const cmd_t& cmd, const std::string& input,
                  std::string& output, child_err_opt_t child_err_opt = throw_error);
 
+void system_call(const cmd_t& cmd, const std::string& input,
+                 std::string& output, int& error_code);
+
 void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd);
 void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_write_fd, int& pipe_read_fd);
 

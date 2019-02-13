@@ -5,6 +5,7 @@ add_library (pakman_base
     ABCSMCController.cc
     AbstractController.cc
     AbstractMaster.cc
+    SerialMaster.cc
     acceptance_probability.cc
     debug.cc
     parse_cmd.cc

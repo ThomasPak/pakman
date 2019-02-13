@@ -283,6 +283,95 @@ void system_call(const cmd_t& cmd,
 #endif
 }
 
+void system_call(const cmd_t& cmd,
+                 const std::string& input,
+                 std::string& output,
+                 int& error_code) {
+
+    using namespace std;
+
+#ifndef NDEBUG
+        cerr << "cmd: " << cmd << endl;
+        cerr << "input: " << input << endl;
+#endif
+
+    // Create pipes for sending and receiving
+    int send_pipefd[2], recv_pipefd[2];
+
+    if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) ) {
+        runtime_error e("pipe failed");
+        throw e;
+    }
+
+    // Fork
+    pid_t child_pid = fork();
+
+    if (child_pid == -1) {
+        runtime_error e("fork failed");
+        throw e;
+    }
+
+    if (child_pid > 0) { // I am the parent
+
+        // Close read end of send pipe and write end of receive pipe
+        close_check(send_pipefd[READ_END]);
+        close_check(recv_pipefd[WRITE_END]);
+
+        // Send input to child
+        write_to_pipe(send_pipefd, input);
+        close_check(send_pipefd[WRITE_END]);
+
+        // Read output from child
+        output.clear();
+        read_from_pipe(recv_pipefd, output);
+        close_check(recv_pipefd[READ_END]);
+
+        // Wait on child
+        waitpid_success(child_pid, error_code, 0, cmd);
+
+    } else { // I am the child
+
+#ifdef NDEBUG
+        // Suppress stderr of child process
+        int devnull = open("/dev/null", O_WRONLY);
+        dup2_check(devnull, STDERR_FILENO);
+#endif
+
+        // Close write end of send pipe and redirect stdin to read end
+        // of send pipe
+        close_check(send_pipefd[WRITE_END]);
+        dup2_check(send_pipefd[READ_END], 0);
+        close_check(send_pipefd[READ_END]);
+
+        // Close read end of receive pipe and redirect stdout to write end
+        // of receive pipe
+        close_check(recv_pipefd[READ_END]);
+        dup2_check(recv_pipefd[WRITE_END], 1);
+        close_check(recv_pipefd[WRITE_END]);
+
+        // Break up command into tokens
+        vector<string> cmd_tokens;
+        vector<const char *> argv;
+
+        parse_cmd(cmd, cmd_tokens);
+        vector_argv(cmd_tokens, argv);
+
+        // Execute command
+        execvp(argv[0], (char * const *) argv.data());
+
+        // If program reaches this, command execution has failed
+        string error_msg("exec of ");
+        error_msg += cmd;
+        error_msg += " failed";
+        runtime_error e(error_msg);
+        throw e;
+    }
+
+#ifndef NDEBUG
+    cerr << "output: " << output << endl;
+#endif
+}
+
 void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd) {
 
     using namespace std;
