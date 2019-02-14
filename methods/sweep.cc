@@ -14,18 +14,15 @@
 #include "SerialMaster.h"
 #include "SweepController.h"
 
-#ifndef NDEBUG
 #include "debug.h"
-#endif
 
 bool program_terminated = false;
 
 int main(int argc, char *argv[])
 {
 
-#ifndef NDEBUG
+    // Set signal handlers
     set_handlers();
-#endif
 
     // Process arguments
     if (argc != 2)
