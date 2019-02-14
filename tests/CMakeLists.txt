@@ -17,6 +17,9 @@ endif ()
 separate_arguments (MPIEXEC_PREFLAGS)
 separate_arguments (MPIEXEC_POSTFLAGS)
 
+# Include TestPakman
+include (TestPakman.cmake)
+
 # Add test subdirectories
 add_subdirectory (standard-simulator)
 add_subdirectory (mpi-simulator)

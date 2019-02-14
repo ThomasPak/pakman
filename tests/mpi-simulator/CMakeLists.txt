@@ -12,306 +12,133 @@ link_libraries (${MPI_CXX_LIBRARIES})
 add_executable (mpi-simulator mpi-simulator.c)
 add_executable (mpi-simulator-cpp mpi-simulator-cpp.cc)
 
-### MPI Simulator C ###
-
 #####################
 ## Test sweep mode ##
 #####################
-# Simulator does not return error
-set (return_code 0)
-set (parameter_name p)
-set (parameter_list "1\\n2\\n3\\n4\\n5")
-set (input_file mpi-simulator-no-error.sweep)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator.sweep.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+## MPI simulator with C header
+# Test if output matches expected output
+add_sweep_match_test (
+    MPI                     # Master type
+    MPI                     # Simulator type
+    ""                      # Postfix
+    p                       # Parameter name
+    "1\\n2\\n3\\n4\\n5"     # Parameter list
     )
 
-# Compute expected output
-string (REPLACE "\\n" "\n" expected_output "${parameter_name}\n${parameter_list}")
-
-# Add test
-# Because pakman runs simulations in parallel, debugging messages in stderr may
-# pop up in the stdout results.  Hence we need to throw away stderr in order
-# for CTest to match the expected output string successfully.
-add_test (MPISimulatorSweepNoError
-    ${PROJECT_BINARY_DIR}/utils/discard_stderr.sh
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/sweep-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} --mpi-simulation)
-set_property (TEST MPISimulatorSweepNoError
-    PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
-
-# Simulator returns error
-set (return_code 1)
-set (input_file mpi-simulator-with-error.sweep)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator.sweep.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+# Test if Pakman throws error when simulator throws error
+add_sweep_error_test (
+    MPI                     # Master type
+    MPI                     # Simulator type
+    ""                      # Postfix
+    p                       # Parameter name
+    "1\\n2\\n3\\n4\\n5"     # Parameter list
     )
 
-# Add test
-add_test (MPISimulatorSweepWithError
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/sweep-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} --mpi-simulation)
-set_property (TEST MPISimulatorSweepWithError
-    PROPERTY WILL_FAIL TRUE)
+## MPI simulator with C++ header
+# Test if output matches expected output
+add_sweep_match_test (
+    MPI                     # Master type
+    MPI                     # Simulator type
+    "Cpp"                   # Postfix
+    p                       # Parameter name
+    "1\\n2\\n3\\n4\\n5"     # Parameter list
+    )
+
+# Test if Pakman throws error when simulator throws error
+add_sweep_error_test (
+    MPI                     # Master type
+    MPI                     # Simulator type
+    "Cpp"                   # Postfix
+    p                       # Parameter name
+    "1\\n2\\n3\\n4\\n5"     # Parameter list
+    )
 
 #########################
 ## Test rejection mode ##
 #########################
-# Simulator does not return error
-set (number_of_parameters 10)
-set (return_code 0)
-set (parameter_name p)
-set (sampled_parameter 1)
-set (input_file mpi-simulator-no-error.rejection)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator.rejection.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+## MPI simulator with C header
+# Test if output matches expected output
+add_rejection_match_test (
+    MPI         # Master type
+    MPI         # Simulator type
+    ""          # Postfix
+    10          # Number of parameters
+    p           # Parameter name
+    1           # Sampled parameter
     )
 
-# Compute expected output
-set (expected_output "${parameter_name}")
-set (i 0)
-while (i LESS number_of_parameters)
-    string (APPEND expected_output "\n${sampled_parameter}")
-    math (EXPR i "${i} + 1")
-endwhile ()
-
-# Add test
-add_test (MPISimulatorRejectionNoError
-    ${PROJECT_BINARY_DIR}/utils/discard_stderr.sh
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/rejection-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} ${number_of_parameters} --mpi-simulation)
-set_property (TEST MPISimulatorRejectionNoError
-    PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
-
-# Simulator returns error
-set (return_code 1)
-set (input_file mpi-simulator-with-error.rejection)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator.rejection.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+# Test if Pakman throws error when simulator throws error
+add_rejection_error_test (
+    MPI         # Master type
+    MPI         # Simulator type
+    ""          # Postfix
+    10          # Number of parameters
+    p           # Parameter name
+    1           # Sampled parameter
     )
 
-# Add test
-add_test (MPISimulatorRejectionWithError
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/rejection-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} ${number_of_parameters} --mpi-simulation)
-set_property (TEST MPISimulatorRejectionWithError
-    PROPERTY WILL_FAIL TRUE)
+## MPI simulator with C++ header
+# Test if output matches expected output
+add_rejection_match_test (
+    MPI         # Master type
+    MPI         # Simulator type
+    "Cpp"       # Postfix
+    10          # Number of parameters
+    p           # Parameter name
+    1           # Sampled parameter
+    )
 
-#####################
+# Test if Pakman throws error when simulator throws error
+add_rejection_error_test (
+    MPI         # Master type
+    MPI         # Simulator type
+    "Cpp"       # Postfix
+    10          # Number of parameters
+    p           # Parameter name
+    1           # Sampled parameter
+    )
+
+###################
 ## Test smc mode ##
-#####################
-# Simulator does not return error
-set (number_of_parameters 10)
-set (return_code 0)
-set (parameter_name p)
-set (sampled_parameter 1)
-set (input_file mpi-simulator-no-error.smc)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator.smc.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+###################
+## MPI simulator with C header
+# Test if output matches expected output
+add_smc_match_test (
+    MPI         # Master type
+    MPI         # Simulator type
+    ""          # Postfix
+    10          # Number of parameters
+    p           # Parameter name
+    1           # Sampled parameter
     )
 
-# Compute expected output
-set (expected_output "${parameter_name}")
-set (i 0)
-while (i LESS number_of_parameters)
-    string (APPEND expected_output "\n${sampled_parameter}")
-    math (EXPR i "${i} + 1")
-endwhile ()
-
-# Add test
-add_test (MPISimulatorSMCNoError
-    ${PROJECT_BINARY_DIR}/utils/discard_stderr.sh
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/smc-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} ${number_of_parameters} --mpi-simulation)
-set_property (TEST MPISimulatorSMCNoError
-    PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
-
-# Simulator returns error
-set (return_code 1)
-set (input_file mpi-simulator-with-error.smc)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator.smc.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+# Test if Pakman throws error when simulator throws error
+add_smc_error_test (
+    MPI         # Master type
+    MPI         # Simulator type
+    ""          # Postfix
+    10          # Number of parameters
+    p           # Parameter name
+    1           # Sampled parameter
     )
 
-# Add test
-add_test (MPISimulatorSMCWithError
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/smc-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} ${number_of_parameters} --mpi-simulation)
-set_property (TEST MPISimulatorSMCWithError
-    PROPERTY WILL_FAIL TRUE)
-
-### MPI Simulator C++ ###
-
-#####################
-## Test sweep mode ##
-#####################
-# Simulator does not return error
-set (return_code 0)
-set (parameter_name p)
-set (parameter_list "1\\n2\\n3\\n4\\n5")
-set (input_file mpi-simulator-cpp-no-error.sweep)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator-cpp.sweep.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+## MPI simulator with C++ header
+# Test if output matches expected output
+add_smc_match_test (
+    MPI         # Master type
+    MPI         # Simulator type
+    "Cpp"       # Postfix
+    10          # Number of parameters
+    p           # Parameter name
+    1           # Sampled parameter
     )
 
-# Compute expected output
-string (REPLACE "\\n" "\n" expected_output "${parameter_name}\n${parameter_list}")
-
-# Add test
-# Because pakman runs simulations in parallel, debugging messages in stderr may
-# pop up in the stdout results.  Hence we need to throw away stderr in order
-# for CTest to match the expected output string successfully.
-add_test (MPISimulatorCppSweepNoError
-    ${PROJECT_BINARY_DIR}/utils/discard_stderr.sh
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/sweep-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} --mpi-simulation)
-set_property (TEST MPISimulatorCppSweepNoError
-    PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
-
-# Simulator returns error
-set (return_code 1)
-set (input_file mpi-simulator-cpp-with-error.sweep)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator-cpp.sweep.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
+# Test if Pakman throws error when simulator throws error
+add_smc_error_test (
+    MPI         # Master type
+    MPI         # Simulator type
+    "Cpp"       # Postfix
+    10          # Number of parameters
+    p           # Parameter name
+    1           # Sampled parameter
     )
-
-# Add test
-add_test (MPISimulatorCppSweepWithError
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/sweep-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} --mpi-simulation)
-set_property (TEST MPISimulatorCppSweepWithError
-    PROPERTY WILL_FAIL TRUE)
-
-#########################
-## Test rejection mode ##
-#########################
-# Simulator does not return error
-set (number_of_parameters 10)
-set (return_code 0)
-set (parameter_name p)
-set (sampled_parameter 1)
-set (input_file mpi-simulator-cpp-no-error.rejection)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator-cpp.rejection.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
-    )
-
-# Compute expected output
-set (expected_output "${parameter_name}")
-set (i 0)
-while (i LESS number_of_parameters)
-    string (APPEND expected_output "\n${sampled_parameter}")
-    math (EXPR i "${i} + 1")
-endwhile ()
-
-# Add test
-add_test (MPISimulatorCppRejectionNoError
-    ${PROJECT_BINARY_DIR}/utils/discard_stderr.sh
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/rejection-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} ${number_of_parameters} --mpi-simulation)
-set_property (TEST MPISimulatorCppRejectionNoError
-    PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
-
-# Simulator returns error
-set (return_code 1)
-set (input_file mpi-simulator-cpp-with-error.rejection)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator-cpp.rejection.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
-    )
-
-# Add test
-add_test (MPISimulatorCppRejectionWithError
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/rejection-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} ${number_of_parameters} --mpi-simulation)
-set_property (TEST MPISimulatorCppRejectionWithError
-    PROPERTY WILL_FAIL TRUE)
-
-#####################
-## Test smc mode ##
-#####################
-# Simulator does not return error
-set (number_of_parameters 10)
-set (return_code 0)
-set (parameter_name p)
-set (sampled_parameter 1)
-set (input_file mpi-simulator-cpp-no-error.smc)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator-cpp.smc.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
-    )
-
-# Compute expected output
-set (expected_output "${parameter_name}")
-set (i 0)
-while (i LESS number_of_parameters)
-    string (APPEND expected_output "\n${sampled_parameter}")
-    math (EXPR i "${i} + 1")
-endwhile ()
-
-# Add test
-add_test (MPISimulatorCppSMCNoError
-    ${PROJECT_BINARY_DIR}/utils/discard_stderr.sh
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/smc-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} ${number_of_parameters} --mpi-simulation)
-set_property (TEST MPISimulatorCppSMCNoError
-    PROPERTY PASS_REGULAR_EXPRESSION "${expected_output}")
-
-# Simulator returns error
-set (return_code 1)
-set (input_file mpi-simulator-cpp-with-error.smc)
-
-# Generate input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/mpi-simulator-cpp.smc.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${input_file}"
-    )
-
-# Add test
-add_test (MPISimulatorCppSMCWithError
-    ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${MPIEXEC_MAX_NUMPROCS}
-    ${MPIEXEC_PREFLAGS} ${PROJECT_BINARY_DIR}/methods/smc-mpi ${MPIEXEC_POSTFLAGS}
-    ${input_file} ${number_of_parameters} --mpi-simulation)
-set_property (TEST MPISimulatorCppSMCWithError
-    PROPERTY WILL_FAIL TRUE)
