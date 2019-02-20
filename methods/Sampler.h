@@ -1,6 +1,7 @@
 #ifndef SAMPLER_H
 #define SAMPLER_H
 
+#include <memory>
 #include <vector>
 #include <string>
 #include <queue>
@@ -39,7 +40,7 @@ class PopulationSampler : public virtual AbstractSampler {
 
         PopulationSampler(std::vector<double> weights,
                           std::vector<parameter_t> prmtr_population,
-                          std::default_random_engine &generator);
+                          std::shared_ptr<std::default_random_engine> p_generator);
 
         void swap_population(std::vector<double> &new_weights,
                              std::vector<parameter_t> &new_prmtr_population);
@@ -64,7 +65,7 @@ class PopulationSampler : public virtual AbstractSampler {
         std::vector<double> m_weights_cumsum;
 
         // Random number generator
-        std::default_random_engine &m_generator;
+        std::shared_ptr<std::default_random_engine> m_p_generator;
 
         // Uniform distribution
         mutable std::uniform_real_distribution<double> m_distribution;
@@ -114,7 +115,8 @@ class SMCSampler :
 
         SMCSampler(std::vector<double> weights,
                                       std::vector<parameter_t> prmtr_population,
-                                      std::default_random_engine &generator, const cmd_t &perturber,
+                                      std::shared_ptr<std::default_random_engine> p_generator,
+                                      const cmd_t &perturber,
                                       const cmd_t &prior_sampler,
                                       const cmd_t &prior_pdf);
 

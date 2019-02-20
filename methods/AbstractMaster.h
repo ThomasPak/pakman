@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 
+#include "common.h"
+
 #include "AbstractController.h"
 
 class AbstractController;
@@ -51,6 +53,25 @@ class AbstractMaster
 
         // Terminate Master
         virtual void terminate() = 0;
+
+        // Return master type based on string
+        static master_t getMaster(const std::string& arg);
+
+        // Return help message based on master type.
+        // When subclassing AbstractMaster, be sure to include a static method
+        // with the signature 'static std::string help()' and add an entry in
+        // the switch statement of AbstractMaster::help()
+        static std::string help(master_t master);
+
+        // Execute run function based on master type
+        // When subclassing AbstractMaster, be sure to include a static method
+        // with the signature
+        //
+        // 'static void run(controller_t controller, int argc, char *argv[])'
+        //
+        // and add an entry in the switch statement of AbstractMaster::run()
+        static void run(master_t master, controller_t controller,
+                int argc, char *argv[]);
 
     protected:
 

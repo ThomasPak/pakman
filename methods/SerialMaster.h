@@ -4,6 +4,9 @@
 #include <string>
 #include <queue>
 
+#include "common.h"
+#include "types.h"
+
 #include "AbstractMaster.h"
 
 class SerialMaster : public AbstractMaster
@@ -45,6 +48,12 @@ class SerialMaster : public AbstractMaster
 
         // Terminate Master
         virtual void terminate() override;
+
+        // Static help function
+        static std::string help();
+
+        // Static run function
+        static void run(controller_t controller, int argc, char *argv[]);
 
     private:
 

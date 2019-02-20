@@ -20,6 +20,16 @@ class SweepController : public AbstractController
         // Iterate function
         virtual void iterate() override;
 
+        // Simulator getter
+        virtual cmd_t getSimulator() const override;
+
+        // Static help function
+        static std::string help();
+
+        // Static function to make from positional arguments
+        static SweepController* makeController(
+                const std::vector<std::string>& positional_args);
+
     private:
 
         /**** Member variables ****/
@@ -36,6 +46,9 @@ class SweepController : public AbstractController
         // pending queue of the Master.  This flag tells iterate() that it is
         // in the first iteration.
         bool m_first_iteration = true;
+
+        // Simulator command
+        cmd_t m_simulator;
 };
 
 #endif // SWEEPCONTROLLER_H

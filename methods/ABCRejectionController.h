@@ -1,6 +1,10 @@
 #ifndef ABCREJECTIONCONTROLLER_H
 #define ABCREJECTIONCONTROLLER_H
 
+#include <vector>
+#include <string>
+
+#include "types.h"
 #include "Sampler.h"
 
 #include "AbstractController.h"
@@ -14,10 +18,20 @@ class ABCRejectionController : public AbstractController
                 int num_accept);
 
         // Default destructor
-        virtual ~ABCRejectionController() = default;
+        virtual ~ABCRejectionController() override = default;
 
         // Iterate function
-        virtual void iterate();
+        virtual void iterate() override;
+
+        // Simulator getter
+        virtual cmd_t getSimulator() const override;
+
+        // Static help function
+        static std::string help();
+
+        // Static function to make from positional arguments
+        static ABCRejectionController* makeController(
+                const std::vector<std::string>& positional_args);
 
     private:
 
@@ -36,6 +50,9 @@ class ABCRejectionController : public AbstractController
 
         // Vector of accepted parameters
         std::vector<parameter_t> m_prmtr_accepted;
+
+        // Simulator command
+        cmd_t m_simulator;
 };
 
 #endif // ABCREJECTIONCONTROLLER_H

@@ -12,7 +12,8 @@
 #include "SweepController.h"
 
 SweepController::SweepController(const sweep::input_t &input_obj) :
-    m_parameter_names(input_obj.parameter_names)
+    m_parameter_names(input_obj.parameter_names),
+    m_simulator(input_obj.simulator)
 {
     // Read output from generator
     std::string generator_output;
@@ -85,4 +86,9 @@ void SweepController::iterate()
     }
 
     entered = false;
+}
+
+cmd_t SweepController::getSimulator() const
+{
+    return m_simulator;
 }

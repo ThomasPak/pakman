@@ -6,9 +6,12 @@
 #include <set>
 #include <string>
 
-#include "AbstractMaster.h"
+#include <mpi.h>
 
+#include "common.h"
 #include "mpi_common.h"
+
+#include "AbstractMaster.h"
 
 class MPIMaster : public AbstractMaster
 {
@@ -49,6 +52,12 @@ class MPIMaster : public AbstractMaster
 
         // Terminate Master
         virtual void terminate() override;
+
+        // Static help function
+        static std::string help();
+
+        // Static run function
+        static void run(controller_t controller, int argc, char *argv[]);
 
     private:
 

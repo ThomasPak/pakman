@@ -2,8 +2,10 @@
 #include <memory>
 #include <string>
 
+#include "common.h"
 #include "types.h"
 #include "system_call.h"
+#include "help.h"
 
 #include "AbstractMaster.h"
 #include "SerialMaster.h"

@@ -1,7 +1,7 @@
 # If the MPI installation is OpenMPI, make sure to add `--force-host-spawn` flags
 # to MPIEXEC_POSTFLAGS
 if (mpiexec_version MATCHES "OpenRTE")
-    list (APPEND MPIEXEC_POSTFLAGS "--force-host-spawn")
+    set (force_host_spawn TRUE)
 endif ()
 
 include_directories (${MPI_C_INCLUDE_DIRS} "${PROJECT_SOURCE_DIR}/include")

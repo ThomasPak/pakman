@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 
+#include "types.h"
 #include "Sampler.h"
 
 #include "AbstractController.h"
@@ -15,13 +16,24 @@ class ABCSMCController : public AbstractController
 
         // Constructor
         ABCSMCController(const smc::input_t &input_obj,
-                std::default_random_engine &generator, int pop_size);
+                std::shared_ptr<std::default_random_engine> p_generator,
+                int pop_size);
 
         // Default destructor
         virtual ~ABCSMCController() override = default;
 
         // Iterate function
         virtual void iterate() override;
+
+        // Simulator getter
+        virtual cmd_t getSimulator() const override;
+
+        // Static help function
+        static std::string help();
+
+        // Static function to make from positional arguments
+        static ABCSMCController* makeController(
+                const std::vector<std::string>& positional_args);
 
     private:
 
@@ -49,6 +61,9 @@ class ABCSMCController : public AbstractController
 
         // New weights
         std::vector<double> m_weights_new;
+
+        // Simulator command
+        cmd_t m_simulator;
 };
 
 #endif // ABCSMCCONTROLLER_H

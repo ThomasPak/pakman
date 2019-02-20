@@ -7,6 +7,7 @@
 #include <cassert>
 
 #include "common.h"
+#include "types.h"
 #include "run_simulation.h"
 #include "write_parameters.h"
 #include "smc_weight.h"
@@ -15,14 +16,16 @@
 
 // Constructor
 ABCSMCController::ABCSMCController(const smc::input_t &input_obj,
-        std::default_random_engine &generator, int pop_size) :
+        std::shared_ptr<std::default_random_engine> p_generator,
+        int pop_size) :
     m_epsilons(input_obj.epsilons),
     m_parameter_names(input_obj.parameter_names),
     m_smc_sampler(std::vector<double>(pop_size),
-            std::vector<parameter_t>(pop_size), generator, input_obj.perturber,
+            std::vector<parameter_t>(pop_size), p_generator, input_obj.perturber,
             input_obj.prior_sampler, input_obj.prior_pdf),
     m_perturbation_pdf(input_obj.perturbation_pdf),
-    m_pop_size(pop_size)
+    m_pop_size(pop_size),
+    m_simulator(input_obj.simulator)
 {
     m_smc_sampler.setT(m_t);
 }
@@ -139,4 +142,9 @@ void ABCSMCController::iterate()
                     m_smc_sampler.sampleParameter()));
 
     entered = false;
+}
+
+cmd_t ABCSMCController::getSimulator() const
+{
+    return m_simulator;
 }

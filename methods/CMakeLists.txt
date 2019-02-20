@@ -1,11 +1,19 @@
 add_subdirectory (mpi)
 
 add_library (pakman_base
-    ABCRejectionController.cc
-    ABCSMCController.cc
     AbstractController.cc
+    AbstractControllerStatic.cc
+    SweepController.cc
+    SweepControllerStatic.cc
+    ABCRejectionController.cc
+    ABCRejectionControllerStatic.cc
+    ABCSMCController.cc
+    ABCSMCControllerStatic.cc
     AbstractMaster.cc
+    AbstractMasterStatic.cc
     SerialMaster.cc
+    SerialMasterStatic.cc
+    help.cc
     acceptance_probability.cc
     debug.cc
     parse_cmd.cc
@@ -16,7 +24,6 @@ add_library (pakman_base
     sample_population.cc
     Sampler.cc
     smc_weight.cc
-    SweepController.cc
     system_call.cc
     timer.cc
     vector_argv.cc
@@ -28,27 +35,13 @@ add_library (pakman_base
     signal_handler.cc
     )
 
-add_executable (rejection rejection.cc)
-target_link_libraries (rejection pakman_base)
-
-add_executable (smc smc.cc)
-target_link_libraries (smc pakman_base)
-
-add_executable (sweep sweep.cc)
-target_link_libraries (sweep pakman_base)
+target_include_directories (pakman_base PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/mpi)
+target_link_libraries (pakman_base pakman_mpi_base)
 
 include_directories (${MPI_CXX_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable (rejection-mpi mpi/rejection-mpi.cc)
-target_link_libraries (rejection-mpi pakman_base pakman_mpi_base)
-
-add_executable (smc-mpi mpi/smc-mpi.cc)
-target_link_libraries (smc-mpi pakman_base pakman_mpi_base)
-
-add_executable (sweep-mpi mpi/sweep-mpi.cc)
-target_link_libraries (sweep-mpi pakman_base pakman_mpi_base)
+add_executable (pakman main.cc)
+target_link_libraries (pakman pakman_base)
 
 # Install targets
-install (TARGETS rejection smc sweep rejection-mpi smc-mpi sweep-mpi
-    DESTINATION bin)
-install (PROGRAMS pakman DESTINATION bin)
+install (TARGETS pakman DESTINATION bin)

@@ -32,42 +32,48 @@ function (get_test_command _command
         test_type
         input_file)
 
-    # Set executable based on controller
-    # TODO: Remove when pakman executables are unified
-    if (controller MATCHES "Sweep")
-        set (executable "${PROJECT_BINARY_DIR}/methods/sweep")
-    elseif (controller MATCHES "Rejection")
-        set (executable "${PROJECT_BINARY_DIR}/methods/rejection")
-    elseif (controller MATCHES "SMC")
-        set (executable "${PROJECT_BINARY_DIR}/methods/smc")
-    endif ()
-
+    # Set executable
+    set (executable "${PROJECT_BINARY_DIR}/methods/pakman")
 
     # Initialize empty command
     set (command "")
 
     # If it is type match, discard stderr
+    # TODO: when verbosity flags are added; remove discard_stderr.sh
     if (test_type MATCHES "Match")
         string (APPEND command "${PROJECT_BINARY_DIR}/utils/discard_stderr.sh ")
     endif ()
 
     # Append command based on master type
     if (master MATCHES "Serial")
-        string (APPEND command "${executable} ")
+        string (APPEND command "${executable} serial ")
     elseif (master MATCHES "MPI")
         string (APPEND command "${MPIEXEC_EXECUTABLE} \
         ${MPIEXEC_NUMPROC_FLAG} \
         ${MPIEXEC_MAX_NUMPROCS} \
         ${MPIEXEC_PREFLAGS} \
-        ${executable}-mpi \
-        ${MPIEXEC_POSTFLAGS} ")
+        ${executable} mpi ")
+    endif ()
+
+    # Append command based on controller type
+    if (controller MATCHES "Sweep")
+        string (APPEND command "sweep ")
+    elseif (controller MATCHES "Rejection")
+        string (APPEND command "rejection ")
+    elseif (controller MATCHES "SMC")
+        string (APPEND command "smc ")
     endif ()
 
     # Append command based on simulator type
     if (simulator MATCHES "PersistentMPI")
-        string (APPEND command "--mpi-simulation --persistent ")
+        string (APPEND command "--mpi-simulator --persistent ")
     elseif (simulator MATCHES "MPI")
-        string (APPEND command "--mpi-simulation ")
+        string (APPEND command "--mpi-simulator ")
+    endif ()
+
+    # Append command based on force_host_spawn
+    if (force_host_spawn)
+        string (APPEND command "--force-host-spawn ")
     endif ()
 
     # Add input file

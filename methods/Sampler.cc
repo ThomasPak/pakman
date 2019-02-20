@@ -1,3 +1,4 @@
+#include <memory>
 #include <vector>
 #include <string>
 #include <sstream>
@@ -36,11 +37,11 @@ parameter_t PriorSampler::sampleParameter() const {
 /**** PopulationSampler ****/
 PopulationSampler::PopulationSampler(std::vector<double> weights,
                   std::vector<parameter_t> prmtr_population,
-                  std::default_random_engine &generator) :
+                  std::shared_ptr<std::default_random_engine> p_generator) :
                   m_weights(weights),
                   m_weights_cumsum(weights.size()),
                   m_prmtr_population(prmtr_population),
-                  m_generator(generator),
+                  m_p_generator(p_generator),
                   m_distribution(0.0, 1.0) {
 
     // Normalize and compute cumulative sum
@@ -64,7 +65,7 @@ void PopulationSampler::swap_population(std::vector<double> &new_weights,
 parameter_t PopulationSampler::sampleParameter() const {
 
     // Sample population
-    int idx = sample_population(m_weights_cumsum, m_distribution, m_generator);
+    int idx = sample_population(m_weights_cumsum, m_distribution, *m_p_generator);
     return removeTrailingWhitespace(m_prmtr_population[idx]);
 }
 
@@ -107,10 +108,11 @@ parameter_t PerturbationSampler::sampleParameter() const {
 /**** SMCSampler ****/
 SMCSampler::SMCSampler(std::vector<double> weights,
                               std::vector<parameter_t> prmtr_population,
-                              std::default_random_engine &generator, const cmd_t &perturber,
+                              std::shared_ptr<std::default_random_engine> p_generator,
+                              const cmd_t &perturber,
                               const cmd_t &prior_sampler,
                               const cmd_t &prior_pdf) :
-    PopulationSampler(weights, prmtr_population, generator),
+    PopulationSampler(weights, prmtr_population, p_generator),
     PerturbationSampler(perturber),
     PriorSampler(prior_sampler),
     m_prior_pdf(prior_pdf),

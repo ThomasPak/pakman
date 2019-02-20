@@ -18,7 +18,8 @@ ABCRejectionController::ABCRejectionController(
     m_epsilon(input_obj.epsilon),
     m_prior_sampler(input_obj.prior_sampler),
     m_parameter_names(input_obj.parameter_names),
-    m_num_accept(num_accept)
+    m_num_accept(num_accept),
+    m_simulator(input_obj.simulator)
 {
 }
 
@@ -95,4 +96,9 @@ void ABCRejectionController::iterate()
                     m_prior_sampler.sampleParameter()));
 
     entered = false;
+}
+
+cmd_t ABCRejectionController::getSimulator() const
+{
+    return m_simulator;
 }
