@@ -1,3 +1,6 @@
+# spdlog
+include_directories (${PROJECT_SOURCE_DIR}/methods/3rdparty)
+
 add_subdirectory (mpi)
 
 add_library (pakman_base

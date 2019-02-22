@@ -1,3 +1,5 @@
+include_directories (${PROJECT_SOURCE_DIR}/methods/3rdparty)
+
 include_directories (${MPI_CXX_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/methods)
 add_compile_options (${MPI_CXX_COMPILE_OPTIONS})
 link_libraries (${MPI_CXX_LIBRARIES} pakman_base)
