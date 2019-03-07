@@ -4,6 +4,8 @@
 
 #include <mpi.h>
 
+#include "spdlog/spdlog.h"
+
 #include "common.h"
 #include "mpi_common.h"
 #include "mpi_utils.h"
@@ -11,10 +13,6 @@
 #include "MPIWorkerHandler.h"
 #include "PersistentMPIWorkerHandler.h"
 #include "Manager.h"
-
-#ifndef NDEBUG
-#include <iostream>
-#endif
 
 // Construct from command, pointer to program terminated flag, and
 // Worker type (forked vs MPI)
@@ -100,14 +98,11 @@ void Manager::doIdleStuff()
         switch (receiveSignal())
         {
             case TERMINATE_MANAGER_SIGNAL:
-#ifndef NDEBUG
-                {
-                const int rank = get_mpi_comm_world_rank();
-                const int size = get_mpi_comm_world_size();
-                std::cerr << "Idle manager " << rank << "/" << size <<
-                    ": received TERMINATE_MANAGER_SIGNAL!\n";
-                }
-#endif
+
+                spdlog::debug("Idle manager {}/{}: received "
+                        "TERMINATE_MANAGER_SIGNAL!",
+                        get_mpi_comm_world_rank(), get_mpi_comm_world_size());
+
                 // Terminate Manager
                 m_state = terminated;
                 return;
@@ -116,14 +111,11 @@ void Manager::doIdleStuff()
             // has not yet checked for the Manager's message.  In this case,
             // nothing needs to be done
             case FLUSH_WORKER_SIGNAL:
-#ifndef NDEBUG
-                {
-                const int rank = get_mpi_comm_world_rank();
-                const int size = get_mpi_comm_world_size();
-                std::cerr << "Idle manager " << rank << "/" << size <<
-                    ": received FLUSH_WORKER_SIGNAL!\n";
-                }
-#endif
+
+                spdlog::debug("Idle manager {}/{}: received "
+                        "FLUSH_WORKER_SIGNAL!",
+                        get_mpi_comm_world_rank(), get_mpi_comm_world_size());
+
                 return;
 
             // TERMINATE_MANAGER_SIGNAL and FLUSH_WORKER_SIGNAL are the
@@ -136,14 +128,9 @@ void Manager::doIdleStuff()
     // Check for message
     if (probeMessage())
     {
-#ifndef NDEBUG
-    {
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Idle manager " << rank << "/" << size <<
-        ": received message!\n";
-    }
-#endif
+        spdlog::debug("Idle manager {}/{}: received message!",
+                get_mpi_comm_world_rank(), get_mpi_comm_world_size());
+
         // Receive input string and create new Worker
         std::string input_string = receiveMessage();
         createWorker(input_string);
@@ -177,14 +164,11 @@ void Manager::doBusyStuff()
         switch (receiveSignal())
         {
             case TERMINATE_MANAGER_SIGNAL:
-#ifndef NDEBUG
-                {
-                const int rank = get_mpi_comm_world_rank();
-                const int size = get_mpi_comm_world_size();
-                std::cerr << "Busy manager " << rank << "/" << size <<
-                    ": received TERMINATE_MANAGER_SIGNAL\n";
-                }
-#endif
+
+                spdlog::debug("Busy manager {}/{}: received "
+                        "TERMINATE_MANAGER_SIGNAL!",
+                        get_mpi_comm_world_rank(), get_mpi_comm_world_size());
+
                 // Terminate Worker
                 terminateWorker();
 
@@ -193,14 +177,11 @@ void Manager::doBusyStuff()
                 return;
 
             case FLUSH_WORKER_SIGNAL:
-#ifndef NDEBUG
-                {
-                const int rank = get_mpi_comm_world_rank();
-                const int size = get_mpi_comm_world_size();
-                std::cerr << "Busy manager " << rank << "/" << size <<
-                    ": received FLUSH_WORKER_SIGNAL\n";
-                }
-#endif
+
+                spdlog::debug("Busy manager {}/{}: received "
+                        "FLUSH_WORKER_SIGNAL!",
+                        get_mpi_comm_world_rank(), get_mpi_comm_world_size());
+
                 // Flush Worker
                 flushWorker();
 
@@ -221,14 +202,9 @@ void Manager::doBusyStuff()
     // Check if Worker has finished
     if (m_p_worker_handler->isDone())
     {
-#ifndef NDEBUG
-    {
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Busy manager " << rank << "/" << size <<
-        ": Worker is done!\n";
-    }
-#endif
+        spdlog::debug("Busy manager {}/{}: Worker is done!",
+                get_mpi_comm_world_rank(), get_mpi_comm_world_size());
+
         // Get output string
         std::string output_string = m_p_worker_handler->getOutput();
 
@@ -303,11 +279,6 @@ void Manager::createWorker(const std::string& input_string)
 // Flush Worker
 void Manager::flushWorker()
 {
-#ifndef NDEBUG
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::flushWorker\n";
-#endif
     // Sanity check: This function should not be called when
     // m_p_worker_handler is the null pointer
     assert(m_p_worker_handler);
@@ -315,19 +286,11 @@ void Manager::flushWorker()
     // Reset m_p_worker_handler to null pointer,
     // this flushes the worker
     m_p_worker_handler.reset();
-#ifndef NDEBUG
-    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::flushWorker\n";
-#endif
 }
 
 // Terminate Worker
 void Manager::terminateWorker()
 {
-#ifndef NDEBUG
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::terminateWorker\n";
-#endif
     // Sanity check: This function should not be called when
     // m_p_worker_handler is the null pointer
     assert(m_p_worker_handler);
@@ -337,9 +300,6 @@ void Manager::terminateWorker()
 
     // Reset m_p_worker_handler to null pointer
     m_p_worker_handler.reset();
-#ifndef NDEBUG
-    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::terminateWorker\n";
-#endif
 }
 
 // Probe for message
@@ -375,11 +335,6 @@ int Manager::receiveSignal() const
 // Send message to Master
 void Manager::sendMessageToMaster(const std::string& message_string)
 {
-#ifndef NDEBUG
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::sendMessageToMaster\n";
-#endif
     // Ensure previous message has finished sending
     MPI_Wait(&m_message_request, MPI_STATUS_IGNORE);
 
@@ -394,19 +349,11 @@ void Manager::sendMessageToMaster(const std::string& message_string)
             MPI_CHAR, MASTER_RANK, MANAGER_MSG_TAG,
             MPI_COMM_WORLD,
             &m_message_request);
-#ifndef NDEBUG
-    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::sendMessageToMaster\n";
-#endif
 }
 
 // Send signal to Master
 void Manager::sendSignalToMaster(int signal)
 {
-#ifndef NDEBUG
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::sendSignalToMaster\n";
-#endif
     // Ensure previous signal has finished sending
     MPI_Wait(&m_signal_request, MPI_STATUS_IGNORE);
 
@@ -418,19 +365,11 @@ void Manager::sendSignalToMaster(int signal)
     MPI_Isend(&m_signal_buffer, 1, MPI_INT, MASTER_RANK,
             MANAGER_SIGNAL_TAG, MPI_COMM_WORLD,
             &m_signal_request);
-#ifndef NDEBUG
-    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::sendSignalToMaster\n";
-#endif
 }
 
 // Send error code to Master
 void Manager::sendErrorCodeToMaster(int error_code)
 {
-#ifndef NDEBUG
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Manager " << rank << "/" << size << ": entered Manager::sendErrorCodeToMaster\n";
-#endif
     // Ensure previous error code has finished sending
     MPI_Wait(&m_error_code_request, MPI_STATUS_IGNORE);
 
@@ -442,7 +381,4 @@ void Manager::sendErrorCodeToMaster(int error_code)
     MPI_Isend(&m_error_code_buffer, 1, MPI_INT, MASTER_RANK,
             MANAGER_ERROR_CODE_TAG, MPI_COMM_WORLD,
             &m_error_code_request);
-#ifndef NDEBUG
-    std::cerr << "Manager " << rank << "/" << size << ": exiting Manager::sendErrorCodeToMaster\n";
-#endif
 }

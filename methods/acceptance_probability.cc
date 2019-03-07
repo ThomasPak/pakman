@@ -1,11 +1,9 @@
 #include <string>
 
+#include "spdlog/spdlog.h"
+
 #include "system_call.h"
 #include "acceptance_probability.h"
-
-#ifndef NDEBUG
-#include <iostream>
-#endif
 
 double acceptance_probability(const cmd_t& prior_pdf,
                               const cmd_t& proposal_pdf,
@@ -47,13 +45,11 @@ double acceptance_probability(const cmd_t& prior_pdf,
     double accept_prob = new_prior_pdf * new_to_old_proposal_pdf
                          / ( old_prior_pdf * old_to_new_proposal_pdf );
 
-#ifndef NDEBUG
-    cerr << "old_prior_pdf_str: " << old_prior_pdf_str << endl;
-    cerr << "new_prior_pdf_str: " << new_prior_pdf_str << endl;
+    spdlog::debug("old_prior_pdf_str: {}", old_prior_pdf_str);
+    spdlog::debug("new_prior_pdf_str: {}", new_prior_pdf_str);
 
-    cerr << "old_to_new_proposal_pdf_str: " << old_to_new_proposal_pdf_str << endl;
-    cerr << "new_to_old_proposal_pdf_str: " << new_to_old_proposal_pdf_str << endl;
-#endif
+    spdlog::debug("old_to_new_proposal_pdf_str: {}", old_to_new_proposal_pdf_str);
+    spdlog::debug("new_to_old_proposal_pdf_str: {}", new_to_old_proposal_pdf_str);
 
     return accept_prob < 1.0 ? accept_prob : 1.0;
 }

@@ -11,6 +11,8 @@
 #include <stdexcept>
 #include <mpi.h>
 
+#include "spdlog/spdlog.h"
+
 #include "types.h"
 #include "read_input.h"
 #include "system_call.h"
@@ -41,13 +43,8 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
         MPI_Recv(buffer, count, MPI_CHAR, manager, MANAGER_MSG_TAG,
                 MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-#ifndef NDEBUG
-        const int rank = get_mpi_comm_world_rank();
-        const int size = get_mpi_comm_world_size();
-        std::cerr << "Master " << rank << "/" << size
-                  << ": received result message from manager "
-                  << manager << std::endl;
-#endif
+        spdlog::debug("Master {}/{}: received result message from manager {}",
+                get_mpi_comm_world_rank(), get_mpi_comm_world_size(), manager);
 
         // Interpret output message
         int result = simulation_result(buffer);
@@ -93,13 +90,8 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
         MPI_Recv(&signal, 1, MPI_INT, manager, MANAGER_SIGNAL_TAG,
                 MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-#ifndef NDEBUG
-        const int rank = get_mpi_comm_world_rank();
-        const int size = get_mpi_comm_world_size();
-        std::cerr << "Master " << rank << "/" << size
-                  << ": received signal from manager "
-                  << manager << std::endl;
-#endif
+        spdlog::debug("Master {}/{}: received signal from manager {}",
+                get_mpi_comm_world_rank(), get_mpi_comm_world_size(), manager);
 
         // Set parameter status appropriately according to signal received
         switch (signal) {
@@ -137,13 +129,8 @@ void delegate_managers(const AbstractSampler& sampler_obj,
                 MASTER_MSG_TAG, MPI_COMM_WORLD, &dummy_request);
         MPI_Request_free(&dummy_request);
 
-#ifndef NDEBUG
-        const int rank = get_mpi_comm_world_rank();
-        const int size = get_mpi_comm_world_size();
-        std::cerr << "Master " << rank << "/" << size
-                  << ": sent parameter message to manager "
-                  << *it << std::endl;
-#endif
+        spdlog::debug("Master {}/{}: sent parameter message to manager {}",
+                get_mpi_comm_world_rank(), get_mpi_comm_world_size(), manager);
 
         // Set manager mapping
         manager_map[*it] = &prmtr_sampled.back();
@@ -159,17 +146,6 @@ void check_parameters(std::queue<ParameterHandler>& prmtr_sampled,
     // Check if front parameter has finished simulating
     while ( !prmtr_sampled.empty()
          && (prmtr_sampled.front().getStatus() != busy) ) {
-
-#ifndef NDEBUG
-        std::cerr << "Master: checking parameters\n"
-            << "Printing queue...\n";
-        std::queue<ParameterHandler> prmtr_sampled_copy(prmtr_sampled);
-        while (!prmtr_sampled_copy.empty()) {
-            std::cerr << prmtr_sampled_copy.front().getStatus() << " ";
-            prmtr_sampled_copy.pop();
-        }
-        std::cerr << std::endl;
-#endif
 
         // Push to accepted parameters if accepted
         if (prmtr_sampled.front().getStatus() == accepted)
@@ -262,23 +238,11 @@ void master(const input_t& input_obj) {
         int num_prmtr_accepted_old = prmtr_accepted.size();
         check_parameters(prmtr_sampled, prmtr_accepted);
 
-#ifndef NDEBUG
-        if (num_prmtr_accepted_old != prmtr_accepted.size())
-            std::cerr << "prmtr_accepted.size(): " << prmtr_accepted.size() <<
-                std::endl;
-#endif
         // If we have enough parameters
         if (prmtr_accepted.size() >= num_param) {
 
             // Terminate all managers
             send_signal_to_managers(TERMINATE_MANAGER_SIGNAL);
-
-#ifndef NDEBUG
-            // Print if there are any superfluous parameters
-            if (prmtr_accepted.size() > num_param)
-                std::cerr << "There were " << (prmtr_accepted.size() - num_param)
-                          << " too many parameters generated\n";
-#endif
 
             // Pop any superfluous parameters
             while (prmtr_accepted.size() > num_param)

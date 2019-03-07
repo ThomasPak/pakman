@@ -4,15 +4,14 @@
 
 #include <mpi.h>
 
+#include "spdlog/spdlog.h"
+
 #include "parse_cmd.h"
 #include "c_argv.h"
 #include "types.h"
 #include "mpi_common.h"
 #include "spawn.h"
 
-#ifndef NDEBUG
-#include <iostream>
-#endif
 
 MPI_Comm spawn(const cmd_t& cmd, MPI_Info info) {
 
@@ -28,15 +27,14 @@ MPI_Comm spawn(const cmd_t& cmd, MPI_Info info) {
     // compared to the exec argument list
     const int maxprocs = 1;
     const int root = 0;
-#ifndef NDEBUG
-    std::cerr << "Spawning " << argv[0] << "...\n";
-#endif
+
+    spdlog::debug("Spawning {}...", argv[0]);
+
     MPI_Comm spawn_intercomm;
     MPI_Comm_spawn(argv[0], argv + 1, maxprocs, info, root,
             MPI_COMM_SELF, &spawn_intercomm, MPI_ERRCODES_IGNORE);
-#ifndef NDEBUG
-    std::cerr << "Spawn of " << argv[0] << " complete\n";
-#endif
+
+    spdlog::debug("Spawn of {} complete", argv[0]);
 
     // Free argv
     free_c_argv(argv);

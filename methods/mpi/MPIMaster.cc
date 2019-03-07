@@ -7,15 +7,13 @@
 
 #include <mpi.h>
 
+#include "spdlog/spdlog.h"
+
 #include "common.h"
 #include "mpi_utils.h"
 #include "mpi_common.h"
 
 #include "MPIMaster.h"
-
-#ifndef NDEBUG
-#include <iostream>
-#endif
 
 // Construct from pointer to program terminated flag
 MPIMaster::MPIMaster(bool *p_program_terminated) :
@@ -99,9 +97,6 @@ bool MPIMaster::needMorePendingTasks() const
 // Do normal stuff
 void MPIMaster::doNormalStuff()
 {
-#ifndef NDEBUG
-    std::cerr << "MPIMaster::doNormalStuff: entered\n";
-#endif
     // This function should never be called if the Master has
     // terminated
     assert(m_state != terminated);
@@ -128,9 +123,8 @@ void MPIMaster::doNormalStuff()
     // Check for flushing of Workers
     if (m_worker_flushed)
     {
-#ifndef NDEBUG
-        std::cerr << "MPIMaster::doNormalStuff: Flushing workers!\n";
-#endif
+        spdlog::debug("MPIMaster::doNormalStuff: Flushing workers!");
+
         // Send FLUSH_WORKER_SIGNAL to all Managers
         sendSignalToAllManagers(FLUSH_WORKER_SIGNAL);
 
@@ -158,17 +152,11 @@ void MPIMaster::doNormalStuff()
 
     // Delegate tasks to Managers
     delegateToManagers();
-#ifndef NDEBUG
-    std::cerr << "MPIMaster::doNormalStuff: exiting\n";
-#endif
 }
 
 // Do flushing stuff
 void MPIMaster::doFlushingStuff()
 {
-#ifndef NDEBUG
-    std::cerr << "MPIMaster::doFlushingStuff: entered\n";
-#endif
     // This function should never be called if the Master has
     // terminated
     assert(m_state != terminated);
@@ -198,19 +186,19 @@ void MPIMaster::doFlushingStuff()
     // If all Managers are idle, transition to normal state
     if (m_idle_managers.size() == m_comm_size)
     {
-#ifndef NDEBUG
-        std::cerr << "MPIMaster::doFlushingStuff: transition to normal state!\n";
-        std::cerr << "Idle managers:\n";
-        for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
-            std::cerr << *it << std::endl;
-        std::cerr << "-- END --\n";
-#endif
+        // Debug info
+        if (spdlog::get(program_name)->level() <= spdlog::level::debug)
+        {
+            spdlog::debug("MPIMaster::doFlushingStuff: transition to normal state!");
+            spdlog::debug("Idle managers:");
+            for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+                spdlog::debug("{}", *it);
+            spdlog::debug("-- END --");
+        }
+
         m_state = normal;
         return;
     }
-#ifndef NDEBUG
-    std::cerr << "MPIMaster::doFlushingStuff: exiting\n";
-#endif
 }
 
 // Push pending task
@@ -252,15 +240,9 @@ void MPIMaster::terminate()
 // Listen to messages from Managers.
 void MPIMaster::listenToManagers()
 {
-#ifndef NDEBUG
-    std::cerr << "MPIMaster::listenToManagers: entered\n";
-#endif
     // While there are any incoming messages
     while (probeMessage())
     {
-#ifndef NDEBUG
-        std::cerr << "MPIMaster::listenToManagers: receiving message!\n";
-#endif
         // Probe manager
         int manager_rank = probeMessageManager();
 
@@ -290,49 +272,48 @@ void MPIMaster::popBusyQueue()
     // front of the queue
     while (!m_busy_tasks.empty() && !m_busy_tasks.front().isPending())
     {
-#ifndef NDEBUG
-        std::cerr << "DEBUG: MPIMaster::popBusyQueue: ";
-        std::cerr << "Moving TaskHandler from busy to finished!\n";
-        std::cerr << "DEBUG: finished, busy, pending: "
-            << m_finished_tasks.size() << ", " << m_busy_tasks.size()
-            << ", " << m_pending_tasks.size() << std::endl;
-#endif
+        spdlog::debug("MPIMaster::popBusyQueue: "
+                "Moving TaskHandler from busy to finished!");
+        spdlog::debug("finished, busy, pending: {}, {}, {}",
+                m_finished_tasks.size(), m_busy_tasks.size(),
+                m_pending_tasks.size());
+
         // Move TaskHandler to finished tasks
         m_finished_tasks.push(std::move(m_busy_tasks.front()));
 
         // Pop front TaskHandler from busy queue
         m_busy_tasks.pop();
-#ifndef NDEBUG
-        std::cerr << "DEBUG: MPIMaster::popBusyQueue: ";
-        std::cerr << "Done moving TaskHandler from busy to finished!\n";
-        std::cerr << "DEBUG: finished, busy, pending: "
-            << m_finished_tasks.size() << ", " << m_busy_tasks.size()
-            << ", " << m_pending_tasks.size() << std::endl;
-#endif
+
+        spdlog::debug("MPIMaster::popBusyQueue: "
+                "Done moving TaskHandler from busy to finished!");
+        spdlog::debug("finished, busy, pending: {}, {}, {}",
+                m_finished_tasks.size(), m_busy_tasks.size(),
+                m_pending_tasks.size());
     }
 }
 
 // Delegate to Managers
 void MPIMaster::delegateToManagers()
 {
-#ifndef NDEBUG
-    std::cerr << "MPIMaster::delegateToManagers: entered!\n";
-    std::cerr << "Idle managers:\n";
-    for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
-        std::cerr << *it << std::endl;
-    std::cerr << "-- END --\n";
-#endif
+    if (spdlog::get(program_name)->level() <= spdlog::level::debug)
+    {
+        spdlog::debug("MPIMaster::delegateToManagers: entered!");
+        spdlog::debug("Idle managers:");
+        for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+            spdlog::debug("{}", *it);
+        spdlog::debug("-- END --");
+    }
+
     // While there are idle managers
     auto it = m_idle_managers.begin();
     for (; (it != m_idle_managers.end()) && !m_pending_tasks.empty(); it++)
     {
-#ifndef NDEBUG
-        std::cerr << "DEBUG: MPIMaster::delegateToManagers: ";
-        std::cerr << "Moving TaskHandler from pending to busy!\n";
-        std::cerr << "DEBUG: finished, busy, pending: "
-            << m_finished_tasks.size() << ", " << m_busy_tasks.size()
-            << ", " << m_pending_tasks.size() << std::endl;
-#endif
+        spdlog::debug("MPIMaster::delegateToManagers: "
+                "Moving TaskHandler from pending to busy!");
+        spdlog::debug("finished, busy, pending: {}, {}, {}",
+                m_finished_tasks.size(), m_busy_tasks.size(),
+                m_pending_tasks.size());
+
         // Send message to Manager
         sendMessageToManager(*it, m_pending_tasks.front().getInputString());
 
@@ -344,24 +325,25 @@ void MPIMaster::delegateToManagers()
 
         // Set map from Manager to TaskHandler
         m_map_manager_to_task[*it] = &m_busy_tasks.back();
-#ifndef NDEBUG
-        std::cerr << "DEBUG: MPIMaster::delegateToManagers: ";
-        std::cerr << "Done moving TaskHandler from pending to busy!\n";
-        std::cerr << "DEBUG: finished, busy, pending: "
-            << m_finished_tasks.size() << ", " << m_busy_tasks.size()
-            << ", " << m_pending_tasks.size() << std::endl;
-#endif
+
+        spdlog::debug("MPIMaster::delegateToManagers: "
+                "Done moving TaskHandler from pending to busy!");
+        spdlog::debug("finished, busy, pending: {}, {}, {}",
+                m_finished_tasks.size(), m_busy_tasks.size(),
+                m_pending_tasks.size());
     }
 
     // Mark Managers as busy
     m_idle_managers.erase(m_idle_managers.begin(), it);
-#ifndef NDEBUG
-    std::cerr << "MPIMaster::delegateToManagers: exiting\n";
-    std::cerr << "Idle managers:\n";
-    for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
-        std::cerr << *it << std::endl;
-    std::cerr << "-- END --\n";
-#endif
+
+    if (spdlog::get(program_name)->level() <= spdlog::level::debug)
+    {
+        spdlog::debug("MPIMaster::delegateToManagers: exiting");
+        spdlog::debug("Idle managers:");
+        for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+            spdlog::debug("{}", *it);
+        spdlog::debug("-- END --");
+    }
 }
 
 // Flush all task queues (finished, busy, pending)
@@ -375,9 +357,6 @@ void MPIMaster::flushQueues()
 // Discard any messages and signals until all Managers are idle
 void MPIMaster::discardMessagesErrorCodesAndSignals()
 {
-#ifndef NDEBUG
-    std::cerr << "MPIMaster::discardMessagesAndSignals: entered!\n";
-#endif
     // While there are any incoming messages
     while (probeMessage())
     {
@@ -462,14 +441,15 @@ int MPIMaster::receiveErrorCode(int manager_rank) const
 void MPIMaster::sendMessageToManager(int manager_rank,
         const std::string& message_string)
 {
-#ifndef NDEBUG
-    std::cerr << "MPIMaster::sendMessageToManager: sending to manager_rank " << manager_rank
-        << " and message:\n" << message_string << std::endl;
-    std::cerr << "Idle managers:\n";
-    for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
-        std::cerr << *it << std::endl;
-    std::cerr << "-- END --\n";
-#endif
+    if (spdlog::get(program_name)->level() <= spdlog::level::debug)
+    {
+        spdlog::debug("MPIMaster::sendMessageToManager: sending to manager_rank {}",
+                " and message:\n{}", manager_rank, message_string);
+        spdlog::debug("Idle managers:");
+        for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+            spdlog::debug("{}", *it);
+        spdlog::debug("-- END --");
+    }
 
     // Ensure previous message has finished sending
     MPI_Wait(&m_message_requests[manager_rank], MPI_STATUS_IGNORE);

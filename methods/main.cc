@@ -3,6 +3,9 @@
 #include <getopt.h>
 #include <libgen.h>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 #include "common.h"
 #include "help.h"
 
@@ -31,6 +34,11 @@ int main(int argc, char *argv[])
 {
     // Set program_name
     program_name = basename(argv[0]);
+
+    // Set logger
+    auto stderr_console = spdlog::stderr_color_st(program_name);
+    spdlog::set_default_logger(stderr_console);
+    spdlog::set_level(spdlog::level::debug);
 
     // If there are less than 3 arguments, print overview help
     if (argc < 3)

@@ -9,15 +9,13 @@
 #include <fcntl.h>
 #include <stdio.h>
 
+#include "spdlog/spdlog.h"
+
 #include "types.h"
 #include "parse_cmd.h"
 #include "vector_argv.h"
 #include "pipe_io.h"
 #include "system_call.h"
-
-#ifndef NDEBUG
-#include <iostream>
-#endif
 
 const int READ_END = 0;
 const int WRITE_END = 1;
@@ -125,9 +123,7 @@ void system_call(const cmd_t& cmd, std::string& output,
 
     using namespace std;
 
-#ifndef NDEBUG
-        cerr << "cmd: " << cmd << endl;
-#endif
+    spdlog::debug("cmd: {}", cmd);
 
     // Create pipe
     int pipefd[2];
@@ -161,11 +157,10 @@ void system_call(const cmd_t& cmd, std::string& output,
 
     } else { // I am the child
 
-#ifdef NDEBUG
-        // Suppress stderr of child process
-        int devnull = open("/dev/null", O_WRONLY);
-        dup2_check(devnull, STDERR_FILENO);
-#endif
+        // TODO implement option to suppress stderr of child process
+        //// Suppress stderr of child process
+        //int devnull = open("/dev/null", O_WRONLY);
+        //dup2_check(devnull, STDERR_FILENO);
 
         // Close read end of pipe and redirect stdout to write end
         close_check(pipefd[READ_END]);
@@ -189,9 +184,8 @@ void system_call(const cmd_t& cmd, std::string& output,
         runtime_error e(error_msg);
         throw e;
     }
-#ifndef NDEBUG
-    cerr << "output: " << output << endl;
-#endif
+
+    spdlog::debug("output: {}", output);
 }
 
 void system_call(const cmd_t& cmd,
@@ -201,10 +195,8 @@ void system_call(const cmd_t& cmd,
 
     using namespace std;
 
-#ifndef NDEBUG
-        cerr << "cmd: " << cmd << endl;
-        cerr << "input: " << input << endl;
-#endif
+    spdlog::debug("cmd: {}", cmd);
+    spdlog::debug("input: {}", input);
 
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
@@ -242,11 +234,10 @@ void system_call(const cmd_t& cmd,
 
     } else { // I am the child
 
-#ifdef NDEBUG
-        // Suppress stderr of child process
-        int devnull = open("/dev/null", O_WRONLY);
-        dup2_check(devnull, STDERR_FILENO);
-#endif
+        // TODO implement option to suppress stderr of child process
+        //// Suppress stderr of child process
+        //int devnull = open("/dev/null", O_WRONLY);
+        //dup2_check(devnull, STDERR_FILENO);
 
         // Close write end of send pipe and redirect stdin to read end
         // of send pipe
@@ -278,9 +269,7 @@ void system_call(const cmd_t& cmd,
         throw e;
     }
 
-#ifndef NDEBUG
-    cerr << "output: " << output << endl;
-#endif
+    spdlog::debug("output: {}", output);
 }
 
 void system_call(const cmd_t& cmd,
@@ -290,10 +279,8 @@ void system_call(const cmd_t& cmd,
 
     using namespace std;
 
-#ifndef NDEBUG
-        cerr << "cmd: " << cmd << endl;
-        cerr << "input: " << input << endl;
-#endif
+    spdlog::debug("cmd: {}", cmd);
+    spdlog::debug("input: {}", input);
 
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
@@ -331,11 +318,10 @@ void system_call(const cmd_t& cmd,
 
     } else { // I am the child
 
-#ifdef NDEBUG
-        // Suppress stderr of child process
-        int devnull = open("/dev/null", O_WRONLY);
-        dup2_check(devnull, STDERR_FILENO);
-#endif
+        // TODO implement option to suppress stderr of child process
+        //// Suppress stderr of child process
+        //int devnull = open("/dev/null", O_WRONLY);
+        //dup2_check(devnull, STDERR_FILENO);
 
         // Close write end of send pipe and redirect stdin to read end
         // of send pipe
@@ -367,18 +353,14 @@ void system_call(const cmd_t& cmd,
         throw e;
     }
 
-#ifndef NDEBUG
-    cerr << "output: " << output << endl;
-#endif
+    spdlog::debug("output: {}", output);
 }
 
 void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd) {
 
     using namespace std;
 
-#ifndef NDEBUG
-        cerr << "cmd: " << cmd << endl;
-#endif
+    spdlog::debug("cmd: {}", cmd);
 
     // Create pipe
     int pipefd[2];
@@ -406,11 +388,10 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd) {
 
     } else { // I am the child
 
-#ifdef NDEBUG
-        // Suppress stderr of child process
-        int devnull = open("/dev/null", O_WRONLY);
-        dup2_check(devnull, STDERR_FILENO);
-#endif
+        // TODO implement option to suppress stderr of child process
+        //// Suppress stderr of child process
+        //int devnull = open("/dev/null", O_WRONLY);
+        //dup2_check(devnull, STDERR_FILENO);
 
         // Close read end of pipe and redirect stdout to write end
         close_check(pipefd[READ_END]);
@@ -441,9 +422,7 @@ void system_call(const cmd_t& cmd, pid_t& child_pid,
 
     using namespace std;
 
-#ifndef NDEBUG
-        cerr << "cmd: " << cmd << endl;
-#endif
+    spdlog::debug("cmd: {}", cmd);
 
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
@@ -475,11 +454,10 @@ void system_call(const cmd_t& cmd, pid_t& child_pid,
 
     } else { // I am the child
 
-#ifdef NDEBUG
-        // Suppress stderr of child process
-        int devnull = open("/dev/null", O_WRONLY);
-        dup2_check(devnull, STDERR_FILENO);
-#endif
+        // TODO implement option to suppress stderr of child process
+        //// Suppress stderr of child process
+        //int devnull = open("/dev/null", O_WRONLY);
+        //dup2_check(devnull, STDERR_FILENO);
 
         // Close write end of send pipe and redirect stdin to read end
         // of send pipe

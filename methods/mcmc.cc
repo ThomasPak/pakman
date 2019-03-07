@@ -12,15 +12,9 @@
 #include "types.h"
 #include "timer.h"
 
-#ifndef NDEBUG
-#include "debug.h"
-#endif
-
 int main(int argc, char *argv[]) {
 
-#ifndef NDEBUG
     set_handlers();
-#endif
 
     using namespace std;
     using namespace mcmc;
@@ -50,27 +44,23 @@ int main(int argc, char *argv[]) {
     input_t input_obj;
     read_input(cin, input_obj);
 
-#ifndef NDEBUG
-    cerr << "simulator: " << input_obj.simulator << endl;
+    std::spdlog("simulator: {}", input_obj.simulator);
 
-    cerr << "Printing names..." << endl;
+    spdlog::debug("Printing names...");
     for (auto it = input_obj.parameter_names.cbegin();
          it != input_obj.parameter_names.cend(); it++)
-        cerr << *it << endl;
+        spdlog("{}", *it);
 
-    cerr << "initializer: " << input_obj.initializer << endl;
-    cerr << "proposer: " << input_obj.proposer << endl;
-    cerr << "prior_pdf: " << input_obj.prior_pdf << endl;
-    cerr << "proposal_pdf: " << input_obj.proposal_pdf << endl;
-#endif
+    spdlog::debug("initializer: {}", input_obj.initializer);
+    spdlog::debug("proposer: {}", input_obj.proposer);
+    spdlog::debug("prior_pdf: {}", input_obj.prior_pdf);
+    spdlog::debug("proposal_pdf: {}", input_obj.proposal_pdf);
 
     // Initialize parameter
     parameter_t init_prmtr;
     system_call(input_obj.initializer, init_prmtr);
 
-#ifndef NDEBUG
-    cerr << "init_prmtr: " << init_prmtr << endl;
-#endif
+    spdlog::debug("init_prmtr: {}", init_prmtr);
 
     // Start main loop
     cerr << "Computing with epsilon = " << input_obj.epsilon << endl;
@@ -94,9 +84,7 @@ int main(int argc, char *argv[]) {
                                         input_obj.prior_pdf, input_obj.proposal_pdf,
                                         prmtr, new_prmtr);
 
-#ifndef NDEBUG
-            cerr << "prob: " << prob << endl;
-#endif
+            spdlog::debug("prob: {}", prob);
 
             // Sample uniformly distributed random number
             double u = distribution(generator);
