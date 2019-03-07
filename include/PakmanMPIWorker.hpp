@@ -131,14 +131,9 @@ int PakmanMPIWorker::run(int argc, char*argv[])
                 {
                     case PAKMAN_TERMINATE_WORKER_SIGNAL:
                         {
-#ifndef NDEBUG
-                        std::cerr << "DEBUG: Pakman Worker: received "
-                            "PAKMAN_TERMINATE_WORKER_SIGNAL\n";
-#endif
                         // Set loop condition to false
                         continue_loop = false;
                         break;
-
                         }
                     default:
                         {

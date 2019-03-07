@@ -65,16 +65,6 @@ char* pakman_receive_message(MPI_Comm comm)
 
 int pakman_receive_signal(MPI_Comm comm)
 {
-#ifndef NDEBUG
-    /* Check that signal is exactly one integer */
-    MPI_Status status;
-    MPI_Probe(PAKMAN_ROOT, PAKMAN_MANAGER_SIGNAL_TAG, comm, &status);
-
-    int count;
-    MPI_Get_count(&status, MPI_INT, &count);
-    assert(count == 1);
-#endif
-
     /* Allocate buffer to receive message */
     int signal;
 
@@ -164,14 +154,9 @@ int pakman_run_mpi_worker(
                 {
                     case PAKMAN_TERMINATE_WORKER_SIGNAL:
                         {
-#ifndef NDEBUG
-                        fputs("DEBUG: Pakman Worker: received "
-                                "PAKMAN_TERMINATE_WORKER_SIGNAL\n", stderr);
-#endif
                         /* Set loop condition to false */
                         continue_loop = 0;
                         break;
-
                         }
                     default:
                         {
