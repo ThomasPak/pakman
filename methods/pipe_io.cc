@@ -7,10 +7,6 @@
 
 #include "pipe_io.h"
 
-#ifndef NDEBUG
-#include <iostream>
-#endif
-
 const int READ_END = 0;
 const int WRITE_END = 1;
 

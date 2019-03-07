@@ -74,11 +74,6 @@ void ABCSMCController::iterate()
             m_prmtr_accepted_new.push_back(std::move(accepted_prmtr));
         }
 
-#ifndef NDEBUG
-        std::cerr << "task.getInputString(): " << task.getInputString() <<
-            std::endl;
-#endif
-
         // Pop finished task
         m_p_master->popFinishedTask();
     }

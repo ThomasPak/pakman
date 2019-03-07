@@ -13,10 +13,6 @@
 #include "ForkedWorkerHandler.h"
 #include "AbstractWorkerHandler.h"
 
-#ifndef NDEBUG
-#include <iostream>
-#endif
-
 ForkedWorkerHandler::ForkedWorkerHandler(
         const cmd_t& command,
         const std::string& input_string) :
@@ -27,19 +23,12 @@ ForkedWorkerHandler::ForkedWorkerHandler(
     system_call(m_command, m_child_pid, m_pipe_write_fd, m_pipe_read_fd);
 
     // Write input string to stdin of process
-#ifndef NDEBUG
-    std::cerr << "input_string: " << input_string << std::endl;
-#endif
     write_to_pipe(m_pipe_write_fd, input_string);
     close_check(m_pipe_write_fd);
 }
 
 ForkedWorkerHandler::~ForkedWorkerHandler()
 {
-
-#ifndef NDEBUG
-    std::cerr << "Destroying...\n";
-#endif
     // Wait on child process if it has not yet been waited for
     if (m_child_pid) terminate();
 
@@ -49,17 +38,9 @@ ForkedWorkerHandler::~ForkedWorkerHandler()
 
 void ForkedWorkerHandler::terminate()
 {
-
-#ifndef NDEBUG
-    std::cerr << "Terminating...\n";
-#endif
-
     // If already terminated, return immediately
     if (!m_child_pid) return;
 
-#ifndef NDEBUG
-    std::cerr << "Checking whether child process has finished...\n";
-#endif
     // If simulation has finished, mark by setting m_child_pid to zero
     if ( waitpid_success(m_child_pid, WNOHANG, m_command) )
     {
@@ -67,10 +48,6 @@ void ForkedWorkerHandler::terminate()
         return;
     }
 
-#ifndef NDEBUG
-    std::cerr << "Sending sigterm to child process with pid " << m_child_pid <<
-        "...\n";
-#endif
     // Send SIGTERM to child process
     if ( kill(m_child_pid, SIGTERM) )
     {
@@ -79,15 +56,9 @@ void ForkedWorkerHandler::terminate()
         throw e;
     }
 
-#ifndef NDEBUG
-    std::cerr << "Sleeping before taking more drastic measures...\n";
-#endif
     // Sleep for KILL_TIMEOUT
     std::this_thread::sleep_for(KILL_TIMEOUT);
 
-#ifndef NDEBUG
-    std::cerr << "Checking whether sigterm worked...\n";
-#endif
     // If simulation has finished, mark by setting m_child_pid to zero
     if ( waitpid_success(m_child_pid, WNOHANG, m_command, ignore_error) )
     {
@@ -95,9 +66,6 @@ void ForkedWorkerHandler::terminate()
         return;
     }
 
-#ifndef NDEBUG
-    std::cerr << "Sending sigkill to child process...\n";
-#endif
     // Send SIGKILL to child process
     if ( kill(m_child_pid, SIGKILL) )
     {
@@ -106,9 +74,6 @@ void ForkedWorkerHandler::terminate()
         throw e;
     }
 
-#ifndef NDEBUG
-    std::cerr << "Waiting on child...\n";
-#endif
      waitpid_success(m_child_pid, 0, m_command, ignore_error);
      m_child_pid = 0;
 }

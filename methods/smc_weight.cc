@@ -8,9 +8,6 @@
 #include "system_call.h"
 #include "smc_weight.h"
 
-#ifndef NDEBUG
-#include <iostream>
-#endif
 
 double smc_weight(const cmd_t& perturbation_pdf,
                   const double prmtr_prior_pdf,
@@ -56,9 +53,7 @@ double smc_weight(const cmd_t& perturbation_pdf,
             runtime_error e("an error occured while reading the output of perturbation_pdf");
             throw e;
         }
-#ifndef NDEBUG
-        cerr << "current_pdf: " << current_pdf << endl;
-#endif
+
         denominator += (*it) * current_pdf;
     }
 

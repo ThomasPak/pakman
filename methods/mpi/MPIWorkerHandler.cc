@@ -9,21 +9,11 @@
 #include "MPIWorkerHandler.h"
 #include "AbstractWorkerHandler.h"
 
-#ifndef NDEBUG
-#include <iostream>
-#endif
-
 MPIWorkerHandler::MPIWorkerHandler(
         const cmd_t& command,
         const std::string& input_string) :
     AbstractWorkerHandler(command, input_string)
 {
-#ifndef NDEBUG
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Manager " << rank << "/" << size << ": MPI process constructing...\n";
-#endif
-
     // Spawn MPI child process
     m_child_comm = spawn_worker(m_command);
 
@@ -34,30 +24,15 @@ MPIWorkerHandler::MPIWorkerHandler(
 
 MPIWorkerHandler::~MPIWorkerHandler()
 {
-#ifndef NDEBUG
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Manager " << rank << "/" << size << ": MPI simulation destroying...\n";
-#endif
+    // Terminate MPI process
     terminate();
 
     // Free communicator
-#ifndef NDEBUG
-    std::cerr << "Manager " << rank << "/" << size << ": disconnecting child communicator...\n";
-#endif
     MPI_Comm_disconnect(&m_child_comm);
-#ifndef NDEBUG
-    std::cerr << "Manager " << rank << "/" << size << ": child communicator disconnected!\n";
-#endif
 }
 
 void MPIWorkerHandler::terminate()
 {
-#ifndef NDEBUG
-    const int rank = get_mpi_comm_world_rank();
-    const int size = get_mpi_comm_world_size();
-    std::cerr << "Manager " << rank << "/" << size << ": MPI simulation terminating...\n";
-#endif
     // MPI does not provide process control, so
     // we can only wait for the simulation to finish
     // if it has not finished yet
@@ -76,9 +51,6 @@ void MPIWorkerHandler::terminate()
         // Set flag
         m_result_received = true;
     }
-#ifndef NDEBUG
-    std::cerr << "Manager " << rank << "/" << size << ": MPI simulation terminated!\n";
-#endif
 }
 
 bool MPIWorkerHandler::isDone()

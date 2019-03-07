@@ -9,10 +9,6 @@
 #include "PersistentMPIWorkerHandler.h"
 #include "AbstractWorkerHandler.h"
 
-#ifndef NDEBUG
-#include <iostream>
-#endif
-
 // Initialize static child communicator of PersistentMPIWorkerHandler to the
 // null communicators (MPI_COMM_NULL)
 MPI_Comm PersistentMPIWorkerHandler::m_child_comm = MPI_COMM_NULL;

@@ -6,10 +6,6 @@
 
 #include "read_input.h"
 
-#ifndef NDEBUG
-#include <iostream>
-#endif
-
 /***** Rejection method *****/
 namespace rejection {
 
