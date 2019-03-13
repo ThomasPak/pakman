@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     // Set logger
     auto stderr_console = spdlog::stderr_color_st(program_name);
     spdlog::set_default_logger(stderr_console);
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::info);
 
     // If there are less than 3 arguments, print overview help
     if (argc < 3)
