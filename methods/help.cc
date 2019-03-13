@@ -22,10 +22,11 @@ std::string usage()
 std::string general_options()
 {
     return R"(General options:
-  -h, --help                show help message
-  -i, --ignore-errors       ignore nonzero return code from simulator
-  -v, --verbosity=level     set verbosity level to debug/info/off
-                            (default info)
+  -h, --help                    show help message
+  -i, --ignore-errors           ignore nonzero return code from simulator
+  -d, --discard-child-stderr    discard stderr from child processes
+  -v, --verbosity=level         set verbosity level to debug/info/off
+                                (default info)
 )";
 }
 

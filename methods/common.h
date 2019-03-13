@@ -15,8 +15,8 @@ typedef enum
     persistent_mpi_worker
 } worker_t;
 
-
 extern bool ignore_errors;
+extern bool discard_child_stderr;
 
 extern bool program_terminated;
 

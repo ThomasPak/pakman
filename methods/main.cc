@@ -23,6 +23,7 @@ std::chrono::milliseconds KILL_TIMEOUT(100);
 
 bool ignore_errors = false;
 bool force_host_spawn = false;
+bool discard_child_stderr = false;
 
 bool program_terminated = false;
 
@@ -37,6 +38,7 @@ void add_general_long_options(LongOptions& lopts)
 {
     lopts.add({"help", no_argument, nullptr, 'h'});
     lopts.add({"ignore-errors", no_argument, nullptr, 'i'});
+    lopts.add({"discard-child-stderr", no_argument, nullptr, 'd'});
     lopts.add({"verbosity", required_argument, nullptr, 'v'});
 }
 
@@ -49,6 +51,9 @@ void process_general_options(master_t master, controller_t controller,
 
     if (args.isOptionalArgumentSet("ignore-errors"))
         ignore_errors = true;
+
+    if (args.isOptionalArgumentSet("discard-child-stderr"))
+        discard_child_stderr = true;
 
     if (args.isOptionalArgumentSet("verbosity"))
     {

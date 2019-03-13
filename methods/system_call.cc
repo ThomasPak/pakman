@@ -11,6 +11,7 @@
 
 #include "spdlog/spdlog.h"
 
+#include "common.h"
 #include "types.h"
 #include "parse_cmd.h"
 #include "vector_argv.h"
@@ -157,10 +158,13 @@ void system_call(const cmd_t& cmd, std::string& output,
 
     } else { // I am the child
 
-        // TODO implement option to suppress stderr of child process
-        //// Suppress stderr of child process
-        //int devnull = open("/dev/null", O_WRONLY);
-        //dup2_check(devnull, STDERR_FILENO);
+        // Suppress stderr of child process
+        if (discard_child_stderr)
+        {
+            int devnull = open("/dev/null", O_WRONLY);
+            dup2_check(devnull, STDERR_FILENO);
+            close_check(devnull);
+        }
 
         // Close read end of pipe and redirect stdout to write end
         close_check(pipefd[READ_END]);
@@ -234,10 +238,13 @@ void system_call(const cmd_t& cmd,
 
     } else { // I am the child
 
-        // TODO implement option to suppress stderr of child process
-        //// Suppress stderr of child process
-        //int devnull = open("/dev/null", O_WRONLY);
-        //dup2_check(devnull, STDERR_FILENO);
+        // Suppress stderr of child process
+        if (discard_child_stderr)
+        {
+            int devnull = open("/dev/null", O_WRONLY);
+            dup2_check(devnull, STDERR_FILENO);
+            close_check(devnull);
+        }
 
         // Close write end of send pipe and redirect stdin to read end
         // of send pipe
@@ -318,10 +325,13 @@ void system_call(const cmd_t& cmd,
 
     } else { // I am the child
 
-        // TODO implement option to suppress stderr of child process
-        //// Suppress stderr of child process
-        //int devnull = open("/dev/null", O_WRONLY);
-        //dup2_check(devnull, STDERR_FILENO);
+        // Suppress stderr of child process
+        if (discard_child_stderr)
+        {
+            int devnull = open("/dev/null", O_WRONLY);
+            dup2_check(devnull, STDERR_FILENO);
+            close_check(devnull);
+        }
 
         // Close write end of send pipe and redirect stdin to read end
         // of send pipe
@@ -388,10 +398,13 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd) {
 
     } else { // I am the child
 
-        // TODO implement option to suppress stderr of child process
-        //// Suppress stderr of child process
-        //int devnull = open("/dev/null", O_WRONLY);
-        //dup2_check(devnull, STDERR_FILENO);
+        // Suppress stderr of child process
+        if (discard_child_stderr)
+        {
+            int devnull = open("/dev/null", O_WRONLY);
+            dup2_check(devnull, STDERR_FILENO);
+            close_check(devnull);
+        }
 
         // Close read end of pipe and redirect stdout to write end
         close_check(pipefd[READ_END]);
@@ -454,10 +467,13 @@ void system_call(const cmd_t& cmd, pid_t& child_pid,
 
     } else { // I am the child
 
-        // TODO implement option to suppress stderr of child process
-        //// Suppress stderr of child process
-        //int devnull = open("/dev/null", O_WRONLY);
-        //dup2_check(devnull, STDERR_FILENO);
+        // Suppress stderr of child process
+        if (discard_child_stderr)
+        {
+            int devnull = open("/dev/null", O_WRONLY);
+            dup2_check(devnull, STDERR_FILENO);
+            close_check(devnull);
+        }
 
         // Close write end of send pipe and redirect stdin to read end
         // of send pipe
