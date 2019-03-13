@@ -38,12 +38,6 @@ function (get_test_command _command
     # Initialize empty command
     set (command "")
 
-    # If it is type match, discard stderr
-    # TODO: when verbosity flags are added; remove discard_stderr.sh
-    if (test_type MATCHES "Match")
-        string (APPEND command "${PROJECT_BINARY_DIR}/utils/discard_stderr.sh ")
-    endif ()
-
     # Append command based on master type
     if (master MATCHES "Serial")
         string (APPEND command "${executable} serial ")
@@ -74,6 +68,11 @@ function (get_test_command _command
     # Append command based on force_host_spawn
     if (force_host_spawn)
         string (APPEND command "--force-host-spawn ")
+    endif ()
+
+    # Append command with --verbosity off if test type is match
+    if (test_type MATCHES "Match")
+        string (APPEND command "--verbosity off ")
     endif ()
 
     # Add input file
