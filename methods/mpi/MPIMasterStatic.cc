@@ -62,15 +62,14 @@ Description:
   to enforce spawning dynamic MPI processes on the same host by setting the
   "host" key in MPI_Info to the same host as the spawning MPI process.
 
-Optional arguments:
-  -i, --ignore-errors          ignore nonzero return code from simulator
-  -t, --main-timeout=TIME      sleep for TIME ms in event loop (default 1)
-  -k, --kill-timeout=TIME      wait for TIME ms before sending SIGKILL
-                               (default 100)
+MPI master options:
   -m, --mpi-simulator          simulator is spawned using MPI
   -p, --persistent             MPI simulator is persistent
   -f, --force-host-spawn       force MPI simulator to spawn on same host
                                as manager (requires -m option)
+  -t, --main-timeout=TIME      sleep for TIME ms in event loop (default 1)
+  -k, --kill-timeout=TIME      wait for TIME ms before sending SIGKILL
+                               (default 100)
 )";
 }
 

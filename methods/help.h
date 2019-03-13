@@ -7,6 +7,8 @@
 
 std::string usage();
 
+std::string general_options();
+
 void overview(int status);
 void help(master_t master, controller_t controller, int status);
 

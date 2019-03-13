@@ -22,9 +22,6 @@ Description:
   When using a serial master, pakman executes simulations sequentially.  It is
   assumed that the simulator is a standard simulator, which means that it
   communicates with pakman through its stdin and stdout.
-
-Optional arguments:
-  -i, --ignore-errors       ignore nonzero return code from simulator
 )";
 }
 

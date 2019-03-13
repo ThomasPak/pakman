@@ -19,12 +19,27 @@ std::string usage()
     return usage_string;
 }
 
+std::string general_options()
+{
+    return R"(General options:
+  -h, --help                show help message
+  -i, --ignore-errors       ignore nonzero return code from simulator
+  -v, --verbosity=level     set verbosity level to debug/info/off
+                            (default info)
+)";
+}
+
 void overview(int status)
 {
 	// Print usage
 	std::cout << usage();
 
+    // Print general options
+    std::cout << std::endl;
+    std::cout << general_options();
+
 	// Print overview
+    std::cout << std::endl;
     std::cout <<
 R"(Available masters:
   serial        run at most one simulation overall
@@ -49,6 +64,10 @@ void help(master_t master, controller_t controller, int status)
 {
 	// Print usage
 	std::cout << usage();
+
+    // Print general options
+    std::cout << std::endl;
+    std::cout << general_options();
 
 	// If given valid master, print master help
 	if (master != no_master)
