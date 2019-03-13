@@ -11,6 +11,7 @@ echo 5 > biased-coin-flip.data
 
 # Run pakman rejection algorithm
 @MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ @MPIEXEC_MAX_NUMPROCS@ \
+    @MPIEXEC_PREFLAGS@ \
     @PROJECT_BINARY_DIR@/methods/pakman @MPIEXEC_POSTFLAGS@ mpi rejection \
     biased-coin-flip.rej 1000 > biased-coin-flip.out
 
