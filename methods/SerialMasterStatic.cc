@@ -1,4 +1,5 @@
 #include <string>
+#include <memory>
 
 #include <getopt.h>
 
@@ -6,10 +7,11 @@
 #include "help.h"
 #include "signal_handler.h"
 #include "debug.h"
+#include "Arguments.h"
+#include "LongOptions.h"
 
 #include "SerialMaster.h"
 
-#include <string>
 // Static help function
 std::string SerialMaster::help()
 {
@@ -26,46 +28,21 @@ Optional arguments:
 )";
 }
 
-// Long options for getopt_long
-static struct option const long_options[] =
+void SerialMaster::addLongOptions(LongOptions& lopts)
 {
-    {"ignore-errors", no_argument, nullptr, 'i'},
-    {"help", no_argument, nullptr, 'h'},
-    {nullptr, 0, nullptr, 0}
-};
+    // No SerialMaster-specific options to add
+}
 
 // Static run function
-void SerialMaster::run(controller_t controller, int argc, char *argv[])
+void SerialMaster::run(controller_t controller, const Arguments& args)
 {
-    // Process optional arguments
-    int c;
-    while ((c = getopt_long(argc, argv, "ih", long_options, nullptr)) != -1)
-    {
-        switch (c)
-        {
-            case 'i':
-                ignore_errors = true;
-                break;
-            case 'h':
-                ::help(serial_master, controller, EXIT_SUCCESS);
-            default:
-                ::help(serial_master, controller, EXIT_FAILURE);
-        }
-    }
-
-    // Process positional args
-    int argind = optind;
-    std::vector<std::string> positional_args;
-    while (argv[argind])
-        positional_args.push_back(argv[argind++]);
-
     // Set signal handlers
     set_handlers();
     set_signal_handler();
 
     // Create controller and SerialMaster
     std::shared_ptr<AbstractController> p_controller(
-            AbstractController::makeController(controller, positional_args));
+            AbstractController::makeController(controller, args));
 
     std::shared_ptr<SerialMaster> p_master =
         std::make_shared<SerialMaster>(p_controller->getSimulator(),

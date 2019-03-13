@@ -1,6 +1,7 @@
 #include <thread>
 #include <string>
 #include <iostream>
+#include <memory>
 
 #include <mpi.h>
 
@@ -11,6 +12,8 @@
 #include "signal_handler.h"
 #include "Manager.h"
 #include "PersistentMPIWorkerHandler.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 
 #include "MPIMaster.h"
 
@@ -89,78 +92,58 @@ worker_t get_worker(bool mpi_simulator, bool persistent_simulator)
     }
 }
 
-// Long options for getopt_long
-static struct option const long_options[] =
+// Static addLongOptions function
+void MPIMaster::addLongOptions(LongOptions& lopts)
 {
-    {"ignore-errors", no_argument, nullptr, 'i'},
-    {"main-timeout", required_argument, nullptr, 't'},
-    {"kill-timeout", required_argument, nullptr, 'k'},
-    {"mpi-simulator", no_argument, nullptr, 'm'},
-    {"persistent", no_argument, nullptr, 'p'},
-    {"force-host-spawn", no_argument, nullptr, 'f'},
-    {"help", no_argument, nullptr, 'h'},
-    {nullptr, 0, nullptr, 0}
-};
+    lopts.add({"main-timeout", required_argument, nullptr, 't'});
+    lopts.add({"kill-timeout", required_argument, nullptr, 'k'});
+    lopts.add({"mpi-simulator", no_argument, nullptr, 'm'});
+    lopts.add({"persistent", no_argument, nullptr, 'p'});
+    lopts.add({"force-host-spawn", no_argument, nullptr, 'f'});
+}
 
 // Static main function
-void MPIMaster::run(controller_t controller, int argc, char *argv[])
+void MPIMaster::run(controller_t controller, const Arguments& args)
 {
     // Initialize flags for mpi simulator and persistence
     bool mpi_simulator = false;
     bool persistent_simulator = false;
 
     // Process optional arguments
-    int c;
-    while ((c = getopt_long(argc, argv, "it:k:mpfh", long_options, nullptr)) != -1)
+    if (args.isOptionalArgumentSet("main-timeout"))
     {
-        switch (c)
-        {
-            case 'i':
-                ignore_errors = true;
-                break;
-            case 't':
-                MAIN_TIMEOUT = std::chrono::milliseconds(std::stoi(optarg));
-                break;
-            case 'k':
-                KILL_TIMEOUT = std::chrono::milliseconds(std::stoi(optarg));
-                break;
-            case 'm':
-                mpi_simulator = true;
-                break;
-            case 'p':
-                persistent_simulator = true;
-                break;
-            case 'f':
-                force_host_spawn = true;
-                break;
-            case 'h':
-                ::help(mpi_master, controller, EXIT_SUCCESS);
-            default:
-                ::help(mpi_master, controller, EXIT_FAILURE);
-        }
+        std::string&& arg = args.optionalArgument("main-timeout");
+        MAIN_TIMEOUT = std::chrono::milliseconds(std::stoi(arg));
     }
 
-    // If force_host_spawn is set, mpi_simulator must also be set
-    if (force_host_spawn && ! mpi_simulator)
+    if (args.isOptionalArgumentSet("kill-timeout"))
+    {
+        std::string&& arg = args.optionalArgument("kill-timeout");
+        KILL_TIMEOUT = std::chrono::milliseconds(std::stoi(arg));
+    }
+
+    if (args.isOptionalArgumentSet("mpi-simulator"))
+    {
+        mpi_simulator = true;
+
+        if (args.isOptionalArgumentSet("persistent"))
+            persistent_simulator = true;
+
+        if (args.isOptionalArgumentSet("force-host-spawn"))
+            force_host_spawn = true;
+    }
+    else if (args.isOptionalArgumentSet("force-host-spawn"))
     {
         std::cout << "Error: option --mpi-simulator must be set "
             "if --force_host_spawn is set\n";
         ::help(mpi_master, controller, EXIT_FAILURE);
     }
-
-    // If persistent_simulator is set, mpi_simulator must also be set
-    if (persistent_simulator && ! mpi_simulator)
+    else if (args.isOptionalArgumentSet("persistent"))
     {
         std::cout << "Error: option --mpi-simulator must be set "
             "if --persistent is set\n";
         ::help(mpi_master, controller, EXIT_FAILURE);
     }
-
-    // Process positional args
-    int argind = optind;
-    std::vector<std::string> positional_args;
-    while (argv[argind])
-        positional_args.push_back(argv[argind++]);
 
     // Initialize the MPI environment
     MPI_Init(nullptr, nullptr);
@@ -177,7 +160,7 @@ void MPIMaster::run(controller_t controller, int argc, char *argv[])
 
     // Create controller
     std::shared_ptr<AbstractController>
-        p_controller(AbstractController::makeController(controller, positional_args));
+        p_controller(AbstractController::makeController(controller, args));
 
     // Create Manager object
     std::shared_ptr<Manager> p_manager =

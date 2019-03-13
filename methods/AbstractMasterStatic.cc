@@ -1,6 +1,8 @@
 #include <string>
 
 #include "common.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 
 #include "SerialMaster.h"
 #include "MPIMaster.h"
@@ -37,16 +39,34 @@ std::string AbstractMaster::help(master_t master)
     }
 }
 
-void AbstractMaster::run(master_t master, controller_t controller,
-        int argc, char *argv[])
+void AbstractMaster::addLongOptions(master_t master,
+        LongOptions& lopts)
 {
     switch (master)
     {
         case serial_master:
-            SerialMaster::run(controller, argc, argv);
+            SerialMaster::addLongOptions(lopts);
             return;
         case mpi_master:
-            MPIMaster::run(controller, argc, argv);
+            MPIMaster::addLongOptions(lopts);
+            return;
+        default:
+            throw std::runtime_error(
+                    "Invalid master type in "
+                    "AbstractMaster::run");
+    }
+}
+
+void AbstractMaster::run(master_t master, controller_t controller,
+        const Arguments& args)
+{
+    switch (master)
+    {
+        case serial_master:
+            SerialMaster::run(controller, args);
+            return;
+        case mpi_master:
+            MPIMaster::run(controller, args);
             return;
         default:
             throw std::runtime_error(

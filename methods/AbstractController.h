@@ -7,6 +7,8 @@
 
 #include "types.h"
 #include "common.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 
 #include "AbstractMaster.h"
 
@@ -36,13 +38,36 @@ class AbstractController
 
         // Return help message based on controller type.
         // When subclassing AbstractController, be sure to include a static
-        // method with the signature 'static std::string help()' and add an
-        // entry in the switch statement of AbstractController::help()
+        // method with the signature
+        //
+        // 'static std::string help()'
+        //
+        // and add an entry in the switch statement of
+        // AbstractController::help()
         static std::string help(controller_t controller);
 
+        // Add Controller-specific long options to the given LongOptions
+        // object.
+        // When subclassing AbstractController, be sure to include a static
+        // method with the signature
+        //
+        // 'static void addLongOptions(LongOptions& lopts)'
+        //
+        // and add an entry in
+        // the switch statement of AbstractController::addLongOptions()
+        static void addLongOptions(controller_t controller,
+                LongOptions& lopts);
+
         // Create Controller instance based on controller type
+        // When subclassing AbstractController, be sure to include a static
+        // method with the signature
+        //
+        // 'static AbstractController* makeController(const Arguments& args)'
+        //
+        // and add an entry in the switch statement of
+        // AbstractController::help()
         static AbstractController* makeController(controller_t controller,
-                const std::vector<std::string>& positional_args);
+                const Arguments& args);
 
     protected:
 

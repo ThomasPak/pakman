@@ -6,6 +6,8 @@
 
 #include "common.h"
 #include "types.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 
 #include "AbstractMaster.h"
 
@@ -52,8 +54,11 @@ class SerialMaster : public AbstractMaster
         // Static help function
         static std::string help();
 
+        // Static addLongOptions function
+        static void addLongOptions(LongOptions& lopts);
+
         // Static run function
-        static void run(controller_t controller, int argc, char *argv[]);
+        static void run(controller_t controller, const Arguments& args);
 
     private:
 

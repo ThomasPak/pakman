@@ -3,6 +3,8 @@
 
 #include "common.h"
 #include "read_input.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 
 #include "SweepController.h"
 
@@ -38,28 +40,32 @@ R"( <master> sweep INPUT_FILE [optional args]...
     return message;
 }
 
-SweepController* SweepController::makeController(
-        const std::vector<std::string>& positional_args)
+void SweepController::addLongOptions(LongOptions& lopts)
+{
+    // No SweepController-specific options to add
+}
+
+SweepController* SweepController::makeController(const Arguments& args)
 {
     // Check if correct number of positional arguments were given
-    if (positional_args.size() < 1)
+    if (args.numberOfPositionalArguments() < 1)
     {
         std::runtime_error e("Insufficient required arguments were given.");
         throw e;
     }
-    else if (positional_args.size() > 1)
+    else if (args.numberOfPositionalArguments() > 1)
     {
         std::runtime_error e("Too many required arguments were given.");
         throw e;
     }
 
     // Open
-    std::ifstream input_file(positional_args[0]);
+    std::ifstream input_file(args.positionalArgument(0));
     if (!input_file.good())
     {
         std::string error_string;
         error_string += "An error occured while opening ";
-        error_string += positional_args[0];
+        error_string += args.positionalArgument(0);
         error_string += ".\n";
         std::runtime_error e(error_string);
         throw e;

@@ -5,6 +5,9 @@
 #include <string>
 
 #include "types.h"
+#include "LongOptions.h"
+#include "Arguments.h"
+
 #include "AbstractController.h"
 
 class SweepController : public AbstractController
@@ -26,9 +29,11 @@ class SweepController : public AbstractController
         // Static help function
         static std::string help();
 
+        // Static addLongOptions function
+        static void addLongOptions(LongOptions& lopts);
+
         // Static function to make from positional arguments
-        static SweepController* makeController(
-                const std::vector<std::string>& positional_args);
+        static SweepController* makeController(const Arguments& args);
 
     private:
 

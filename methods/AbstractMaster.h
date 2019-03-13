@@ -5,6 +5,8 @@
 #include <string>
 
 #include "common.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 
 #include "AbstractController.h"
 
@@ -59,9 +61,23 @@ class AbstractMaster
 
         // Return help message based on master type.
         // When subclassing AbstractMaster, be sure to include a static method
-        // with the signature 'static std::string help()' and add an entry in
+        // with the signature
+        //
+        // 'static std::string help()'
+        //
+        // and add an entry in
         // the switch statement of AbstractMaster::help()
         static std::string help(master_t master);
+
+        // Add Master-specific long options to the given LongOptions object.
+        // When subclassing AbstractMaster, be sure to include a static method
+        // with the signature
+        //
+        // 'static void addLongOptions(LongOptions& lopts)'
+        //
+        // and add an entry in
+        // the switch statement of AbstractMaster::addLongOptions()
+        static void addLongOptions(master_t master, LongOptions& lopts);
 
         // Execute run function based on master type
         // When subclassing AbstractMaster, be sure to include a static method
@@ -71,7 +87,7 @@ class AbstractMaster
         //
         // and add an entry in the switch statement of AbstractMaster::run()
         static void run(master_t master, controller_t controller,
-                int argc, char *argv[]);
+                const Arguments& args);
 
     protected:
 

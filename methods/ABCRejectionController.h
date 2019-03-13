@@ -5,6 +5,8 @@
 #include <string>
 
 #include "types.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 #include "Sampler.h"
 
 #include "AbstractController.h"
@@ -29,9 +31,11 @@ class ABCRejectionController : public AbstractController
         // Static help function
         static std::string help();
 
+        // Static addLongOptions function
+        static void addLongOptions(LongOptions& lopts);
+
         // Static function to make from positional arguments
-        static ABCRejectionController* makeController(
-                const std::vector<std::string>& positional_args);
+        static ABCRejectionController* makeController(const Arguments& args);
 
     private:
 

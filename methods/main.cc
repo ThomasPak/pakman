@@ -8,6 +8,8 @@
 
 #include "common.h"
 #include "help.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 
 #include "AbstractMaster.h"
 #include "AbstractController.h"
@@ -28,6 +30,39 @@ bool program_terminated = false;
 bool is_help_flag(const std::string& flag)
 {
     return (flag.compare("-h") == 0) || (flag.compare("--help") == 0);
+}
+
+// Add general options
+void add_general_long_options(LongOptions& lopts)
+{
+    lopts.add({"help", no_argument, nullptr, 'h'});
+    lopts.add({"ignore-errors", no_argument, nullptr, 'i'});
+    lopts.add({"verbosity", required_argument, nullptr, 'v'});
+}
+
+// Process general options
+void process_general_options(master_t master, controller_t controller,
+        const Arguments& args)
+{
+    if (args.isOptionalArgumentSet("help"))
+        help(master, controller, EXIT_SUCCESS);
+
+    if (args.isOptionalArgumentSet("ignore-errors"))
+        ignore_errors = true;
+
+    if (args.isOptionalArgumentSet("verbosity"))
+    {
+        std::string arg = args.optionalArgument("verbosity");
+
+        if (arg.compare("info") == 0)
+            spdlog::set_level(spdlog::level::info);
+        else if (arg.compare("debug") == 0)
+            spdlog::set_level(spdlog::level::debug);
+        else if (arg.compare("off") == 0)
+            spdlog::set_level(spdlog::level::off);
+        else
+            help(master, controller, EXIT_FAILURE);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -83,11 +118,24 @@ int main(int argc, char *argv[])
     /* Reaching this part of the code means that the first argument was a valid
      * master and the second argument was a valid controller */
 
+    // Initialize LongOptions object
+    LongOptions lopts;
+
+    // Add general, master and controller options
+    add_general_long_options(lopts);
+    AbstractMaster::addLongOptions(master, lopts);
+    AbstractController::addLongOptions(controller, lopts);
+
+    // Create Arguments object
     // Set optind to 3 such that getopt skips the first 2 arguments
     optind = 3;
+    Arguments args(lopts, argc, argv);
+
+    // Process general options
+    process_general_options(master, controller, args);
 
     // Execute appropriate run function
-    AbstractMaster::run(master, controller, argc, argv);
+    AbstractMaster::run(master, controller, args);
 
     // Exit
     return 0;

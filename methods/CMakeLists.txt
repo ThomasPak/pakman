@@ -16,6 +16,8 @@ add_library (pakman_base
     AbstractMasterStatic.cc
     SerialMaster.cc
     SerialMasterStatic.cc
+    Arguments.cc
+    LongOptions.cc
     help.cc
     acceptance_probability.cc
     debug.cc

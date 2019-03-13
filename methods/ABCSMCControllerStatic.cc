@@ -6,6 +6,8 @@
 
 #include "common.h"
 #include "read_input.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 
 #include "ABCSMCController.h"
 
@@ -78,35 +80,40 @@ R"( <master> smc INPUT_FILE N [optional args]...
     return message;
 }
 
-ABCSMCController* ABCSMCController::makeController(
-        const std::vector<std::string>& positional_args)
+void ABCSMCController::addLongOptions(
+        LongOptions& lopts)
+{
+    // No ABCSMCController-specific options to add
+}
+
+ABCSMCController* ABCSMCController::makeController(const Arguments& args)
 {
     // Check if correct number of positional arguments were given
-    if (positional_args.size() < 2)
+    if (args.numberOfPositionalArguments() < 2)
     {
         std::runtime_error e("Insufficient required arguments were given.");
         throw e;
     }
-    else if (positional_args.size() > 2)
+    else if (args.numberOfPositionalArguments() > 2)
     {
         std::runtime_error e("Too many required arguments were given.");
         throw e;
     }
 
     // Open input file
-    std::ifstream input_file(positional_args[0]);
+    std::ifstream input_file(args.positionalArgument(0));
     if (!input_file.good())
     {
         std::string error_string;
         error_string += "An error occured while opening ";
-        error_string += positional_args[0];
+        error_string += args.positionalArgument(0);
         error_string += ".\n";
         std::runtime_error e(error_string);
         throw e;
     }
 
     // Read population size
-    int pop_size = std::stoi(positional_args[1]);
+    int pop_size = std::stoi(args.positionalArgument(1));
     if (pop_size <= 0)
     {
         std::runtime_error e("Population size "

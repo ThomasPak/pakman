@@ -2,6 +2,8 @@
 #include <string>
 
 #include "common.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 
 #include "SweepController.h"
 #include "ABCRejectionController.h"
@@ -44,18 +46,34 @@ std::string AbstractController::help(controller_t controller)
     }
 }
 
-
-AbstractController* AbstractController::makeController(controller_t controller,
-        const std::vector<std::string>& positional_args)
+void AbstractController::addLongOptions(controller_t controller,
+        LongOptions& lopts)
 {
     switch (controller)
     {
         case sweep_controller:
-            return SweepController::makeController(positional_args);
+            return SweepController::addLongOptions(lopts);
         case rejection_controller:
-            return ABCRejectionController::makeController(positional_args);
+            return ABCRejectionController::addLongOptions(lopts);
         case smc_controller:
-            return ABCSMCController::makeController(positional_args);
+            return ABCSMCController::addLongOptions(lopts);
+        default:
+            throw std::runtime_error("Invalid controller type in "
+                    "AbstractController::makeController");
+    }
+}
+
+AbstractController* AbstractController::makeController(controller_t controller,
+        const Arguments& args)
+{
+    switch (controller)
+    {
+        case sweep_controller:
+            return SweepController::makeController(args);
+        case rejection_controller:
+            return ABCRejectionController::makeController(args);
+        case smc_controller:
+            return ABCSMCController::makeController(args);
         default:
             throw std::runtime_error("Invalid controller type in "
                     "AbstractController::makeController");

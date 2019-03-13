@@ -4,8 +4,11 @@
 #include <random>
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "types.h"
+#include "LongOptions.h"
+#include "Arguments.h"
 #include "Sampler.h"
 
 #include "AbstractController.h"
@@ -31,9 +34,11 @@ class ABCSMCController : public AbstractController
         // Static help function
         static std::string help();
 
+        // Static addLongOptions function
+        static void addLongOptions(LongOptions& lopts);
+
         // Static function to make from positional arguments
-        static ABCSMCController* makeController(
-                const std::vector<std::string>& positional_args);
+        static ABCSMCController* makeController(const Arguments& args);
 
     private:
 
