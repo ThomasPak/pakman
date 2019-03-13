@@ -1,0 +1,21 @@
+#!/bin/bash
+set -euo pipefail
+
+# Process arguments
+usage="Usage: $0 NUM_SQRT_COMPUTATIONS"
+
+if [ $# -ne 1 ]; then
+    echo $usage 1>&2
+    exit 1
+fi
+
+num_sqrt_computations=$1
+
+# Flush stdin
+cat > /dev/null
+
+# Run cpu-stress with specified number of sqrt computations
+@CMAKE_CURRENT_BINARY_DIR@/cpu-stress $num_sqrt_computations
+
+# Always accept
+echo 1

@@ -1,0 +1,72 @@
+#!/bin/bash
+set -euo pipefail
+
+# Process arguments
+usage="Usage: $0 [num_procs] [num_sqrt_computations] [num_simulations]"
+
+if [ $# -gt 3 ]
+then
+    echo $usage 1>&2
+    exit 1
+fi
+
+if [ $# -ge 1 ]
+then
+    num_procs=$1
+else
+    num_procs=@cpu_count@
+fi
+
+if [ $# -ge 2 ]
+then
+    num_sqrt_computations=$2
+else
+    num_sqrt_computations=100000000
+fi
+
+if [ $# -ge 3 ]
+then
+    num_simulations=$3
+else
+    num_simulations=32
+fi
+
+# Initialize timeformat so that time only outputs elapsed time in seconds
+export TIMEFORMAT="%R"
+
+# Initialize comma-separated file with the format:
+# processes_count,elapsed_time
+echo "num_processes,elapsed_time" > scaling.csv
+
+# Ensure temporary input file is deleted upon error
+trap 'rm -f tmp.rej' ERR
+
+# Run pakman rejection algorithm
+current_num_procs=1
+while [ "$current_num_procs" -le "$num_procs" ]
+do
+    # Print message
+    echo "Running pakman with $current_num_procs processes..."
+
+    # Write processes_count
+    echo -n "$current_num_procs," >> scaling.csv
+
+    # Create temporary input file
+    sed "s;num_sqrt_computations;$num_sqrt_computations;" scaling.rej > tmp.rej
+
+    # Run pakman and record elapsed time
+    { time @MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ $current_num_procs \
+        @PROJECT_BINARY_DIR@/methods/pakman @MPIEXEC_POSTFLAGS@ mpi rejection \
+        tmp.rej $num_simulations --verbosity=off > /dev/null; } 2>> scaling.csv
+
+    # Show elapsed time
+    echo -n "Finished in "
+    tail -1 scaling.csv | cut -d, -f2 | tr -d '\n'
+    echo " seconds"
+
+    # Remove temporary input file
+    rm tmp.rej
+
+    # Double number of processes
+    ((current_num_procs *= 2))
+done
