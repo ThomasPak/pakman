@@ -4,7 +4,8 @@
 
 void propose_parameter(const cmd_t& proposer,
                        const parameter_t& old_prmtr,
-                       parameter_t& new_prmtr) {
+                       parameter_t& new_prmtr)
+{
 
     using namespace std;
 

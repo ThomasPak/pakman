@@ -12,7 +12,8 @@
 #include "types.h"
 #include "timer.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
     set_handlers();
 
@@ -20,7 +21,8 @@ int main(int argc, char *argv[]) {
     using namespace mcmc;
 
     // Process arguments
-    if (argc != 2) {
+    if (argc != 2)
+    {
         cerr << "Usage: " << argv[0] << " NUM_ACCEPT" << endl;
         cerr << "Accepts as stdin 7 lines:\n"
                 "EPSILON\n"
@@ -68,7 +70,8 @@ int main(int argc, char *argv[]) {
 
     vector<parameter_t> prmtr_accepted;
     prmtr_accepted.push_back(init_prmtr);
-    while (prmtr_accepted.size() < num_accept) {
+    while (prmtr_accepted.size() < num_accept)
+    {
 
         const parameter_t& prmtr = prmtr_accepted.back();
 
@@ -90,7 +93,8 @@ int main(int argc, char *argv[]) {
             double u = distribution(generator);
 
             // Apply Metropolis rule
-            if (u <= prob) {
+            if (u <= prob)
+            {
                 prmtr_accepted.push_back(new_prmtr);
                 continue;
             }

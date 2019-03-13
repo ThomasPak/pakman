@@ -27,7 +27,8 @@
 #include "ParameterHandler.h"
 
 void check_managers(const std::vector<ParameterHandler*>& manager_map,
-                    std::set<int>& idle_managers) {
+                    std::set<int>& idle_managers)
+{
 
     // While there are any incoming output messages
     MPI_Status status;
@@ -52,9 +53,11 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
 
         // Set parameter status appropriately according to output message
         // received
-        switch (result) {
+        switch (result)
+        {
             case REJECT:
-                if (!tolerate_rejections) {
+                if (!tolerate_rejections)
+                {
                     std::runtime_error e("Simulator rejected simulation!");
                     throw e;
                 }
@@ -66,7 +69,8 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
                 break;
 
             case ERROR:
-                if (!tolerate_errors) {
+                if (!tolerate_errors)
+                {
                     std::runtime_error e("Simulator returned error!");
                     throw e;
                 }
@@ -83,7 +87,8 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
 
     // Check for Manager signals
     while (iprobe_wrapper(MPI_ANY_SOURCE, MANAGER_SIGNAL_TAG,
-                MPI_COMM_WORLD, &status)) {
+                MPI_COMM_WORLD, &status))
+    {
 
         // Receive Manager signal
         int signal, manager = status.MPI_SOURCE;
@@ -94,7 +99,8 @@ void check_managers(const std::vector<ParameterHandler*>& manager_map,
                 get_mpi_comm_world_rank(), get_mpi_comm_world_size(), manager);
 
         // Set parameter status appropriately according to signal received
-        switch (signal) {
+        switch (signal)
+        {
             case WORKER_FLUSHED_SIGNAL:
                 manager_map[manager]->setStatus(cancelled);
                 idle_managers.insert(manager);
@@ -110,11 +116,13 @@ void delegate_managers(const AbstractSampler& sampler_obj,
                        const std::string& epsilon,
                        std::vector<ParameterHandler*>& manager_map,
                        std::set<int>& idle_managers,
-                       std::queue<ParameterHandler>& prmtr_sampled) {
+                       std::queue<ParameterHandler>& prmtr_sampled)
+{
 
     // Loop over idle managers
     for (auto it = idle_managers.begin();
-         it != idle_managers.end(); it++) {
+         it != idle_managers.end(); it++)
+    {
 
         // Sample parameter and push to queue
         prmtr_sampled.emplace(sampler_obj.sampleParameter());
@@ -141,18 +149,21 @@ void delegate_managers(const AbstractSampler& sampler_obj,
 }
 
 void check_parameters(std::queue<ParameterHandler>& prmtr_sampled,
-                      std::vector<parameter_t>& prmtr_accepted) {
+                      std::vector<parameter_t>& prmtr_accepted)
+{
 
     // Check if front parameter has finished simulating
     while ( !prmtr_sampled.empty()
-         && (prmtr_sampled.front().getStatus() != busy) ) {
+         && (prmtr_sampled.front().getStatus() != busy) )
+    {
 
         // Push to accepted parameters if accepted
         if (prmtr_sampled.front().getStatus() == accepted)
             prmtr_accepted.push_back(prmtr_sampled.front().getParameter());
 
         // Sanity check: do not check cancelled parameters
-        if (prmtr_sampled.front().getStatus() == cancelled) {
+        if (prmtr_sampled.front().getStatus() == cancelled)
+        {
             std::runtime_error e("cannot check cancelled parameters");
             throw e;
         }
@@ -162,7 +173,8 @@ void check_parameters(std::queue<ParameterHandler>& prmtr_sampled,
     }
 }
 
-void send_signal_to_managers(const int signal) {
+void send_signal_to_managers(const int signal)
+{
 
     const int size = get_mpi_comm_world_size();
 
@@ -180,9 +192,11 @@ void send_signal_to_managers(const int signal) {
         MPI_Wait(&req, MPI_STATUS_IGNORE);
 }
 
-namespace mcmc {
+namespace mcmc
+{
 
-void master() {
+void master()
+{
 
     // Get rank and size
     const int size = get_mpi_comm_world_size();
@@ -193,9 +207,11 @@ void master() {
 
 }
 
-namespace sweep {
+namespace sweep
+{
 
-void master(const input_t& input_obj) {
+void master(const input_t& input_obj)
+{
 
     // Get size
     const int size = get_mpi_comm_world_size();
@@ -225,7 +241,8 @@ void master(const input_t& input_obj) {
     start_timer();
 
     // Start main loop
-    for (;;) {
+    for (;;)
+    {
 
         // Check if any managers have finished their work
         check_managers(manager_map, idle_managers);
@@ -239,7 +256,8 @@ void master(const input_t& input_obj) {
         check_parameters(prmtr_sampled, prmtr_accepted);
 
         // If we have enough parameters
-        if (prmtr_accepted.size() >= num_param) {
+        if (prmtr_accepted.size() >= num_param)
+        {
 
             // Terminate all managers
             send_signal_to_managers(TERMINATE_MANAGER_SIGNAL);

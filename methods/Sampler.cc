@@ -13,7 +13,8 @@
 #include "Sampler.h"
 
 /**** AbstractSampler ****/
-parameter_t AbstractSampler::removeTrailingWhitespace(const std::string& sampler_output) const {
+parameter_t AbstractSampler::removeTrailingWhitespace(const std::string& sampler_output) const
+{
 
     std::stringstream sstrm(sampler_output);
 
@@ -26,7 +27,8 @@ parameter_t AbstractSampler::removeTrailingWhitespace(const std::string& sampler
 /**** PriorSampler ****/
 PriorSampler::PriorSampler(const cmd_t &prior_sampler) : m_prior_sampler(prior_sampler) {}
 
-parameter_t PriorSampler::sampleParameter() const {
+parameter_t PriorSampler::sampleParameter() const
+{
 
     parameter_t prmtr_sample;
     system_call(m_prior_sampler, prmtr_sample);
@@ -42,7 +44,8 @@ PopulationSampler::PopulationSampler(std::vector<double> weights,
                   m_weights_cumsum(weights.size()),
                   m_prmtr_population(prmtr_population),
                   m_p_generator(p_generator),
-                  m_distribution(0.0, 1.0) {
+                  m_distribution(0.0, 1.0)
+{
 
     // Normalize and compute cumulative sum
     normalize(m_weights);
@@ -50,7 +53,8 @@ PopulationSampler::PopulationSampler(std::vector<double> weights,
 }
 
 void PopulationSampler::swap_population(std::vector<double> &new_weights,
-                     std::vector<parameter_t> &new_prmtr_population) {
+                     std::vector<parameter_t> &new_prmtr_population)
+{
 
     // Swap weights and parameter population
     std::swap(m_weights, new_weights);
@@ -62,7 +66,8 @@ void PopulationSampler::swap_population(std::vector<double> &new_weights,
     cumsum(m_weights, m_weights_cumsum);
 }
 
-parameter_t PopulationSampler::sampleParameter() const {
+parameter_t PopulationSampler::sampleParameter() const
+{
 
     // Sample population
     int idx = sample_population(m_weights_cumsum, m_distribution, *m_p_generator);
@@ -73,7 +78,8 @@ parameter_t PopulationSampler::sampleParameter() const {
 /**** PerturbationSampler ****/
 PerturbationSampler::PerturbationSampler(const cmd_t &perturber) : m_perturber(perturber) {}
 
-parameter_t PerturbationSampler::perturbParameter(int t, parameter_t prmtr_base) const {
+parameter_t PerturbationSampler::perturbParameter(int t, parameter_t prmtr_base) const
+{
 
     // Prepare input to perturber
     std::string input;
@@ -88,16 +94,19 @@ parameter_t PerturbationSampler::perturbParameter(int t, parameter_t prmtr_base)
     return prmtr_sample;
 }
 
-parameter_t PerturbationSampler::sampleParameter() const {
+parameter_t PerturbationSampler::sampleParameter() const
+{
 
     // Check that t has been assigned
-    if (m_t == -1) {
+    if (m_t == -1)
+    {
         std::runtime_error e("need to set t before perturbing");
         throw e;
     }
 
     // Check that base parameter has been assigned
-    if (m_base_parameter.size() == 0) {
+    if (m_base_parameter.size() == 0)
+    {
         std::runtime_error e("need to set base parameter before perturbing");
         throw e;
     }
@@ -118,7 +127,8 @@ SMCSampler::SMCSampler(std::vector<double> weights,
     m_prior_pdf(prior_pdf),
     m_prior_pdf_val(M_INVALID) {}
 
-parameter_t SMCSampler::sampleParameter() const {
+parameter_t SMCSampler::sampleParameter() const
+{
 
     // Flag prior_pdf to indicate the value is invalid
     m_prior_pdf_val = M_INVALID;
@@ -128,14 +138,16 @@ parameter_t SMCSampler::sampleParameter() const {
     double temp_prior_pdf;
 
     // If in generation 0, sample from prior
-    if (getT() == 0) {
+    if (getT() == 0)
+    {
         prmtr_sampled = this->PriorSampler::sampleParameter();
 
         m_prior_pdf_val = computePriorPdf(prmtr_sampled);
         return removeTrailingWhitespace(prmtr_sampled);
     }
 
-    do {
+    do
+    {
         // Sample parameter population
         parameter_t prmtr_base = this->PopulationSampler::sampleParameter();
 
@@ -150,7 +162,8 @@ parameter_t SMCSampler::sampleParameter() const {
     return removeTrailingWhitespace(prmtr_sampled);
 }
 
-double SMCSampler::computePriorPdf(const parameter_t& prmtr) const {
+double SMCSampler::computePriorPdf(const parameter_t& prmtr) const
+{
 
     std::string prmtr_prior_pdf_str;
     system_call(m_prior_pdf, prmtr, prmtr_prior_pdf_str);
@@ -158,7 +171,8 @@ double SMCSampler::computePriorPdf(const parameter_t& prmtr) const {
 }
 
 /**** Generator ****/
-Generator::Generator(const cmd_t &generator) {
+Generator::Generator(const cmd_t &generator)
+{
 
     // Read output from generator
     std::string generator_output;
@@ -172,7 +186,8 @@ Generator::Generator(const cmd_t &generator) {
     m_num_param = parameter_list.size();
 
     // Sanity check: at least one parameter should have been generated
-    if (m_num_param == 0) {
+    if (m_num_param == 0)
+    {
         std::runtime_error e("generator did not output any parameters");
         throw e;
     }
@@ -182,7 +197,8 @@ Generator::Generator(const cmd_t &generator) {
         m_param_queue.push(prmtr);
 }
 
-parameter_t Generator::sampleParameter() const {
+parameter_t Generator::sampleParameter() const
+{
 
     // Get parameter from front of queue
     parameter_t prmtr = m_param_queue.front();

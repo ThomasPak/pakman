@@ -4,7 +4,8 @@
 
 #include "sample_population.h"
 
-void cumsum(const std::vector<double>& array, std::vector<double>& cumsum_array) {
+void cumsum(const std::vector<double>& array, std::vector<double>& cumsum_array)
+{
 
     double sum = 0.0;
 
@@ -12,7 +13,8 @@ void cumsum(const std::vector<double>& array, std::vector<double>& cumsum_array)
         cumsum_array[i] = (sum += array[i]);
 }
 
-void normalize(std::vector<double>& array) {
+void normalize(std::vector<double>& array)
+{
 
     double sum = 0.0;
 
@@ -25,7 +27,8 @@ void normalize(std::vector<double>& array) {
 
 int sample_population(const std::vector<double>& norm_cumsum_array,
            std::uniform_real_distribution<double>& distribution,
-           std::default_random_engine& generator) {
+           std::default_random_engine& generator)
+{
 
     double u = distribution(generator);
 

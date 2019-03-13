@@ -5,7 +5,8 @@
 #include "vector_delimited.h"
 
 void vector_delimited(const std::vector<std::string>& str_vector,
-                 std::string& delimited_string, const std::string& delimiter) {
+                 std::string& delimited_string, const std::string& delimiter)
+{
 
     using namespace std;
 

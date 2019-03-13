@@ -6,7 +6,8 @@
 
 void vector_strtok(const std::string& str,
                    std::vector<std::string>& str_vector,
-                   const std::string& delimiters) {
+                   const std::string& delimiters)
+{
 
     using namespace std;
 
@@ -15,7 +16,8 @@ void vector_strtok(const std::string& str,
     pch = strtok(c_str, delimiters.c_str());
 
     str_vector.clear();
-    while (pch != NULL) {
+    while (pch != NULL)
+    {
         str_vector.push_back(pch);
         pch = strtok(NULL, delimiters.c_str());
     }

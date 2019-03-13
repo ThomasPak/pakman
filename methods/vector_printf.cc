@@ -7,18 +7,21 @@
 
 std::string vector_printf(const std::string& format,
                           const std::vector<std::string>& args,
-                          const std::string& token) {
+                          const std::string& token)
+{
 
     using namespace std;
 
     size_t pos = 0, new_pos = 0;
     stringstream sstrm;
 
-    for (auto it = args.cbegin(); it != args.cend(); it++) {
+    for (auto it = args.cbegin(); it != args.cend(); it++)
+    {
 
         new_pos = format.find(token, pos);
 
-        if (new_pos == string::npos) {
+        if (new_pos == string::npos)
+        {
             runtime_error e("too many arguments provided");
             throw e;
         }
@@ -31,7 +34,8 @@ std::string vector_printf(const std::string& format,
 
     string tail = format.substr(pos, string::npos);
 
-    if (tail.find(token) != string::npos) {
+    if (tail.find(token) != string::npos)
+    {
         runtime_error e("not enough arguments provided");
         throw e;
     }

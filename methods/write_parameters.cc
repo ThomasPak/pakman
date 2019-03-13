@@ -9,7 +9,8 @@
 
 void write_parameters(std::ostream& ostrm,
                       const std::vector<std::string>& parameter_names,
-                      const std::vector<parameter_t>& parameters) {
+                      const std::vector<parameter_t>& parameters)
+{
 
     using namespace std;
 
@@ -28,7 +29,8 @@ void write_parameters(std::ostream& ostrm,
     }
 
     // Print accepted parameter sets
-    for (auto set = parameters.cbegin(); set != parameters.cend(); set++) {
+    for (auto set = parameters.cbegin(); set != parameters.cend(); set++)
+    {
 
         stringstream sstrm;
 
@@ -36,7 +38,8 @@ void write_parameters(std::ostream& ostrm,
         vector_strtok(*set, prmtr_elements, " \n\t");
 
         for (auto element = prmtr_elements.cbegin();
-             element != prmtr_elements.cend(); element++) {
+             element != prmtr_elements.cend(); element++)
+        {
             sstrm << *element << ",";
         }
 

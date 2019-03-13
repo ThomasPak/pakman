@@ -36,7 +36,8 @@ const int WORKER_FLUSHED_SIGNAL = 0;
 const int TERMINATE_WORKER_SIGNAL = 0;
 
 /*** Sampled parameter status ***/
-typedef enum {
+typedef enum
+{
     rejected,
     accepted,
     error,

@@ -2,19 +2,22 @@
 #include <cmath>
 #include <stdexcept>
 
-double normal_pdf(const double mu, const double sigma, const double x) {
+double normal_pdf(const double mu, const double sigma, const double x)
+{
 
     return exp( - (x - mu) * (x - mu) / ( 2.0 * sigma * sigma ) ) /
                  sqrt( 2.0 * M_PI * sigma * sigma );
 }
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
     using namespace std;
 
     // Process arguments
-    if (argc != 1) {
+    if (argc != 1)
+    {
         cerr << "Usage: " << argv[0] << endl;
         cerr << "Accepts \"mu sigma x\" as stdin, "
                 "where mu is the mean, "
@@ -28,12 +31,14 @@ int main(int argc, char *argv[]) {
 
     cin >> mu >> sigma;
 
-    if (cin.fail()) {
+    if (cin.fail())
+    {
         runtime_error e("could not read or interpret standard input");
         throw e;
     }
 
-    if (sigma <= 0.0) {
+    if (sigma <= 0.0)
+    {
         runtime_error e("sigma must be strictly positive");
         throw e;
     }
@@ -41,9 +46,11 @@ int main(int argc, char *argv[]) {
     // Compute pdf
     cout.precision(17);
     double x;
-    for (cin >> x; !cin.eof(); cin >> x) {
+    for (cin >> x; !cin.eof(); cin >> x)
+    {
 
-        if (cin.fail()) {
+        if (cin.fail())
+        {
             runtime_error e("could not read or interpret standard input");
             throw e;
         }

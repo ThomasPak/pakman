@@ -22,7 +22,8 @@ const int READ_END = 0;
 const int WRITE_END = 1;
 
 bool waitpid_success(pid_t pid, int options, const cmd_t& cmd,
-                     child_err_opt_t child_err_opt) {
+                     child_err_opt_t child_err_opt)
+{
 
     using namespace std;
 
@@ -34,7 +35,8 @@ bool waitpid_success(pid_t pid, int options, const cmd_t& cmd,
     if (retval == 0) // No state change with WNOHANG
         return false;
 
-    if (retval == -1) {
+    if (retval == -1)
+    {
         string error_msg("waitpid of ");
         error_msg += cmd;
         error_msg += " failed";
@@ -43,7 +45,8 @@ bool waitpid_success(pid_t pid, int options, const cmd_t& cmd,
     }
 
     // Check exit status of child
-    if (child_err_opt == throw_error) {
+    if (child_err_opt == throw_error)
+    {
         if (!WIFEXITED(status)) { // Program did not exit normally
             string error_msg(cmd);
             error_msg += " did not exit normally";
@@ -76,7 +79,8 @@ bool waitpid_success(pid_t pid, int& error_code, int options, const cmd_t& cmd)
     if (retval == 0) // No state change with WNOHANG
         return false;
 
-    if (retval == -1) {
+    if (retval == -1)
+    {
         string error_msg("waitpid of ");
         error_msg += cmd;
         error_msg += " failed";
@@ -99,28 +103,33 @@ bool waitpid_success(pid_t pid, int& error_code, int options, const cmd_t& cmd)
     return true;
 }
 
-void dup2_check(int oldfd, int newfd) {
+void dup2_check(int oldfd, int newfd)
+{
 
     int retval = dup2(oldfd, newfd);
 
-    if (retval == -1) {
+    if (retval == -1)
+    {
         perror("dup2 failed");
         throw;
     }
 }
 
-void close_check(int fd) {
+void close_check(int fd)
+{
 
     int retval = close(fd);
 
-    if (retval == -1) {
+    if (retval == -1)
+    {
         perror("close failed");
         throw;
     }
 }
 
 void system_call(const cmd_t& cmd, std::string& output,
-                 child_err_opt_t child_err_opt) {
+                 child_err_opt_t child_err_opt)
+{
 
     using namespace std;
 
@@ -129,7 +138,8 @@ void system_call(const cmd_t& cmd, std::string& output,
     // Create pipe
     int pipefd[2];
 
-    if (pipe(pipefd) == -1) {
+    if (pipe(pipefd) == -1)
+    {
         runtime_error e("pipe failed");
         throw e;
     }
@@ -137,7 +147,8 @@ void system_call(const cmd_t& cmd, std::string& output,
     // Fork
     pid_t child_pid = fork();
 
-    if (child_pid == -1) {
+    if (child_pid == -1)
+    {
         runtime_error e("fork failed");
         throw e;
     }
@@ -195,7 +206,8 @@ void system_call(const cmd_t& cmd, std::string& output,
 void system_call(const cmd_t& cmd,
                  const std::string& input,
                  std::string& output,
-                 child_err_opt_t child_err_opt) {
+                 child_err_opt_t child_err_opt)
+{
 
     using namespace std;
 
@@ -205,7 +217,8 @@ void system_call(const cmd_t& cmd,
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
 
-    if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) ) {
+    if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) )
+    {
         runtime_error e("pipe failed");
         throw e;
     }
@@ -213,7 +226,8 @@ void system_call(const cmd_t& cmd,
     // Fork
     pid_t child_pid = fork();
 
-    if (child_pid == -1) {
+    if (child_pid == -1)
+    {
         runtime_error e("fork failed");
         throw e;
     }
@@ -282,7 +296,8 @@ void system_call(const cmd_t& cmd,
 void system_call(const cmd_t& cmd,
                  const std::string& input,
                  std::string& output,
-                 int& error_code) {
+                 int& error_code)
+{
 
     using namespace std;
 
@@ -292,7 +307,8 @@ void system_call(const cmd_t& cmd,
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
 
-    if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) ) {
+    if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) )
+    {
         runtime_error e("pipe failed");
         throw e;
     }
@@ -300,7 +316,8 @@ void system_call(const cmd_t& cmd,
     // Fork
     pid_t child_pid = fork();
 
-    if (child_pid == -1) {
+    if (child_pid == -1)
+    {
         runtime_error e("fork failed");
         throw e;
     }
@@ -366,7 +383,8 @@ void system_call(const cmd_t& cmd,
     spdlog::debug("output: {}", output);
 }
 
-void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd) {
+void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd)
+{
 
     using namespace std;
 
@@ -375,7 +393,8 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd) {
     // Create pipe
     int pipefd[2];
 
-    if (pipe(pipefd) == -1) {
+    if (pipe(pipefd) == -1)
+    {
         runtime_error e("pipe failed");
         throw e;
     }
@@ -383,7 +402,8 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd) {
     // Fork and record child pid
     child_pid = fork();
 
-    if (child_pid == -1) {
+    if (child_pid == -1)
+    {
         runtime_error e("fork failed");
         throw e;
     }
@@ -431,7 +451,8 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd) {
 }
 
 void system_call(const cmd_t& cmd, pid_t& child_pid,
-                int& pipe_write_fd, int& pipe_read_fd) {
+                int& pipe_write_fd, int& pipe_read_fd)
+{
 
     using namespace std;
 
@@ -440,7 +461,8 @@ void system_call(const cmd_t& cmd, pid_t& child_pid,
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
 
-    if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) ) {
+    if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) )
+    {
         runtime_error e("pipe failed");
         throw e;
     }
@@ -448,7 +470,8 @@ void system_call(const cmd_t& cmd, pid_t& child_pid,
     // Fork and record child pid
     child_pid = fork();
 
-    if (child_pid == -1) {
+    if (child_pid == -1)
+    {
         runtime_error e("fork failed");
         throw e;
     }

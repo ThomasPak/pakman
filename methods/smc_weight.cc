@@ -14,7 +14,8 @@ double smc_weight(const cmd_t& perturbation_pdf,
                   const int t,
                   const std::vector<parameter_t>& prmtr_accepted_old,
                   const std::vector<double>& weights_old,
-                  const parameter_t& prmtr_perturbed) {
+                  const parameter_t& prmtr_perturbed)
+{
 
     using namespace std;
 
@@ -34,7 +35,8 @@ double smc_weight(const cmd_t& perturbation_pdf,
     input += '\n';
 
     for (auto it = prmtr_accepted_old.begin();
-         it != prmtr_accepted_old.end(); it++) {
+         it != prmtr_accepted_old.end(); it++)
+    {
         input += *it;
         input += '\n';
     }
@@ -46,10 +48,12 @@ double smc_weight(const cmd_t& perturbation_pdf,
     double denominator = 0.0;
 
     for (auto it = weights_old.begin();
-         it != weights_old.end(); it++) {
+         it != weights_old.end(); it++)
+    {
         double current_pdf;
         sstrm >> current_pdf;
-        if (!sstrm.good()) {
+        if (!sstrm.good())
+        {
             runtime_error e("an error occured while reading the output of perturbation_pdf");
             throw e;
         }

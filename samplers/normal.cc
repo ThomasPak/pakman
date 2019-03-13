@@ -3,12 +3,14 @@
 #include <chrono>
 #include <stdexcept>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
     using namespace std;
 
     // Process arguments
-    if (argc > 3) {
+    if (argc > 3)
+    {
         cerr << "Usage: " << argv[0]
              << " [MIN_VAL] [MAX_VAL]"
              << endl;
@@ -20,7 +22,8 @@ int main(int argc, char *argv[]) {
 
     double min_val, max_val;
 
-    switch (argc) {
+    switch (argc)
+    {
         case 1:
             min_val = - numeric_limits<double>::infinity();
             max_val = numeric_limits<double>::infinity();
@@ -40,7 +43,8 @@ int main(int argc, char *argv[]) {
 
     cin >> mu >> sigma;
 
-    if (cin.fail()) {
+    if (cin.fail())
+    {
         runtime_error e("could not read or interpret standard input");
         throw e;
     }

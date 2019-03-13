@@ -2,7 +2,8 @@
 #include <vector>
 
 void vector_argv(const std::vector<std::string>& cmd_tokens,
-                 std::vector<const char*>& argv) {
+                 std::vector<const char*>& argv)
+{
 
     for (auto it = cmd_tokens.begin();
          it != cmd_tokens.end(); it++)

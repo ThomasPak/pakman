@@ -8,9 +8,11 @@ typedef std::string parameter_t;
 typedef std::string cmd_t;
 
 /***** Rejection method *****/
-namespace rejection {
+namespace rejection
+{
 
-typedef struct {
+typedef struct
+{
     std::string epsilon;
     cmd_t simulator;
     std::vector<std::string> parameter_names;
@@ -20,9 +22,11 @@ typedef struct {
 }
 
 /***** MCMC method *****/
-namespace mcmc {
+namespace mcmc
+{
 
-typedef struct {
+typedef struct
+{
     std::string epsilon;
     cmd_t simulator;
     std::vector<std::string> parameter_names;
@@ -35,9 +39,11 @@ typedef struct {
 }
 
 /***** SMC method *****/
-namespace smc {
+namespace smc
+{
 
-typedef struct {
+typedef struct
+{
     std::vector<std::string> epsilons;
     cmd_t simulator;
     std::vector<std::string> parameter_names;
@@ -50,9 +56,11 @@ typedef struct {
 }
 
 /***** parameter sweep *****/
-namespace sweep {
+namespace sweep
+{
 
-typedef struct {
+typedef struct
+{
     cmd_t simulator;
     std::vector<std::string> parameter_names;
     cmd_t generator;

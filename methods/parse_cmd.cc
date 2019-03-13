@@ -7,13 +7,15 @@
 
 enum state_t { start, unquoted, singly_quoted, doubly_quoted };
 
-bool is_whitespace(const char letter) {
+bool is_whitespace(const char letter)
+{
     return (letter == ' ')
         || (letter == '\t')
         || (letter == '\n');
 }
 
-void parse_cmd(const cmd_t& cmd, std::vector<std::string>& cmd_tokens) {
+void parse_cmd(const cmd_t& cmd, std::vector<std::string>& cmd_tokens)
+{
 
     using namespace std;
 
@@ -23,35 +25,41 @@ void parse_cmd(const cmd_t& cmd, std::vector<std::string>& cmd_tokens) {
     cmd_tokens.clear();
 
     // Iterate over cmd string
-    for (auto it = cmd.cbegin(); it != cmd.cend(); it++) {
+    for (auto it = cmd.cbegin(); it != cmd.cend(); it++)
+    {
 
         char letter = *it;
 
-        switch (state) {
+        switch (state)
+        {
 
             // Starting state
             case start:
 
                 // If whitespace, stay in starting state
-                while (is_whitespace(letter)) {
+                while (is_whitespace(letter))
+                {
                     it++;
                     if (it == cmd.cend()) goto endloop;
                     letter = *it;
                 }
 
                 // If single quote, transition to singly_quoted
-                if (letter == '\'') {
+                if (letter == '\'')
+                {
                     state = singly_quoted;
                 }
 
                 // If double quote, transition to doubly_quoted
-                else if (letter == '\"') {
+                else if (letter == '\"')
+                {
                     state = doubly_quoted;
                 }
 
                 // If normal character, add character
                 // and transition to unquoted
-                else {
+                else
+                {
                     token_strm << letter;
                     state = unquoted;
                 }
@@ -63,7 +71,8 @@ void parse_cmd(const cmd_t& cmd, std::vector<std::string>& cmd_tokens) {
 
                 // If any other character than single quote,
                 // add character and stay in singly quoted state
-                while (letter != '\'') {
+                while (letter != '\'')
+                {
                     token_strm << letter;
                     it++;
                     if (it == cmd.cend()) goto endloop;
@@ -80,7 +89,8 @@ void parse_cmd(const cmd_t& cmd, std::vector<std::string>& cmd_tokens) {
 
                 // If any other character than double quote,
                 // add character and stay in doubly quoted state
-                while (letter != '\"') {
+                while (letter != '\"')
+                {
                     token_strm << letter;
                     it++;
                     if (it == cmd.cend()) goto endloop;
@@ -99,7 +109,8 @@ void parse_cmd(const cmd_t& cmd, std::vector<std::string>& cmd_tokens) {
                 // unquoted state
                 while ( !is_whitespace(letter) &&
                         (letter != '\'') &&
-                        (letter != '\"') ) {
+                        (letter != '\"') )
+                {
                     token_strm << letter;
                     it++;
                     if (it == cmd.cend()) goto endloop;
@@ -108,7 +119,8 @@ void parse_cmd(const cmd_t& cmd, std::vector<std::string>& cmd_tokens) {
 
                 // If whitespace, push token and
                 // transition to starting state
-                if (is_whitespace(letter)) {
+                if (is_whitespace(letter))
+                {
                     cmd_tokens.push_back(token_strm.str());
                     token_strm.str("");
                     state = start;
@@ -131,13 +143,15 @@ void parse_cmd(const cmd_t& cmd, std::vector<std::string>& cmd_tokens) {
 endloop:
 
     // Check for unfinished quotations
-    if ( (state == singly_quoted) || (state == doubly_quoted) ) {
+    if ( (state == singly_quoted) || (state == doubly_quoted) )
+    {
         runtime_error e("there were unfinished quotations");
         throw e;
     }
 
     // Push back last token
-    if (state == unquoted) {
+    if (state == unquoted)
+    {
         cmd_tokens.push_back(token_strm.str());
     }
 }

@@ -15,7 +15,8 @@ bool program_terminated = false;
 
 int rank, size;
 
-int main() {
+int main()
+{
 
     // Initialize the MPI environment
     MPI_Init(NULL, NULL);
@@ -24,11 +25,13 @@ int main() {
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    if (rank == 0) {
+    if (rank == 0)
+    {
 
         mcmc::master();
 
-    } else {
+    } else
+    {
 
         ;
 

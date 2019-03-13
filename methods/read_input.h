@@ -10,28 +10,32 @@ void read_lines(std::istream& istrm, const int num_lines,
                 std::vector<std::string>& lines);
 
 /***** Rejection method *****/
-namespace rejection {
+namespace rejection
+{
 
 void read_input(std::istream& istrm, input_t& input_obj);
 
 }
 
 /***** MCMC method *****/
-namespace mcmc {
+namespace mcmc
+{
 
 void read_input(std::istream& istrm, input_t& input_obj);
 
 }
 
 /***** SMC method *****/
-namespace smc {
+namespace smc
+{
 
 void read_input(std::istream& istrm, input_t& input_obj);
 
 }
 
 /***** Parameter sweep *****/
-namespace sweep {
+namespace sweep
+{
 
 void read_input(std::istream& istrm, input_t& input_obj);
 

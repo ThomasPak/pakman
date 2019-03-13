@@ -21,19 +21,22 @@ void check_parameters(std::queue<ParameterHandler>& prmtr_sampled,
                       std::vector<parameter_t>& prmtr_accepted);
 void send_signal_to_managers(const int signal);
 
-namespace rejection {
+namespace rejection
+{
 
 void master(const int num_accept, const input_t& input_obj);
 
 }
 
-namespace mcmc {
+namespace mcmc
+{
 
 void master();
 
 }
 
-namespace smc {
+namespace smc
+{
 
 void compute_weights(const SMCSampler& smc_sampler,
                      const cmd_t& perturbation_pdf,
@@ -45,7 +48,8 @@ void master(const int num_accept, const input_t& input_obj);
 
 }
 
-namespace sweep {
+namespace sweep
+{
 
 void master(const input_t& input_obj);
 

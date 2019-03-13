@@ -3,12 +3,14 @@
 #include <sstream>
 #include <chrono>
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
     using namespace std;
 
     // Process arguments
-    if ( (argc == 1 ) || (argc % 2 != 1) ) {
+    if ( (argc == 1 ) || (argc % 2 != 1) )
+    {
         cerr << "Usage: " << argv[0] << " MIN_VAL_1 MAX_VAL_1 .. MIN_VAL_N MAX_VAL_N"
              << endl;
         return 2;
@@ -22,7 +24,8 @@ int main(int argc, char *argv[]) {
     ostringstream strm;
     strm.precision(17);
 
-    for (int i = 1; i < argc; i = i + 2) {
+    for (int i = 1; i < argc; i = i + 2)
+    {
 
         double a = stod(argv[i]);
         double b = stod(argv[i + 1]);

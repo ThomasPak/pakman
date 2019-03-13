@@ -13,7 +13,8 @@
 #include "spawn.h"
 
 
-MPI_Comm spawn(const cmd_t& cmd, MPI_Info info) {
+MPI_Comm spawn(const cmd_t& cmd, MPI_Info info)
+{
 
     // Create command and break into tokens
     std::vector<std::string> cmd_tokens;

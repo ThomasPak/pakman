@@ -10,7 +10,8 @@
 
 #include "types.h"
 
-class AbstractSampler {
+class AbstractSampler
+{
 
     public:
 
@@ -21,7 +22,8 @@ class AbstractSampler {
         parameter_t removeTrailingWhitespace(const std::string& sampler_output) const;
 };
 
-class PriorSampler : public virtual AbstractSampler {
+class PriorSampler : public virtual AbstractSampler
+{
 
     public:
 
@@ -34,7 +36,8 @@ class PriorSampler : public virtual AbstractSampler {
         const cmd_t m_prior_sampler;
 };
 
-class PopulationSampler : public virtual AbstractSampler {
+class PopulationSampler : public virtual AbstractSampler
+{
 
     public:
 
@@ -47,11 +50,13 @@ class PopulationSampler : public virtual AbstractSampler {
 
         virtual parameter_t sampleParameter() const override;
 
-        const std::vector<double>& getWeights() const {
+        const std::vector<double>& getWeights() const
+        {
             return m_weights;
         }
 
-        const std::vector<parameter_t>& getParameterPopulation() const {
+        const std::vector<parameter_t>& getParameterPopulation() const
+        {
             return m_prmtr_population;
         }
 
@@ -71,17 +76,20 @@ class PopulationSampler : public virtual AbstractSampler {
         mutable std::uniform_real_distribution<double> m_distribution;
 };
 
-class PerturbationSampler : public virtual AbstractSampler {
+class PerturbationSampler : public virtual AbstractSampler
+{
 
     public:
 
         PerturbationSampler(const cmd_t &perturber);
 
-        void setT(const int t) {
+        void setT(const int t)
+        {
             m_t = t;
         }
 
-        void setBaseParameter(parameter_t base_parameter) {
+        void setBaseParameter(parameter_t base_parameter)
+        {
             m_base_parameter.assign(base_parameter);
         }
 
@@ -89,8 +97,10 @@ class PerturbationSampler : public virtual AbstractSampler {
 
         virtual parameter_t sampleParameter() const override;
 
-        int getT() const {
-            if (m_t == M_INVALID) {
+        int getT() const
+        {
+            if (m_t == M_INVALID)
+            {
                 std::runtime_error e("t was not set");
                 throw e;
             }
@@ -109,7 +119,8 @@ class PerturbationSampler : public virtual AbstractSampler {
 };
 
 class SMCSampler :
-    public PopulationSampler, public PerturbationSampler, public PriorSampler {
+    public PopulationSampler, public PerturbationSampler, public PriorSampler
+{
 
     public:
 
@@ -122,8 +133,10 @@ class SMCSampler :
 
         virtual parameter_t sampleParameter() const override;
 
-        double getPriorPdf() const {
-            if (m_prior_pdf_val == M_INVALID) {
+        double getPriorPdf() const
+        {
+            if (m_prior_pdf_val == M_INVALID)
+            {
                 std::runtime_error e("prior pdf not available");
                 throw e;
             }
@@ -140,7 +153,8 @@ class SMCSampler :
         constexpr static double M_INVALID = -1.0;
 };
 
-class Generator : public virtual AbstractSampler {
+class Generator : public virtual AbstractSampler
+{
 
     public:
 
@@ -148,7 +162,8 @@ class Generator : public virtual AbstractSampler {
 
         virtual parameter_t sampleParameter() const override;
 
-        int getNumberOfParameters() const {
+        int getNumberOfParameters() const
+        {
             return m_num_param;
         }
 

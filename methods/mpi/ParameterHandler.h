@@ -9,7 +9,8 @@
 #include "mpi_common.h"
 #include "types.h"
 
-class ParameterHandler {
+class ParameterHandler
+{
 
     public:
 
