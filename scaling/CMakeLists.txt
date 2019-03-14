@@ -12,7 +12,7 @@ if (cpu_count EQUAL 0)
     set (cpu_count ${MPIEXEC_MAX_NUMPROCS})
 endif ()
 
-# Copy Python script
+# Configure Python script
 file (COPY plot-scaling.py
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 

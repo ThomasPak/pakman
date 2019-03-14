@@ -14,6 +14,14 @@ if (MPIEXEC_HOSTS_FLAGS)
     message ("Host flags are: ${MPIEXEC_HOSTS_FLAGS}")
 endif ()
 
+# Find Python
+include (FindPythonInterp)
+
+if (NOT PYTHONINTERP_FOUND)
+    message (WARNING "Python interpreter was not found, "
+        "cannot generate plots")
+endif ()
+
 # If the MPI installation is OpenMPI, make sure to add `--oversubscribe` flags
 # to MPIEXEC_PREFLAGS
 execute_process (COMMAND ${MPIEXEC_EXECUTABLE} --version
