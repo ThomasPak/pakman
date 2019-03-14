@@ -4,6 +4,15 @@ set -euo pipefail
 # Process arguments
 usage="Usage: $0 [num_procs] [num_sqrt_computations] [num_simulations]"
 
+if [ $# -ge 1 ]
+then
+    if [ $1 == "--help" ] || [ $1 == "-h" ]
+    then
+        echo $usage 1>&2
+        exit 1
+    fi
+fi
+
 if [ $# -gt 3 ]
 then
     echo $usage 1>&2
