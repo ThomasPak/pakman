@@ -65,9 +65,15 @@ do
     tail -1 scaling.csv | cut -d, -f2 | tr -d '\n'
     echo " seconds"
 
-    # Remove temporary input file
-    rm tmp.rej
-
     # Double number of processes
     ((current_num_procs *= 2))
 done
+
+# Remove temporary input file
+rm tmp.rej
+
+# Create performance plot
+python plot-scaling.py scaling.csv scaling.png
+
+# Print message
+echo "Results were stored in scaling.csv and plotted in scaling.png"
