@@ -7,6 +7,13 @@ read epsilon
 # Read parameter
 read parameter
 
+# If there is anymore input, throw error
+if read dummy
+then
+    echo "$0 only accepts two lines of input"
+    exit 1
+fi
+
 # Add epsilon and parameter
 sum=$((epsilon + parameter))
 

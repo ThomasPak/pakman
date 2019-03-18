@@ -12,6 +12,13 @@ fi
 
 number_file="$1"
 
+# If there is any input, throw error
+if read dummy
+then
+    echo "$0 does not accept any input"
+    exit 1
+fi
+
 # Base case, if number_file does not exist,
 # set current_number to 0
 if [ ! -f "$number_file" ]
