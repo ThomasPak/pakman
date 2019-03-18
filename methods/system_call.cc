@@ -177,6 +177,11 @@ void system_call(const cmd_t& cmd, std::string& output,
             close_check(devnull);
         }
 
+        // Supress stdin of child process
+        int devnull = open("/dev/null", O_RDONLY);
+        dup2_check(devnull, STDIN_FILENO);
+        close_check(devnull);
+
         // Close read end of pipe and redirect stdout to write end
         close_check(pipefd[READ_END]);
         dup2_check(pipefd[WRITE_END], 1);
@@ -425,6 +430,11 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd)
             dup2_check(devnull, STDERR_FILENO);
             close_check(devnull);
         }
+
+        // Suppress stdin of child process
+        int devnull = open("/dev/null", O_RDONLY);
+        dup2_check(devnull, STDIN_FILENO);
+        close_check(devnull);
 
         // Close read end of pipe and redirect stdout to write end
         close_check(pipefd[READ_END]);
