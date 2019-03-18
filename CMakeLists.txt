@@ -44,8 +44,11 @@ if (CMAKE_BUILD_TYPE MATCHES "|Debug|RelWithDebInfo")
     set (CMAKE_ENABLE_EXPORTS TRUE)
 endif()
 
-# CTest
+# Include CTest
 include (CTest)
+
+# Include custom cmake modules
+include ("${PROJECT_SOURCE_DIR}/cmake/ConfigureScript.cmake")
 
 # Subdirectories
 add_subdirectory (samplers)
