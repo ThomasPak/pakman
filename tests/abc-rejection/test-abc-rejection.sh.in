@@ -1,0 +1,33 @@
+#!/bin/bash
+set -euo pipefail
+
+# Process arguments
+if [ $# -ne 2 ]
+then
+    echo "Usage: $0 EPSILON NUM_ACCEPT" 1>&2
+    exit 1
+fi
+
+epsilon="$1"
+num_accept="$2"
+
+# Create temporary files
+temp_number_file=$(mktemp)
+temp_input_file=$(mktemp)
+
+# Ensure temporary files are cleaned up if error occurs
+trap "rm -f $temp_number_file $temp_input_file" ERR
+
+# Store 0 in temporary number file
+echo 0 > $temp_number_file
+
+# Write temporary input file
+cp @CMAKE_CURRENT_BINARY_DIR@/abc-rejection-test.rej $temp_input_file
+sed -i "s;EPSILON;$epsilon;" $temp_input_file
+sed -i "s;NUMBER_FILE;$temp_number_file;" $temp_input_file
+
+# Run pakman
+@PROJECT_BINARY_DIR@/methods/pakman serial rejection $temp_input_file $num_accept
+
+# Clean up temporary files
+rm -f $temp_number_file $temp_input_file
