@@ -1,0 +1,20 @@
+# Epsilons
+EPSILONS
+
+# Simulator
+@CMAKE_CURRENT_BINARY_DIR@/../abc-rejection/accept-if-epsilon-plus-parameter-is-even.sh
+
+# Parameter names
+p
+
+# Prior sampler
+@CMAKE_CURRENT_BINARY_DIR@/../abc-rejection/increment-and-print-number.sh NUMBER_FILE
+
+# Perturber
+@CMAKE_CURRENT_BINARY_DIR@/perturber.sh EPSILONS
+
+# Prior pdf
+bash prior-pdf.sh
+
+# Prior pdf
+@CMAKE_CURRENT_BINARY_DIR@/perturbation-pdf.sh EPSILONS
