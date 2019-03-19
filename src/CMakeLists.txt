@@ -19,11 +19,9 @@ add_library (pakman_base
     Arguments.cc
     LongOptions.cc
     help.cc
-    acceptance_probability.cc
     debug.cc
     parse_cmd.cc
     pipe_io.cc
-    propose_parameter.cc
     read_input.cc
     run_simulation.cc
     sample_population.cc
