@@ -10,6 +10,7 @@
 #include "LongOptions.h"
 #include "Arguments.h"
 #include "Sampler.h"
+#include "Parameter.h"
 
 #include "AbstractController.h"
 
@@ -62,7 +63,7 @@ class ABCSMCController : public AbstractController
         int m_pop_size;
 
         // New accepted parameters
-        std::vector<parameter_t> m_prmtr_accepted_new;
+        std::vector<Parameter> m_prmtr_accepted_new;
 
         // New weights
         std::vector<double> m_weights_new;

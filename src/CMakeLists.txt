@@ -18,6 +18,7 @@ add_library (pakman_base
     SerialMasterStatic.cc
     Arguments.cc
     LongOptions.cc
+    Parameter.cc
     help.cc
     debug.cc
     parse_cmd.cc

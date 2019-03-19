@@ -10,6 +10,8 @@
 #include "run_simulation.h"
 #include "Sampler.h"
 #include "AbstractMaster.h"
+#include "Parameter.h"
+
 #include "ABCRejectionController.h"
 
 // Constructor
@@ -47,20 +49,20 @@ void ABCRejectionController::iterate()
         // Check if parameter was accepted
         if (simulation_result(task.getOutputString()) == ACCEPT)
         {
-            // Declare parameter
-            parameter_t accepted_prmtr;
+            // Declare raw parameter
+            std::string raw_parameter;
 
             // Get input string
             std::stringstream input_sstrm(task.getInputString());
 
             // Discard epsilon
-            std::getline(input_sstrm, accepted_prmtr);
+            std::getline(input_sstrm, raw_parameter);
 
             // Read accepted parameter
-            std::getline(input_sstrm, accepted_prmtr);
+            std::getline(input_sstrm, raw_parameter);
 
             // Push accepted parameter
-            m_prmtr_accepted.push_back(std::move(accepted_prmtr));
+            m_prmtr_accepted.push_back(std::move(raw_parameter));
         }
 
         // Pop finished task

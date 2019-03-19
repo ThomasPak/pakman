@@ -4,14 +4,15 @@
 #include "types.h"
 #include "system_call.h"
 #include "run_simulation.h"
+#include "Parameter.h"
 
 std::string simulator_input(const std::string& epsilon,
-        const parameter_t& prmtr_sample)
+        const Parameter& prmtr_sample)
 {
     std::string input_string;
     input_string += epsilon;
     input_string += '\n';
-    input_string += prmtr_sample;
+    input_string += prmtr_sample.str();
     input_string += '\n';
 
     return input_string;
@@ -39,7 +40,7 @@ int simulation_result(const std::string& output)
 
 int run_simulation(const std::string& epsilon,
                     const cmd_t& simulator,
-                    const parameter_t& prmtr_sample)
+                    const Parameter& prmtr_sample)
 {
 
     using namespace std;

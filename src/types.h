@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 
-typedef std::string parameter_t;
 typedef std::string cmd_t;
 
 /***** Rejection method *****/

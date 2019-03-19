@@ -6,15 +6,16 @@
 
 #include "types.h"
 #include "system_call.h"
-#include "smc_weight.h"
+#include "Parameter.h"
 
+#include "smc_weight.h"
 
 double smc_weight(const cmd_t& perturbation_pdf,
                   const double prmtr_prior_pdf,
                   const int t,
-                  const std::vector<parameter_t>& prmtr_accepted_old,
+                  const std::vector<Parameter>& prmtr_accepted_old,
                   const std::vector<double>& weights_old,
-                  const parameter_t& prmtr_perturbed)
+                  const Parameter& prmtr_perturbed)
 {
 
     using namespace std;
@@ -31,13 +32,13 @@ double smc_weight(const cmd_t& perturbation_pdf,
     string input, output;
     input += to_string(t);
     input += '\n';
-    input += prmtr_perturbed;
+    input += prmtr_perturbed.str();
     input += '\n';
 
     for (auto it = prmtr_accepted_old.begin();
          it != prmtr_accepted_old.end(); it++)
     {
-        input += *it;
+        input += it->str();
         input += '\n';
     }
 

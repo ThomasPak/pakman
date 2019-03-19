@@ -11,6 +11,7 @@
 #include "run_simulation.h"
 #include "write_parameters.h"
 #include "smc_weight.h"
+#include "Parameter.h"
 
 #include "ABCSMCController.h"
 
@@ -21,7 +22,7 @@ ABCSMCController::ABCSMCController(const smc::input_t &input_obj,
     m_epsilons(input_obj.epsilons),
     m_parameter_names(input_obj.parameter_names),
     m_smc_sampler(std::vector<double>(pop_size),
-            std::vector<parameter_t>(pop_size), p_generator, input_obj.perturber,
+            std::vector<Parameter>(pop_size), p_generator, input_obj.perturber,
             input_obj.prior_sampler, input_obj.prior_pdf),
     m_perturbation_pdf(input_obj.perturbation_pdf),
     m_pop_size(pop_size),
@@ -58,20 +59,20 @@ void ABCSMCController::iterate()
         // Check if parameter was accepted
         if (simulation_result(task.getOutputString()) == ACCEPT)
         {
-            // Declare parameter
-            parameter_t accepted_prmtr;
+            // Declare raw parameter
+            std::string raw_parameter;
 
             // Get input string
             std::stringstream input_sstrm(task.getInputString());
 
             // Discard epsilon
-            std::getline(input_sstrm, accepted_prmtr);
+            std::getline(input_sstrm, raw_parameter);
 
             // Read accepted parameter
-            std::getline(input_sstrm, accepted_prmtr);
+            std::getline(input_sstrm, raw_parameter);
 
             // Push accepted parameter
-            m_prmtr_accepted_new.push_back(std::move(accepted_prmtr));
+            m_prmtr_accepted_new.push_back(std::move(raw_parameter));
         }
 
         // Pop finished task

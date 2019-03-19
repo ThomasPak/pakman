@@ -20,7 +20,12 @@ SweepController::SweepController(const sweep::input_t &input_obj) :
     system_call(input_obj.generator, generator_output);
 
     // Decompose into individual parameters
-    vector_strtok(generator_output, m_prmtr_list, "\n");
+    std::vector<std::string> raw_prmtr_list;
+    vector_strtok(generator_output, raw_prmtr_list, "\n");
+
+    // Save to m_prmtr_list
+    for (std::string& raw_prmtr : raw_prmtr_list)
+        m_prmtr_list.push_back(std::move(raw_prmtr));
 
     // Sanity check: at least one parameter should have been generated
     if (m_prmtr_list.size() == 0)
@@ -45,7 +50,11 @@ void SweepController::iterate()
 
         // Push all parameters
         for (auto it = m_prmtr_list.begin(); it != m_prmtr_list.end(); it++)
-            m_p_master->pushPendingTask(*it);
+        {
+            std::string input(it->str());
+            input += '\n';
+            m_p_master->pushPendingTask(std::move(input));
+        }
 
         // Return
         entered = false;

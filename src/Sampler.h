@@ -8,6 +8,7 @@
 #include <random>
 #include <stdexcept>
 
+#include "Parameter.h"
 #include "types.h"
 
 class AbstractSampler
@@ -15,11 +16,8 @@ class AbstractSampler
 
     public:
 
-        virtual parameter_t sampleParameter() const = 0;
+        virtual Parameter sampleParameter() const = 0;
 
-    protected:
-
-        parameter_t removeTrailingWhitespace(const std::string& sampler_output) const;
 };
 
 class PriorSampler : public virtual AbstractSampler
@@ -29,7 +27,7 @@ class PriorSampler : public virtual AbstractSampler
 
         PriorSampler(const cmd_t &prior_sampler);
 
-        virtual parameter_t sampleParameter() const override;
+        virtual Parameter sampleParameter() const override;
 
     private:
 
@@ -42,20 +40,20 @@ class PopulationSampler : public virtual AbstractSampler
     public:
 
         PopulationSampler(std::vector<double> weights,
-                          std::vector<parameter_t> prmtr_population,
+                          std::vector<Parameter> prmtr_population,
                           std::shared_ptr<std::default_random_engine> p_generator);
 
         void swap_population(std::vector<double> &new_weights,
-                             std::vector<parameter_t> &new_prmtr_population);
+                             std::vector<Parameter> &new_prmtr_population);
 
-        virtual parameter_t sampleParameter() const override;
+        virtual Parameter sampleParameter() const override;
 
         const std::vector<double>& getWeights() const
         {
             return m_weights;
         }
 
-        const std::vector<parameter_t>& getParameterPopulation() const
+        const std::vector<Parameter>& getParameterPopulation() const
         {
             return m_prmtr_population;
         }
@@ -63,7 +61,7 @@ class PopulationSampler : public virtual AbstractSampler
     private:
 
         // Population of parameters to sample from
-        std::vector<parameter_t> m_prmtr_population;
+        std::vector<Parameter> m_prmtr_population;
 
         // Corresponding weights and cumulative sum
         std::vector<double> m_weights;
@@ -88,14 +86,14 @@ class PerturbationSampler : public virtual AbstractSampler
             m_t = t;
         }
 
-        void setBaseParameter(parameter_t base_parameter)
+        void setBaseParameter(Parameter base_parameter)
         {
-            m_base_parameter.assign(base_parameter);
+            m_base_parameter = std::move(base_parameter);
         }
 
-        parameter_t perturbParameter(int t, parameter_t prmtr_base) const;
+        Parameter perturbParameter(int t, Parameter prmtr_base) const;
 
-        virtual parameter_t sampleParameter() const override;
+        virtual Parameter sampleParameter() const override;
 
         int getT() const
         {
@@ -114,7 +112,7 @@ class PerturbationSampler : public virtual AbstractSampler
 
         // Base parameter and t
         int m_t = -1;
-        parameter_t m_base_parameter;
+        Parameter m_base_parameter;
         constexpr static int M_INVALID = -1;
 };
 
@@ -125,13 +123,13 @@ class SMCSampler :
     public:
 
         SMCSampler(std::vector<double> weights,
-                                      std::vector<parameter_t> prmtr_population,
+                                      std::vector<Parameter> prmtr_population,
                                       std::shared_ptr<std::default_random_engine> p_generator,
                                       const cmd_t &perturber,
                                       const cmd_t &prior_sampler,
                                       const cmd_t &prior_pdf);
 
-        virtual parameter_t sampleParameter() const override;
+        virtual Parameter sampleParameter() const override;
 
         double getPriorPdf() const
         {
@@ -145,7 +143,7 @@ class SMCSampler :
 
     private:
 
-        double computePriorPdf(const parameter_t& prmtr) const;
+        double computePriorPdf(const Parameter& prmtr) const;
 
         const cmd_t m_prior_pdf;
         mutable double m_prior_pdf_val;
@@ -160,7 +158,7 @@ class Generator : public virtual AbstractSampler
 
         Generator(const cmd_t &generator);
 
-        virtual parameter_t sampleParameter() const override;
+        virtual Parameter sampleParameter() const override;
 
         int getNumberOfParameters() const
         {
@@ -169,7 +167,7 @@ class Generator : public virtual AbstractSampler
 
     private:
 
-        mutable std::queue<parameter_t> m_param_queue;
+        mutable std::queue<Parameter> m_param_queue;
 
         int m_num_param;
 };

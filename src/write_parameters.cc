@@ -5,11 +5,13 @@
 
 #include "vector_strtok.h"
 #include "types.h"
+#include "Parameter.h"
+
 #include "write_parameters.h"
 
 void write_parameters(std::ostream& ostrm,
                       const std::vector<std::string>& parameter_names,
-                      const std::vector<parameter_t>& parameters)
+                      const std::vector<Parameter>& parameters)
 {
 
     using namespace std;
@@ -35,7 +37,7 @@ void write_parameters(std::ostream& ostrm,
         stringstream sstrm;
 
         vector<string> prmtr_elements;
-        vector_strtok(*set, prmtr_elements, " \n\t");
+        vector_strtok(set->str(), prmtr_elements, " \n\t");
 
         for (auto element = prmtr_elements.cbegin();
              element != prmtr_elements.cend(); element++)

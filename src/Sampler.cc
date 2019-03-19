@@ -10,35 +10,24 @@
 #include "system_call.h"
 #include "vector_strtok.h"
 #include "sample_population.h"
+#include "Parameter.h"
 #include "Sampler.h"
-
-/**** AbstractSampler ****/
-parameter_t AbstractSampler::removeTrailingWhitespace(const std::string& sampler_output) const
-{
-
-    std::stringstream sstrm(sampler_output);
-
-    parameter_t prmtr;
-    std::getline(sstrm, prmtr);
-
-    return prmtr;
-}
 
 /**** PriorSampler ****/
 PriorSampler::PriorSampler(const cmd_t &prior_sampler) : m_prior_sampler(prior_sampler) {}
 
-parameter_t PriorSampler::sampleParameter() const
+Parameter PriorSampler::sampleParameter() const
 {
 
-    parameter_t prmtr_sample;
-    system_call(m_prior_sampler, prmtr_sample);
+    std::string raw_prmtr_sample;
+    system_call(m_prior_sampler, raw_prmtr_sample);
 
-    return removeTrailingWhitespace(prmtr_sample);
+    return raw_prmtr_sample;
 }
 
 /**** PopulationSampler ****/
 PopulationSampler::PopulationSampler(std::vector<double> weights,
-                  std::vector<parameter_t> prmtr_population,
+                  std::vector<Parameter> prmtr_population,
                   std::shared_ptr<std::default_random_engine> p_generator) :
                   m_weights(weights),
                   m_weights_cumsum(weights.size()),
@@ -53,7 +42,7 @@ PopulationSampler::PopulationSampler(std::vector<double> weights,
 }
 
 void PopulationSampler::swap_population(std::vector<double> &new_weights,
-                     std::vector<parameter_t> &new_prmtr_population)
+                     std::vector<Parameter> &new_prmtr_population)
 {
 
     // Swap weights and parameter population
@@ -66,36 +55,36 @@ void PopulationSampler::swap_population(std::vector<double> &new_weights,
     cumsum(m_weights, m_weights_cumsum);
 }
 
-parameter_t PopulationSampler::sampleParameter() const
+Parameter PopulationSampler::sampleParameter() const
 {
 
     // Sample population
     int idx = sample_population(m_weights_cumsum, m_distribution, *m_p_generator);
-    return removeTrailingWhitespace(m_prmtr_population[idx]);
+    return m_prmtr_population[idx];
 }
 
 
 /**** PerturbationSampler ****/
 PerturbationSampler::PerturbationSampler(const cmd_t &perturber) : m_perturber(perturber) {}
 
-parameter_t PerturbationSampler::perturbParameter(int t, parameter_t prmtr_base) const
+Parameter PerturbationSampler::perturbParameter(int t, Parameter prmtr_base) const
 {
 
     // Prepare input to perturber
     std::string input;
     input += std::to_string(t);
     input += '\n';
-    input += prmtr_base;
+    input += prmtr_base.str();
     input += '\n';
 
     // Call perturber
-    parameter_t prmtr_sample;
-    system_call(m_perturber, input, prmtr_sample);
+    std::string raw_prmtr_sample;
+    system_call(m_perturber, input, raw_prmtr_sample);
 
-    return removeTrailingWhitespace(prmtr_sample);
+    return raw_prmtr_sample;
 }
 
-parameter_t PerturbationSampler::sampleParameter() const
+Parameter PerturbationSampler::sampleParameter() const
 {
 
     // Check that t has been assigned
@@ -112,12 +101,12 @@ parameter_t PerturbationSampler::sampleParameter() const
         throw e;
     }
 
-    return removeTrailingWhitespace(perturbParameter(m_t, m_base_parameter));
+    return perturbParameter(m_t, m_base_parameter);
 }
 
 /**** SMCSampler ****/
 SMCSampler::SMCSampler(std::vector<double> weights,
-                              std::vector<parameter_t> prmtr_population,
+                              std::vector<Parameter> prmtr_population,
                               std::shared_ptr<std::default_random_engine> p_generator,
                               const cmd_t &perturber,
                               const cmd_t &prior_sampler,
@@ -128,14 +117,14 @@ SMCSampler::SMCSampler(std::vector<double> weights,
     m_prior_pdf(prior_pdf),
     m_prior_pdf_val(M_INVALID) {}
 
-parameter_t SMCSampler::sampleParameter() const
+Parameter SMCSampler::sampleParameter() const
 {
 
     // Flag prior_pdf to indicate the value is invalid
     m_prior_pdf_val = M_INVALID;
 
     // Initialize temporary variables
-    parameter_t prmtr_sampled;
+    Parameter prmtr_sampled;
     double temp_prior_pdf;
 
     // If in generation 0, sample from prior
@@ -144,13 +133,13 @@ parameter_t SMCSampler::sampleParameter() const
         prmtr_sampled = this->PriorSampler::sampleParameter();
 
         m_prior_pdf_val = computePriorPdf(prmtr_sampled);
-        return removeTrailingWhitespace(prmtr_sampled);
+        return prmtr_sampled;
     }
 
     do
     {
         // Sample parameter population
-        parameter_t prmtr_base = this->PopulationSampler::sampleParameter();
+        Parameter prmtr_base = this->PopulationSampler::sampleParameter();
 
         // Perturb parameter
         prmtr_sampled = perturbParameter(getT(), std::move(prmtr_base));
@@ -160,12 +149,12 @@ parameter_t SMCSampler::sampleParameter() const
     m_prior_pdf_val = temp_prior_pdf;
 
     // Return parameter
-    return removeTrailingWhitespace(prmtr_sampled);
+    return prmtr_sampled;
 }
 
-double SMCSampler::computePriorPdf(const parameter_t& prmtr) const
+double SMCSampler::computePriorPdf(const Parameter& prmtr) const
 {
-    std::string input(prmtr);
+    std::string input(prmtr.str());
     input += "\n";
     std::string prmtr_prior_pdf_str;
     system_call(m_prior_pdf, input, prmtr_prior_pdf_str);
@@ -199,15 +188,15 @@ Generator::Generator(const cmd_t &generator)
         m_param_queue.push(prmtr);
 }
 
-parameter_t Generator::sampleParameter() const
+Parameter Generator::sampleParameter() const
 {
 
     // Get parameter from front of queue
-    parameter_t prmtr = m_param_queue.front();
+    Parameter prmtr = m_param_queue.front();
 
     // Pop if not last element
     if (m_param_queue.size() > 1)
         m_param_queue.pop();
 
-    return removeTrailingWhitespace(prmtr);
+    return prmtr;
 }

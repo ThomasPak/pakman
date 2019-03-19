@@ -7,6 +7,7 @@
 #include "types.h"
 #include "LongOptions.h"
 #include "Arguments.h"
+#include "Parameter.h"
 
 #include "AbstractController.h"
 
@@ -42,7 +43,7 @@ class SweepController : public AbstractController
         std::vector<std::string> m_parameter_names;
 
         // Parameter list
-        std::vector<parameter_t> m_prmtr_list;
+        std::vector<Parameter> m_prmtr_list;
 
         // Counter for number of finished parameters
         int m_num_finished = 0;

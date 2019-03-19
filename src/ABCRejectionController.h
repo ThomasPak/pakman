@@ -8,6 +8,7 @@
 #include "LongOptions.h"
 #include "Arguments.h"
 #include "Sampler.h"
+#include "Parameter.h"
 
 #include "AbstractController.h"
 
@@ -53,7 +54,7 @@ class ABCRejectionController : public AbstractController
         int m_num_accept;
 
         // Vector of accepted parameters
-        std::vector<parameter_t> m_prmtr_accepted;
+        std::vector<Parameter> m_prmtr_accepted;
 
         // Simulator command
         cmd_t m_simulator;
