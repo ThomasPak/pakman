@@ -33,7 +33,7 @@ function (get_test_command _command
         input_file)
 
     # Set executable
-    set (executable "${PROJECT_BINARY_DIR}/methods/pakman")
+    set (executable "${PROJECT_BINARY_DIR}/src/pakman")
 
     # Initialize empty command
     set (command "")

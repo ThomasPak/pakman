@@ -67,7 +67,7 @@ do
     # Run pakman and record elapsed time
     { time @MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ $current_num_procs \
         @MPIEXEC_PREFLAGS@ \
-        @PROJECT_BINARY_DIR@/methods/pakman @MPIEXEC_POSTFLAGS@ mpi rejection \
+        @PROJECT_BINARY_DIR@/src/pakman @MPIEXEC_POSTFLAGS@ mpi rejection \
         tmp.rej $num_simulations --verbosity=off > /dev/null; } 2>> scaling.csv
 
     # Show elapsed time

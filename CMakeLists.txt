@@ -53,7 +53,7 @@ include ("${PROJECT_SOURCE_DIR}/cmake/ConfigureScript.cmake")
 # Subdirectories
 add_subdirectory (samplers)
 add_subdirectory (densities)
-add_subdirectory (methods)
+add_subdirectory (src)
 add_subdirectory (include)
 add_subdirectory (utils)
 add_subdirectory (tests)

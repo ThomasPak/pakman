@@ -1,5 +1,5 @@
 # spdlog
-include_directories (${PROJECT_SOURCE_DIR}/methods/3rdparty)
+include_directories (${PROJECT_SOURCE_DIR}/src/3rdparty)
 
 add_subdirectory (mpi)
 
