@@ -86,12 +86,13 @@ parameter_t PerturbationSampler::perturbParameter(int t, parameter_t prmtr_base)
     input += std::to_string(t);
     input += '\n';
     input += prmtr_base;
+    input += '\n';
 
     // Call perturber
     parameter_t prmtr_sample;
     system_call(m_perturber, input, prmtr_sample);
 
-    return prmtr_sample;
+    return removeTrailingWhitespace(prmtr_sample);
 }
 
 parameter_t PerturbationSampler::sampleParameter() const
@@ -164,9 +165,10 @@ parameter_t SMCSampler::sampleParameter() const
 
 double SMCSampler::computePriorPdf(const parameter_t& prmtr) const
 {
-
+    std::string input(prmtr);
+    input += "\n";
     std::string prmtr_prior_pdf_str;
-    system_call(m_prior_pdf, prmtr, prmtr_prior_pdf_str);
+    system_call(m_prior_pdf, input, prmtr_prior_pdf_str);
     return std::stod(prmtr_prior_pdf_str);
 }
 
