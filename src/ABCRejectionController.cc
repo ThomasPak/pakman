@@ -5,9 +5,9 @@
 #include <cassert>
 
 #include "common.h"
+#include "interface/protocols.h"
 #include "types.h"
 #include "write_parameters.h"
-#include "run_simulation.h"
 #include "Sampler.h"
 #include "AbstractMaster.h"
 #include "Parameter.h"
@@ -47,7 +47,7 @@ void ABCRejectionController::iterate()
         }
 
         // Check if parameter was accepted
-        if (simulation_result(task.getOutputString()) == ACCEPT)
+        if (parse_simulator_output(task.getOutputString()))
         {
             // Declare raw parameter
             std::string raw_parameter;
@@ -89,7 +89,7 @@ void ABCRejectionController::iterate()
     // There is still work to be done, so make sure there are as many tasks
     // queued as there are Managers
     while (m_p_master->needMorePendingTasks())
-        m_p_master->pushPendingTask(simulator_input(m_epsilon,
+        m_p_master->pushPendingTask(format_simulator_input(m_epsilon,
                     m_prior_sampler.sampleParameter()));
 
     entered = false;

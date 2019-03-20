@@ -6,9 +6,9 @@
 #include <stdexcept>
 #include <cassert>
 
+#include "interface/protocols.h"
 #include "common.h"
 #include "types.h"
-#include "run_simulation.h"
 #include "write_parameters.h"
 #include "smc_weight.h"
 #include "Parameter.h"
@@ -57,7 +57,7 @@ void ABCSMCController::iterate()
         }
 
         // Check if parameter was accepted
-        if (simulation_result(task.getOutputString()) == ACCEPT)
+        if (parse_simulator_output(task.getOutputString()))
         {
             // Declare raw parameter
             std::string raw_parameter;
@@ -134,7 +134,7 @@ void ABCSMCController::iterate()
     // There is still work to be done, so make sure there are as many tasks
     // queued as there are Managers
     while (m_p_master->needMorePendingTasks())
-        m_p_master->pushPendingTask(simulator_input(m_epsilons[m_t],
+        m_p_master->pushPendingTask(format_simulator_input(m_epsilons[m_t],
                     m_smc_sampler.sampleParameter()));
 
     entered = false;
