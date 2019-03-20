@@ -46,3 +46,19 @@ bool parse_simulator_output(const std::string& simulator_output)
         throw std::runtime_error(error_msg);
     }
 }
+
+// prior_sampler protocol
+Parameter parse_prior_sampler_output(const std::string& prior_sampler_output)
+{
+    try
+    {
+        return prior_sampler_output;
+    }
+    catch (std::runtime_error& e)
+    {
+        std::string error_msg;
+        error_msg += "Cannot parse output of prior_sampler: ";
+        error_msg += prior_sampler_output;
+        throw std::runtime_error(error_msg);
+    }
+}

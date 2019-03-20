@@ -7,6 +7,7 @@
 #include <stdexcept>
 
 #include "types.h"
+#include "interface/protocols.h"
 #include "system_call.h"
 #include "vector_strtok.h"
 #include "sample_population.h"
@@ -19,10 +20,10 @@ PriorSampler::PriorSampler(const cmd_t &prior_sampler) : m_prior_sampler(prior_s
 Parameter PriorSampler::sampleParameter() const
 {
 
-    std::string raw_prmtr_sample;
-    system_call(m_prior_sampler, raw_prmtr_sample);
+    std::string prior_sampler_output;
+    system_call(m_prior_sampler, prior_sampler_output);
 
-    return raw_prmtr_sample;
+    return parse_prior_sampler_output(prior_sampler_output);
 }
 
 /**** PopulationSampler ****/
