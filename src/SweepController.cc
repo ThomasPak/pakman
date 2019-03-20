@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "write_parameters.h"
+#include "interface/protocols.h"
 #include "types.h"
 #include "system_call.h"
 #include "vector_strtok.h"
@@ -20,12 +21,7 @@ SweepController::SweepController(const sweep::input_t &input_obj) :
     system_call(input_obj.generator, generator_output);
 
     // Decompose into individual parameters
-    std::vector<std::string> raw_prmtr_list;
-    vector_strtok(generator_output, raw_prmtr_list, "\n");
-
-    // Save to m_prmtr_list
-    for (std::string& raw_prmtr : raw_prmtr_list)
-        m_prmtr_list.push_back(std::move(raw_prmtr));
+    m_prmtr_list = parse_generator_output(generator_output);
 
     // Sanity check: at least one parameter should have been generated
     if (m_prmtr_list.size() == 0)

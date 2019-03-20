@@ -242,3 +242,41 @@ std::vector<double> parse_perturbation_pdf_output(
     // Return vector
     return perturbation_pdf_vector;
 }
+
+// generator protocol
+std::vector<Parameter> parse_generator_output(
+        const std::string& generator_output)
+{
+    // Ensure that output ends with newline.  Cannot check for too many lines
+    // because the number of lines is unspecified
+    if (generator_output.back() != '\n')
+    {
+        std::string error_msg;
+        error_msg += "Generator output must end with newline, "
+            "given output: ";
+        error_msg += generator_output;
+        throw std::runtime_error(error_msg);
+    }
+
+    // Initialize sstrm and vector
+    std::istringstream sstrm(generator_output);
+    std::string line;
+    std::vector<Parameter> generator_vector;
+
+    // Parse lines as double-precision floating point
+    try
+    {
+        while (std::getline(sstrm, line))
+            generator_vector.push_back(std::move(line));
+    }
+    catch (std::runtime_error& e)
+    {
+        std::string error_msg;
+        error_msg += "Cannot parse output of generator: ";
+        error_msg += generator_output;
+        throw std::runtime_error(error_msg);
+    }
+
+    // Return vector
+    return generator_vector;
+}
