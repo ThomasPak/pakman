@@ -5,9 +5,9 @@
 #include <random>
 
 #include "core/common.h"
-#include "interface/read_input.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
+#include "interface/read_input.h"
 
 #include "ABCSMCController.h"
 

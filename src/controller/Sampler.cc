@@ -7,11 +7,13 @@
 #include <stdexcept>
 
 #include "core/types.h"
-#include "interface/protocols.h"
-#include "system/system_call.h"
 #include "core/utils.h"
-#include "sample_population.h"
 #include "core/Parameter.h"
+#include "system/system_call.h"
+#include "interface/protocols.h"
+
+#include "sample_population.h"
+
 #include "Sampler.h"
 
 /**** PriorSampler ****/

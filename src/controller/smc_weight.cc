@@ -5,9 +5,9 @@
 #include <cassert>
 
 #include "core/types.h"
-#include "interface/protocols.h"
-#include "system/system_call.h"
 #include "core/Parameter.h"
+#include "system/system_call.h"
+#include "interface/protocols.h"
 
 #include "smc_weight.h"
 

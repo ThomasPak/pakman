@@ -5,12 +5,13 @@
 #include <cassert>
 
 #include "core/common.h"
-#include "interface/protocols.h"
 #include "core/types.h"
-#include "interface/write_parameters.h"
-#include "Sampler.h"
-#include "master/AbstractMaster.h"
 #include "core/Parameter.h"
+#include "interface/protocols.h"
+#include "interface/write_parameters.h"
+#include "master/AbstractMaster.h"
+
+#include "Sampler.h"
 
 #include "ABCRejectionController.h"
 

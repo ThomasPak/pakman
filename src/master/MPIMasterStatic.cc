@@ -8,12 +8,13 @@
 #include <getopt.h>
 
 #include "core/common.h"
-#include "main/help.h"
-#include "system/signal_handler.h"
-#include "Manager.h"
-#include "PersistentMPIWorkerHandler.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
+#include "system/signal_handler.h"
+#include "main/help.h"
+
+#include "Manager.h"
+#include "PersistentMPIWorkerHandler.h"
 
 #include "MPIMaster.h"
 

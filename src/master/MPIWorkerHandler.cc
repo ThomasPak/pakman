@@ -2,12 +2,13 @@
 #include <thread>
 
 #include "core/types.h"
-
 #include "mpi/mpi_utils.h"
 #include "mpi/mpi_common.h"
 #include "mpi/spawn.h"
-#include "MPIWorkerHandler.h"
+
 #include "AbstractWorkerHandler.h"
+
+#include "MPIWorkerHandler.h"
 
 MPIWorkerHandler::MPIWorkerHandler(
         const cmd_t& command,

@@ -7,7 +7,6 @@
 #include "spdlog/spdlog.h"
 
 #include "core/utils.h"
-#include "core/types.h"
 #include "mpi_common.h"
 #include "spawn.h"
 

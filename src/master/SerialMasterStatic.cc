@@ -4,10 +4,10 @@
 #include <getopt.h>
 
 #include "core/common.h"
-#include "system/signal_handler.h"
-#include "system/debug.h"
 #include "core/Arguments.h"
 #include "core/LongOptions.h"
+#include "system/signal_handler.h"
+#include "system/debug.h"
 
 #include "SerialMaster.h"
 

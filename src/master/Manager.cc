@@ -9,9 +9,11 @@
 #include "core/common.h"
 #include "mpi/mpi_common.h"
 #include "mpi/mpi_utils.h"
+
 #include "ForkedWorkerHandler.h"
 #include "MPIWorkerHandler.h"
 #include "PersistentMPIWorkerHandler.h"
+
 #include "Manager.h"
 
 // Construct from command, pointer to program terminated flag, and

@@ -4,11 +4,11 @@
 #include <stdexcept>
 #include <cassert>
 
+#include "core/types.h"
+#include "core/utils.h"
+#include "system/system_call.h"
 #include "interface/write_parameters.h"
 #include "interface/protocols.h"
-#include "core/types.h"
-#include "system/system_call.h"
-#include "core/utils.h"
 
 #include "SweepController.h"
 

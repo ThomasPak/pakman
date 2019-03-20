@@ -2,12 +2,13 @@
 #include <thread>
 
 #include "core/types.h"
-
 #include "mpi/mpi_utils.h"
 #include "mpi/mpi_common.h"
 #include "mpi/spawn.h"
-#include "PersistentMPIWorkerHandler.h"
+
 #include "AbstractWorkerHandler.h"
+
+#include "PersistentMPIWorkerHandler.h"
 
 // Initialize static child communicator of PersistentMPIWorkerHandler to the
 // null communicators (MPI_COMM_NULL)

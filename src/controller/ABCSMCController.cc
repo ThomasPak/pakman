@@ -6,12 +6,13 @@
 #include <stdexcept>
 #include <cassert>
 
-#include "interface/protocols.h"
 #include "core/common.h"
 #include "core/types.h"
-#include "interface/write_parameters.h"
-#include "smc_weight.h"
 #include "core/Parameter.h"
+#include "interface/protocols.h"
+#include "interface/write_parameters.h"
+
+#include "smc_weight.h"
 
 #include "ABCSMCController.h"
 
