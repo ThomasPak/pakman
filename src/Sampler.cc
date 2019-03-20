@@ -151,11 +151,14 @@ Parameter SMCSampler::sampleParameter() const
 
 double SMCSampler::computePriorPdf(const Parameter& prmtr) const
 {
-    std::string input(prmtr.str());
-    input += "\n";
-    std::string prmtr_prior_pdf_str;
-    system_call(m_prior_pdf, input, prmtr_prior_pdf_str);
-    return std::stod(prmtr_prior_pdf_str);
+    // Prepare input to prior_pdf
+    std::string prior_pdf_input = format_prior_pdf_input(prmtr);
+
+    // Call prior_pdf
+    std::string prior_pdf_output;
+    system_call(m_prior_pdf, prior_pdf_input, prior_pdf_output);
+
+    return parse_prior_pdf_output(prior_pdf_output);
 }
 
 /**** Generator ****/

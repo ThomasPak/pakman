@@ -117,3 +117,57 @@ Parameter parse_perturber_output(const std::string& perturber_output)
         throw std::runtime_error(error_msg);
     }
 }
+
+// prior_pdf protocol
+std::string format_prior_pdf_input(const Parameter& parameter)
+{
+    std::string input_string;
+    input_string += parameter.str();
+    input_string += '\n';
+
+    return input_string;
+}
+
+double parse_prior_pdf_output(const std::string& prior_pdf_output)
+{
+    // Extract line
+    std::string line;
+    std::stringstream sstrm(prior_pdf_output);
+    std::getline(sstrm, line);
+
+    // Ensure that end of input has been reached
+    if (sstrm.eof() || (sstrm.peek() != EOF))
+    {
+        std::string error_msg;
+        error_msg += "Prior_pdf output must contain exactly one "
+            "newline-terminated line, given output: ";
+        error_msg += prior_pdf_output;
+        throw std::runtime_error(error_msg);
+    }
+
+    // Parse line as double-precision floating point
+    try
+    {
+        return std::stod(line);
+    }
+    catch (std::invalid_argument& e)
+    {
+        std::string error_msg;
+        error_msg += "Cannot parse output of prior_pdf: ";
+        error_msg += prior_pdf_output;
+        error_msg += '\n';
+        error_msg += "Invalid argument: ";
+        error_msg += e.what();
+        throw std::runtime_error(error_msg);
+    }
+    catch (std::out_of_range& e)
+    {
+        std::string error_msg;
+        error_msg += "Cannot parse output of prior_pdf: ";
+        error_msg += prior_pdf_output;
+        error_msg += '\n';
+        error_msg += "Out of range: ";
+        error_msg += e.what();
+        throw std::runtime_error(error_msg);
+    }
+}
