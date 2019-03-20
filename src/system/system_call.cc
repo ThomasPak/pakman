@@ -186,7 +186,7 @@ void system_call(const cmd_t& cmd, std::string& output,
         close_check(pipefd[WRITE_END]);
 
         // Break up command into tokens
-        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<string> cmd_tokens = parse_command(cmd);
         vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command
@@ -273,7 +273,7 @@ void system_call(const cmd_t& cmd,
         close_check(recv_pipefd[WRITE_END]);
 
         // Break up command into tokens
-        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<string> cmd_tokens = parse_command(cmd);
         vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command
@@ -360,7 +360,7 @@ void system_call(const cmd_t& cmd,
         close_check(recv_pipefd[WRITE_END]);
 
         // Break up command into tokens
-        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<string> cmd_tokens = parse_command(cmd);
         vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command
@@ -431,7 +431,7 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd)
         close_check(pipefd[WRITE_END]);
 
         // Break up command into tokens
-        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<string> cmd_tokens = parse_command(cmd);
         vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command
@@ -507,7 +507,7 @@ void system_call(const cmd_t& cmd, pid_t& child_pid,
         close_check(recv_pipefd[WRITE_END]);
 
         // Break up command into tokens
-        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<string> cmd_tokens = parse_command(cmd);
         vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command

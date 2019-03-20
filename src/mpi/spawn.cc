@@ -15,7 +15,7 @@ MPI_Comm spawn(const cmd_t& cmd, MPI_Info info)
 {
 
     // Create command and break into tokens
-    std::vector<std::string> cmd_tokens = parse_cmd(cmd);
+    std::vector<std::string> cmd_tokens = parse_command(cmd);
 
     // Create argv
     char **argv = create_c_argv(cmd_tokens);

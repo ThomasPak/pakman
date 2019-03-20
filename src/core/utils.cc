@@ -13,7 +13,7 @@ bool is_whitespace(const char letter)
         || (letter == '\n');
 }
 
-std::vector<std::string> parse_cmd(const cmd_t& cmd)
+std::vector<std::string> parse_command(const std::string& raw_command)
 {
     // Define states of finite state machine
     enum state_t { start, unquoted, singly_quoted, doubly_quoted };
@@ -23,8 +23,8 @@ std::vector<std::string> parse_cmd(const cmd_t& cmd)
     std::vector<std::string> cmd_tokens;
     std::stringstream token_strm;
 
-    // Iterate over cmd string
-    for (auto it = cmd.cbegin(); it != cmd.cend(); it++)
+    // Iterate over raw_command string
+    for (auto it = raw_command.cbegin(); it != raw_command.cend(); it++)
     {
         // Get current letter
         char letter = *it;
@@ -39,7 +39,7 @@ std::vector<std::string> parse_cmd(const cmd_t& cmd)
                 while (is_whitespace(letter))
                 {
                     it++;
-                    if (it == cmd.cend()) goto endloop;
+                    if (it == raw_command.cend()) goto endloop;
                     letter = *it;
                 }
 
@@ -74,7 +74,7 @@ std::vector<std::string> parse_cmd(const cmd_t& cmd)
                 {
                     token_strm << letter;
                     it++;
-                    if (it == cmd.cend()) goto endloop;
+                    if (it == raw_command.cend()) goto endloop;
                     letter = *it;
                 }
 
@@ -92,7 +92,7 @@ std::vector<std::string> parse_cmd(const cmd_t& cmd)
                 {
                     token_strm << letter;
                     it++;
-                    if (it == cmd.cend()) goto endloop;
+                    if (it == raw_command.cend()) goto endloop;
                     letter = *it;
                 }
 
@@ -112,7 +112,7 @@ std::vector<std::string> parse_cmd(const cmd_t& cmd)
                 {
                     token_strm << letter;
                     it++;
-                    if (it == cmd.cend()) goto endloop;
+                    if (it == raw_command.cend()) goto endloop;
                     letter = *it;
                 }
 
@@ -146,7 +146,7 @@ endloop:
     {
         std::string error_msg;
         error_msg += "Encountered unfinished quotations while parsing command: ";
-        error_msg += cmd;
+        error_msg += raw_command;
         throw std::runtime_error(error_msg);
     }
 

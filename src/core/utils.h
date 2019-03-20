@@ -5,7 +5,7 @@
 #include <vector>
 #include "types.h"
 
-std::vector<std::string> parse_cmd(const cmd_t& cmd);
+std::vector<std::string> parse_command(const std::string& raw_command);
 
 std::vector<const char*> vector_argv(
         const std::vector<std::string>& cmd_tokens);
