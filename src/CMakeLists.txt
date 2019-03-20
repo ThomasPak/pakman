@@ -17,7 +17,7 @@ target_link_libraries (pakman_base pakman_mpi_base system)
 include_directories (${MPI_CXX_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable (pakman main.cc)
-target_link_libraries (pakman pakman_base interface core controller master system)
+target_link_libraries (pakman pakman_base core controller master)
 
 # Install targets
 install (TARGETS pakman DESTINATION bin)
