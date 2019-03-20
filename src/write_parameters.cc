@@ -3,7 +3,7 @@
 #include <ostream>
 #include <sstream>
 
-#include "vector_strtok.h"
+#include "core/utils.h"
 #include "types.h"
 #include "Parameter.h"
 

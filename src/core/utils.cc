@@ -1,9 +1,10 @@
-#include <vector>
 #include <string>
+#include <vector>
 #include <sstream>
 #include <stdexcept>
+#include <string.h>
 
-#include "parse_cmd.h"
+#include "utils.h"
 
 bool is_whitespace(const char letter)
 {
@@ -156,4 +157,138 @@ endloop:
     }
 
     return cmd_tokens;
+}
+
+std::vector<const char*> vector_argv(
+        const std::vector<std::string>& cmd_tokens)
+{
+    // Initialize
+    std::vector<const char*> argv;
+
+    // Convert to vector of c-style string
+    for (const std::string& it : cmd_tokens)
+        argv.push_back(it.c_str());
+
+    // Append nullptr
+    argv.push_back(nullptr);
+
+    return argv;
+}
+
+void vector_delimited(const std::vector<std::string>& str_vector,
+                 std::string& delimited_string, const std::string& delimiter)
+{
+
+    using namespace std;
+
+    stringstream sstrm;
+
+    for (auto it = str_vector.begin();
+         it != str_vector.end(); it++)
+        sstrm << *it << delimiter;
+
+    delimited_string.assign(sstrm.str());
+    delimited_string.pop_back();
+}
+
+std::string vector_printf(const std::string& format,
+                          const std::vector<std::string>& args,
+                          const std::string& token)
+{
+
+    using namespace std;
+
+    size_t pos = 0, new_pos = 0;
+    stringstream sstrm;
+
+    for (auto it = args.cbegin(); it != args.cend(); it++)
+    {
+
+        new_pos = format.find(token, pos);
+
+        if (new_pos == string::npos)
+        {
+            runtime_error e("too many arguments provided");
+            throw e;
+        }
+
+        sstrm << format.substr(pos, new_pos - pos);
+        sstrm << *it;
+
+        pos = new_pos + token.size();
+    }
+
+    string tail = format.substr(pos, string::npos);
+
+    if (tail.find(token) != string::npos)
+    {
+        runtime_error e("not enough arguments provided");
+        throw e;
+    }
+
+    sstrm << tail;
+    return sstrm.str();
+}
+
+void vector_strtok(const std::string& str,
+                   std::vector<std::string>& str_vector,
+                   const std::string& delimiters)
+{
+
+    using namespace std;
+
+    char *c_str = strdup(str.c_str()), *pch;
+
+    pch = strtok(c_str, delimiters.c_str());
+
+    str_vector.clear();
+    while (pch != NULL)
+    {
+        str_vector.push_back(pch);
+        pch = strtok(NULL, delimiters.c_str());
+    }
+
+    free(c_str);
+}
+
+char** create_c_argv(const std::vector<std::string>& cmd_tokens)
+{
+    // Get number of tokens
+    int num_tokens = cmd_tokens.size();
+
+    // Allocate pointers to tokens + 1 for nullptr
+    char **argv = new char*[num_tokens + 1];
+
+    // Loop, allocate strings and copy
+    for (int i = 0; i < num_tokens; i++)
+    {
+        // Get size of string
+        int size = cmd_tokens[i].size();
+
+        // Allocate size of string + 1 for terminating null character
+        argv[i] = new char[size + 1];
+
+        // Copy string
+        strcpy(argv[i], cmd_tokens[i].c_str());
+    }
+
+    // Terminating null pointer
+    argv[num_tokens] = nullptr;
+
+    return argv;
+}
+
+void free_c_argv(char **argv)
+{
+    // Loop until nullptr encountered
+    int i = 0;
+    while (argv[i] != nullptr)
+    {
+        // Free command token
+        delete[] argv[i];
+        i++;
+    }
+
+    // Free argv
+    delete[] argv;
 }

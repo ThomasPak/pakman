@@ -9,7 +9,7 @@
 #include "types.h"
 #include "interface/protocols.h"
 #include "system_call.h"
-#include "vector_strtok.h"
+#include "core/utils.h"
 #include "sample_population.h"
 #include "Parameter.h"
 #include "Sampler.h"

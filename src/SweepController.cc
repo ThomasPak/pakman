@@ -8,7 +8,7 @@
 #include "interface/protocols.h"
 #include "types.h"
 #include "system_call.h"
-#include "vector_strtok.h"
+#include "core/utils.h"
 
 #include "SweepController.h"
 

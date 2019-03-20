@@ -13,8 +13,7 @@
 
 #include "common.h"
 #include "types.h"
-#include "parse_cmd.h"
-#include "vector_argv.h"
+#include "core/utils.h"
 #include "pipe_io.h"
 #include "system_call.h"
 
