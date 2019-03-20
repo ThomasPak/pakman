@@ -6,8 +6,8 @@
 #include <sys/types.h>
 
 #include "core/types.h"
-#include "system_call.h"
-#include "pipe_io.h"
+#include "system/system_call.h"
+#include "system/pipe_io.h"
 #include "mpi_common.h"
 
 #include "ForkedWorkerHandler.h"

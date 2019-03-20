@@ -6,7 +6,7 @@
 
 #include "core/types.h"
 #include "interface/protocols.h"
-#include "system_call.h"
+#include "system/system_call.h"
 #include "core/Parameter.h"
 
 #include "smc_weight.h"

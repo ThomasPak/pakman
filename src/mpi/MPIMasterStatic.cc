@@ -9,7 +9,7 @@
 
 #include "common.h"
 #include "help.h"
-#include "signal_handler.h"
+#include "system/signal_handler.h"
 #include "Manager.h"
 #include "PersistentMPIWorkerHandler.h"
 #include "core/LongOptions.h"

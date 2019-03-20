@@ -5,8 +5,8 @@
 
 #include "common.h"
 #include "help.h"
-#include "signal_handler.h"
-#include "debug.h"
+#include "system/signal_handler.h"
+#include "system/debug.h"
 #include "core/Arguments.h"
 #include "core/LongOptions.h"
 
