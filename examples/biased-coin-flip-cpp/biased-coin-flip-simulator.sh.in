@@ -37,4 +37,4 @@ printf 'accept: %s\n' $accept 1>&2
 
 # Accept -> exit code 1
 # Reject -> exit code 0
-printf $accept
+echo $accept

@@ -25,7 +25,19 @@ int mpi_simulator(int argc, char *argv[],
 
     /* Process given output string */
     if (argc >= 2)
+    {
         output_string = argv[1];
+
+        /* If output string does not terminate on newline, add one */
+        size_t len = strlen(output_string);
+        if (output_string[len - 1] != '\n')
+        {
+            output_string = (char *) malloc((len + 2) * sizeof(char));
+            strcpy(output_string, argv[1]);
+            output_string[len] = '\n';
+            output_string[len + 1] = '\0';
+        }
+    }
 
     /* Process given error code */
     if (argc >= 3)

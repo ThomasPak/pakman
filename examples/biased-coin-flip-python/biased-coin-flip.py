@@ -41,9 +41,9 @@ def run_simulator(data_filename):
 # Run simulation; write 1 if accepted, else 0
     accepted = run_simulation(e, n, p, m_data)
     if accepted:
-        stdout.write("1")
+        stdout.write("1\n")
     else:
-        stdout.write("0")
+        stdout.write("0\n")
 
 def generate_input_text(N, e, data_filename):
     input_text = ""

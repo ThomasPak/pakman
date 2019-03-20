@@ -24,7 +24,15 @@ int mpi_simulator(int argc, char *argv[],
 
     // Process given output string
     if (argc >= 2)
+    {
         output_string.assign(argv[1]);
+
+        // If output string does not terminate on newline, add one
+        if (output_string.back() != '\n')
+            output_string += '\n';
+
+        std::cerr << "output_string: " << output_string << std::endl;
+    }
 
     // Process given error code
     if (argc >= 3)

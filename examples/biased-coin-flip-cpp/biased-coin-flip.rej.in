@@ -9,4 +9,4 @@
 p,N
 
 # Prior sampler
-bash -c 'echo -n $(@PROJECT_BINARY_DIR@/samplers/uniform 0 1) $(printf 20)'
+bash -c 'echo $(@PROJECT_BINARY_DIR@/samplers/uniform 0 1) $(printf 20)'

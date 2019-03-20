@@ -21,22 +21,33 @@ std::string format_simulator_input(const std::string& epsilon, const Parameter& 
 
 bool parse_simulator_output(const std::string& simulator_output)
 {
-    // Extract result
-    std::string result;
-    std::getline(std::stringstream(simulator_output), result);
+    // Extract line
+    std::string line;
+    std::stringstream sstrm(simulator_output);
+    std::getline(sstrm, line);
 
-    // Parse result
-    if (result.compare("1") == 0)
+    // Ensure that end of input has been reached
+    if (sstrm.eof() || (sstrm.peek() != EOF))
+    {
+        std::string error_msg;
+        error_msg += "Simulator output must contain exactly one "
+            "newline-terminated line, given output: ";
+        error_msg += simulator_output;
+        throw std::runtime_error(error_msg);
+    }
+
+    // Parse line
+    if (line.compare("1") == 0)
         return true;
-    else if (result.compare("accept") == 0)
+    else if (line.compare("accept") == 0)
         return true;
-    else if (result.compare("accepted") == 0)
+    else if (line.compare("accepted") == 0)
         return true;
-    if (result.compare("0") == 0)
+    if (line.compare("0") == 0)
         return false;
-    else if (result.compare("reject") == 0)
+    else if (line.compare("reject") == 0)
         return false;
-    else if (result.compare("rejected") == 0)
+    else if (line.compare("rejected") == 0)
         return false;
     // Invalid simulator output
     else
@@ -51,9 +62,25 @@ bool parse_simulator_output(const std::string& simulator_output)
 // prior_sampler protocol
 Parameter parse_prior_sampler_output(const std::string& prior_sampler_output)
 {
+    // Extract line
+    std::string line;
+    std::stringstream sstrm(prior_sampler_output);
+    std::getline(sstrm, line);
+
+    // Ensure that end of input has been reached
+    if (sstrm.eof() || (sstrm.peek() != EOF))
+    {
+        std::string error_msg;
+        error_msg += "Prior_sampler output must contain exactly one "
+            "newline-terminated line, given output: ";
+        error_msg += prior_sampler_output;
+        throw std::runtime_error(error_msg);
+    }
+
+    // Parse line
     try
     {
-        return prior_sampler_output;
+        return line;
     }
     catch (std::runtime_error& e)
     {
