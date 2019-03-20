@@ -1,6 +1,3 @@
-include_directories (${PROJECT_SOURCE_DIR}/src)
-include_directories (${PROJECT_SOURCE_DIR}/src/3rdparty)
-
 add_library (controller
     AbstractController.cc
     AbstractControllerStatic.cc
@@ -15,4 +12,4 @@ add_library (controller
     sample_population.cc
     )
 
-target_link_libraries (controller core interface system)
+target_link_libraries (controller core system interface master)

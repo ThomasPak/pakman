@@ -1,11 +1,10 @@
-# spdlog
-include_directories (${PROJECT_SOURCE_DIR}/src/3rdparty)
 include_directories (${CMAKE_CURRENT_SOURCE_DIR})
+include_directories (${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
 
 add_subdirectory (core)
-add_subdirectory (interface)
 add_subdirectory (system)
 add_subdirectory (mpi)
+add_subdirectory (interface)
 add_subdirectory (controller)
 add_subdirectory (master)
 

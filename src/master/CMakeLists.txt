@@ -1,5 +1,3 @@
-include_directories (${PROJECT_SOURCE_DIR}/src)
-include_directories (${PROJECT_SOURCE_DIR}/src/3rdparty)
 include_directories (${MPI_CXX_INCLUDE_DIRS})
 add_compile_options (${MPI_CXX_COMPILE_OPTIONS})
 
@@ -17,4 +15,4 @@ add_library (master
     PersistentMPIWorkerHandler.cc
     )
 
-target_link_libraries (master mpi ${MPI_CXX_LIBRARIES} controller)
+target_link_libraries (master core system mpi controller ${MPI_CXX_LIBRARIES})
