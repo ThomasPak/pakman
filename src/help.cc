@@ -4,7 +4,7 @@
 #include "common.h"
 
 #include "AbstractMaster.h"
-#include "AbstractController.h"
+#include "controller/AbstractController.h"
 
 #include "help.h"
 

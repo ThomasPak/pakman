@@ -8,7 +8,7 @@
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 
-#include "AbstractController.h"
+#include "controller/AbstractController.h"
 
 class AbstractController;
 

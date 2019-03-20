@@ -12,7 +12,7 @@
 #include "core/Arguments.h"
 
 #include "AbstractMaster.h"
-#include "AbstractController.h"
+#include "controller/AbstractController.h"
 
 // Program name
 const char *program_name;
