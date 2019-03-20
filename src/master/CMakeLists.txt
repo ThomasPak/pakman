@@ -17,4 +17,4 @@ add_library (master
     PersistentMPIWorkerHandler.cc
     )
 
-target_link_libraries (master ${MPI_CXX_LIBRARIES} controller)
+target_link_libraries (master mpi ${MPI_CXX_LIBRARIES} controller)

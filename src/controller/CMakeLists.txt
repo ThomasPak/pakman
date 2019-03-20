@@ -15,4 +15,4 @@ add_library (controller
     sample_population.cc
     )
 
-target_link_libraries (controller core interface)
+target_link_libraries (controller core interface system)

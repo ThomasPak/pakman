@@ -8,7 +8,7 @@
 #include <getopt.h>
 
 #include "common.h"
-#include "help.h"
+#include "main/help.h"
 #include "system/signal_handler.h"
 #include "Manager.h"
 #include "PersistentMPIWorkerHandler.h"

@@ -6,3 +6,5 @@ add_library (interface
     read_input.cc
     write_parameters.cc
     )
+
+target_link_libraries (interface core)

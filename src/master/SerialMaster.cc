@@ -5,7 +5,6 @@
 #include "common.h"
 #include "core/types.h"
 #include "system/system_call.h"
-#include "help.h"
 
 #include "AbstractMaster.h"
 #include "SerialMaster.h"
