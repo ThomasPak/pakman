@@ -43,8 +43,20 @@ double smc_weight(const cmd_t& perturbation_pdf,
         parse_perturbation_pdf_output(perturbation_pdf_output);
     double denominator = 0.0;
 
-    for (int i = 0; i < weights_old.size(); i++)
-        denominator += weights_old[i] * perturbation_pdf_old.at(i);
+    try
+    {
+        for (int i = 0; i < weights_old.size(); i++)
+            denominator += weights_old[i] * perturbation_pdf_old.at(i);
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::string error_msg;
+        error_msg += "Out of range: ";
+        error_msg += e.what();
+        error_msg += '\n';
+        error_msg += "Perturbation_pdf did not output enough parameters";
+        throw std::runtime_error(error_msg);
+    }
 
     // Return weight
     return prmtr_prior_pdf / denominator;
