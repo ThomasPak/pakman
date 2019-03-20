@@ -7,8 +7,8 @@
 #include "help.h"
 #include "signal_handler.h"
 #include "debug.h"
-#include "Arguments.h"
-#include "LongOptions.h"
+#include "core/Arguments.h"
+#include "core/LongOptions.h"
 
 #include "SerialMaster.h"
 

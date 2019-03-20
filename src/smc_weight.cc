@@ -4,10 +4,10 @@
 #include <stdexcept>
 #include <cassert>
 
-#include "types.h"
+#include "core/types.h"
 #include "interface/protocols.h"
 #include "system_call.h"
-#include "Parameter.h"
+#include "core/Parameter.h"
 
 #include "smc_weight.h"
 

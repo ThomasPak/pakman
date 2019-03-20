@@ -3,7 +3,7 @@
 #include <string>
 
 #include "common.h"
-#include "types.h"
+#include "core/types.h"
 #include "system_call.h"
 #include "help.h"
 

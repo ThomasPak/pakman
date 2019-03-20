@@ -12,7 +12,7 @@
 #include "spdlog/spdlog.h"
 
 #include "common.h"
-#include "types.h"
+#include "core/types.h"
 #include "core/utils.h"
 #include "pipe_io.h"
 #include "system_call.h"

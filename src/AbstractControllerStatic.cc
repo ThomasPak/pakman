@@ -2,8 +2,8 @@
 #include <string>
 
 #include "common.h"
-#include "LongOptions.h"
-#include "Arguments.h"
+#include "core/LongOptions.h"
+#include "core/Arguments.h"
 
 #include "SweepController.h"
 #include "ABCRejectionController.h"

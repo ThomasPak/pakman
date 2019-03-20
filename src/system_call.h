@@ -3,7 +3,7 @@
 
 #include <string>
 #include <unistd.h>
-#include "types.h"
+#include "core/types.h"
 
 typedef enum { throw_error, ignore_error } child_err_opt_t;
 

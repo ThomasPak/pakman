@@ -5,10 +5,10 @@
 #include <vector>
 #include <string>
 
-#include "types.h"
+#include "core/types.h"
 #include "common.h"
-#include "LongOptions.h"
-#include "Arguments.h"
+#include "core/LongOptions.h"
+#include "core/Arguments.h"
 
 #include "AbstractMaster.h"
 

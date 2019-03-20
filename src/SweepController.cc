@@ -6,7 +6,7 @@
 
 #include "write_parameters.h"
 #include "interface/protocols.h"
-#include "types.h"
+#include "core/types.h"
 #include "system_call.h"
 #include "core/utils.h"
 

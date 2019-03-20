@@ -1,7 +1,7 @@
 #include <string>
 #include <thread>
 
-#include "types.h"
+#include "core/types.h"
 
 #include "mpi_utils.h"
 #include "mpi_common.h"

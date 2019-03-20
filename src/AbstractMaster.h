@@ -5,8 +5,8 @@
 #include <string>
 
 #include "common.h"
-#include "LongOptions.h"
-#include "Arguments.h"
+#include "core/LongOptions.h"
+#include "core/Arguments.h"
 
 #include "AbstractController.h"
 

@@ -4,8 +4,8 @@
 #include <vector>
 #include <string>
 
-#include "Parameter.h"
-#include "types.h"
+#include "core/Parameter.h"
+#include "core/types.h"
 
 double smc_weight(const cmd_t& perturbation_pdf,
                   const double prmtr_prior_pdf,

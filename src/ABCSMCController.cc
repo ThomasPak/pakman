@@ -8,10 +8,10 @@
 
 #include "interface/protocols.h"
 #include "common.h"
-#include "types.h"
+#include "core/types.h"
 #include "write_parameters.h"
 #include "smc_weight.h"
-#include "Parameter.h"
+#include "core/Parameter.h"
 
 #include "ABCSMCController.h"
 

@@ -18,9 +18,6 @@ add_library (pakman_base
     AbstractMasterStatic.cc
     SerialMaster.cc
     SerialMasterStatic.cc
-    Arguments.cc
-    LongOptions.cc
-    Parameter.cc
     help.cc
     debug.cc
     pipe_io.cc
@@ -29,7 +26,6 @@ add_library (pakman_base
     Sampler.cc
     smc_weight.cc
     system_call.cc
-    timer.cc
     write_parameters.cc
     signal_handler.cc
     )

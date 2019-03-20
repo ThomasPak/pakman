@@ -6,12 +6,12 @@
 #include <utility>
 #include <stdexcept>
 
-#include "types.h"
+#include "core/types.h"
 #include "interface/protocols.h"
 #include "system_call.h"
 #include "core/utils.h"
 #include "sample_population.h"
-#include "Parameter.h"
+#include "core/Parameter.h"
 #include "Sampler.h"
 
 /**** PriorSampler ****/

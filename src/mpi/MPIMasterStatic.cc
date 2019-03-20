@@ -12,8 +12,8 @@
 #include "signal_handler.h"
 #include "Manager.h"
 #include "PersistentMPIWorkerHandler.h"
-#include "LongOptions.h"
-#include "Arguments.h"
+#include "core/LongOptions.h"
+#include "core/Arguments.h"
 
 #include "MPIMaster.h"
 

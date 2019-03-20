@@ -6,11 +6,11 @@
 
 #include "common.h"
 #include "interface/protocols.h"
-#include "types.h"
+#include "core/types.h"
 #include "write_parameters.h"
 #include "Sampler.h"
 #include "AbstractMaster.h"
-#include "Parameter.h"
+#include "core/Parameter.h"
 
 #include "ABCRejectionController.h"
 

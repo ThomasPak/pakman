@@ -5,7 +5,7 @@
 
 #include <mpi.h>
 
-#include "types.h"
+#include "core/types.h"
 #include "AbstractWorkerHandler.h"
 
 class PersistentMPIWorkerHandler : public AbstractWorkerHandler

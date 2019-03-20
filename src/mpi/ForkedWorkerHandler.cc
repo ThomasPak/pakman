@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-#include "types.h"
+#include "core/types.h"
 #include "system_call.h"
 #include "pipe_io.h"
 #include "mpi_common.h"

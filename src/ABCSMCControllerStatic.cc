@@ -6,8 +6,8 @@
 
 #include "common.h"
 #include "read_input.h"
-#include "LongOptions.h"
-#include "Arguments.h"
+#include "core/LongOptions.h"
+#include "core/Arguments.h"
 
 #include "ABCSMCController.h"
 

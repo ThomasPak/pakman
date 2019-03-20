@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "types.h"
+#include "core/types.h"
 
 void parse_csv_list(const std::string& csv_list, std::vector<std::string>& items);
 void read_lines(std::istream& istrm, const int num_lines,

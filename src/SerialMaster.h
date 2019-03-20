@@ -5,9 +5,9 @@
 #include <queue>
 
 #include "common.h"
-#include "types.h"
-#include "LongOptions.h"
-#include "Arguments.h"
+#include "core/types.h"
+#include "core/LongOptions.h"
+#include "core/Arguments.h"
 
 #include "AbstractMaster.h"
 

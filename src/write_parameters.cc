@@ -4,8 +4,8 @@
 #include <sstream>
 
 #include "core/utils.h"
-#include "types.h"
-#include "Parameter.h"
+#include "core/types.h"
+#include "core/Parameter.h"
 
 #include "write_parameters.h"
 

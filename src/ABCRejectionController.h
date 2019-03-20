@@ -4,11 +4,11 @@
 #include <vector>
 #include <string>
 
-#include "types.h"
-#include "LongOptions.h"
-#include "Arguments.h"
+#include "core/types.h"
+#include "core/LongOptions.h"
+#include "core/Arguments.h"
 #include "Sampler.h"
-#include "Parameter.h"
+#include "core/Parameter.h"
 
 #include "AbstractController.h"
 

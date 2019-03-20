@@ -9,7 +9,7 @@
 
 #include "common.h"
 #include "AbstractWorkerHandler.h"
-#include "types.h"
+#include "core/types.h"
 
 class Manager
 {

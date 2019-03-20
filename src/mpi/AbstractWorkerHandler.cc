@@ -1,7 +1,7 @@
 #include <string>
 #include <cassert>
 
-#include "types.h"
+#include "core/types.h"
 
 #include "AbstractWorkerHandler.h"
 
