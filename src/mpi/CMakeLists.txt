@@ -5,13 +5,6 @@ add_compile_options (${MPI_CXX_COMPILE_OPTIONS})
 link_libraries (${MPI_CXX_LIBRARIES} pakman_base)
 
 add_library (pakman_mpi_base
-    MPIMaster.cc
-    MPIMasterStatic.cc
-    Manager.cc
-    AbstractWorkerHandler.cc
-    ForkedWorkerHandler.cc
-    MPIWorkerHandler.cc
-    PersistentMPIWorkerHandler.cc
     mpi_utils.cc
     spawn.cc
     )

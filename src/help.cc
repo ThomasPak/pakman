@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-#include "AbstractMaster.h"
+#include "master/AbstractMaster.h"
 #include "controller/AbstractController.h"
 
 #include "help.h"

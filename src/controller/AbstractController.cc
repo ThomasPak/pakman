@@ -1,6 +1,6 @@
 #include <memory>
 
-#include "AbstractMaster.h"
+#include "master/AbstractMaster.h"
 
 #include "AbstractController.h"
 

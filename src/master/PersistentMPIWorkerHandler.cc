@@ -3,9 +3,9 @@
 
 #include "core/types.h"
 
-#include "mpi_utils.h"
-#include "mpi_common.h"
-#include "spawn.h"
+#include "mpi/mpi_utils.h"
+#include "mpi/mpi_common.h"
+#include "mpi/spawn.h"
 #include "PersistentMPIWorkerHandler.h"
 #include "AbstractWorkerHandler.h"
 

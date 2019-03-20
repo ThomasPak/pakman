@@ -9,7 +9,7 @@
 #include <mpi.h>
 
 #include "common.h"
-#include "mpi_common.h"
+#include "mpi/mpi_common.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 

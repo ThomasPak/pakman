@@ -9,7 +9,7 @@
 #include "core/types.h"
 #include "interface/write_parameters.h"
 #include "Sampler.h"
-#include "AbstractMaster.h"
+#include "master/AbstractMaster.h"
 #include "core/Parameter.h"
 
 #include "ABCRejectionController.h"

@@ -10,7 +10,7 @@
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 
-#include "AbstractMaster.h"
+#include "master/AbstractMaster.h"
 
 class AbstractMaster;
 

@@ -10,8 +10,8 @@
 #include "spdlog/spdlog.h"
 
 #include "common.h"
-#include "mpi_utils.h"
-#include "mpi_common.h"
+#include "mpi/mpi_utils.h"
+#include "mpi/mpi_common.h"
 
 #include "MPIMaster.h"
 

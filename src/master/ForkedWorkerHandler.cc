@@ -8,7 +8,7 @@
 #include "core/types.h"
 #include "system/system_call.h"
 #include "system/pipe_io.h"
-#include "mpi_common.h"
+#include "mpi/mpi_common.h"
 
 #include "ForkedWorkerHandler.h"
 #include "AbstractWorkerHandler.h"

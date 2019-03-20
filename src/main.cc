@@ -11,7 +11,7 @@
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 
-#include "AbstractMaster.h"
+#include "master/AbstractMaster.h"
 #include "controller/AbstractController.h"
 
 // Program name
