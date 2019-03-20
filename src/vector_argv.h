@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-void vector_argv(const std::vector<std::string>& cmd_tokens,
-                 std::vector<const char*>& argv);
+std::vector<const char*> vector_argv(
+        const std::vector<std::string>& cmd_tokens);
 
 #endif // VECTOR_ARGV_H

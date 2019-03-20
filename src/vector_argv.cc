@@ -1,12 +1,18 @@
 #include <string>
 #include <vector>
 
-void vector_argv(const std::vector<std::string>& cmd_tokens,
-                 std::vector<const char*>& argv)
+std::vector<const char*> vector_argv(
+        const std::vector<std::string>& cmd_tokens)
 {
+    // Initialize
+    std::vector<const char*> argv;
 
-    for (auto it = cmd_tokens.begin();
-         it != cmd_tokens.end(); it++)
-        argv.push_back(it->c_str());
-    argv.push_back(NULL);
+    // Convert to vector of c-style string
+    for (const std::string& it : cmd_tokens)
+        argv.push_back(it.c_str());
+
+    // Append nullptr
+    argv.push_back(nullptr);
+
+    return argv;
 }

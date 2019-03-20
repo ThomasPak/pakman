@@ -187,12 +187,9 @@ void system_call(const cmd_t& cmd, std::string& output,
         dup2_check(pipefd[WRITE_END], 1);
         close_check(pipefd[WRITE_END]);
 
-        // Create command and break into tokens
-        vector<string> cmd_tokens;
-        parse_cmd(cmd, cmd_tokens);
-
-        vector<const char *> argv;
-        vector_argv(cmd_tokens, argv);
+        // Break up command into tokens
+        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command
         execvp(argv[0], (char * const *) argv.data());
@@ -278,11 +275,8 @@ void system_call(const cmd_t& cmd,
         close_check(recv_pipefd[WRITE_END]);
 
         // Break up command into tokens
-        vector<string> cmd_tokens;
-        vector<const char *> argv;
-
-        parse_cmd(cmd, cmd_tokens);
-        vector_argv(cmd_tokens, argv);
+        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command
         execvp(argv[0], (char * const *) argv.data());
@@ -368,11 +362,8 @@ void system_call(const cmd_t& cmd,
         close_check(recv_pipefd[WRITE_END]);
 
         // Break up command into tokens
-        vector<string> cmd_tokens;
-        vector<const char *> argv;
-
-        parse_cmd(cmd, cmd_tokens);
-        vector_argv(cmd_tokens, argv);
+        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command
         execvp(argv[0], (char * const *) argv.data());
@@ -441,12 +432,9 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd)
         dup2_check(pipefd[WRITE_END], 1);
         close_check(pipefd[WRITE_END]);
 
-        // Create command and break into tokens
-        vector<string> cmd_tokens;
-        parse_cmd(cmd, cmd_tokens);
-
-        vector<const char *> argv;
-        vector_argv(cmd_tokens, argv);
+        // Break up command into tokens
+        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command
         execvp(argv[0], (char * const *) argv.data());
@@ -521,11 +509,8 @@ void system_call(const cmd_t& cmd, pid_t& child_pid,
         close_check(recv_pipefd[WRITE_END]);
 
         // Break up command into tokens
-        vector<string> cmd_tokens;
-        vector<const char *> argv;
-
-        parse_cmd(cmd, cmd_tokens);
-        vector_argv(cmd_tokens, argv);
+        vector<string> cmd_tokens = parse_cmd(cmd);
+        vector<const char *> argv = vector_argv(cmd_tokens);
 
         // Execute command
         execvp(argv[0], (char * const *) argv.data());

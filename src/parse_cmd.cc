@@ -5,8 +5,6 @@
 
 #include "parse_cmd.h"
 
-enum state_t { start, unquoted, singly_quoted, doubly_quoted };
-
 bool is_whitespace(const char letter)
 {
     return (letter == ' ')
@@ -14,20 +12,20 @@ bool is_whitespace(const char letter)
         || (letter == '\n');
 }
 
-void parse_cmd(const cmd_t& cmd, std::vector<std::string>& cmd_tokens)
+std::vector<std::string> parse_cmd(const cmd_t& cmd)
 {
+    // Define states of finite state machine
+    enum state_t { start, unquoted, singly_quoted, doubly_quoted };
 
-    using namespace std;
-
+    // Initialize
     state_t state = start;
-    stringstream token_strm;
-
-    cmd_tokens.clear();
+    std::vector<std::string> cmd_tokens;
+    std::stringstream token_strm;
 
     // Iterate over cmd string
     for (auto it = cmd.cbegin(); it != cmd.cend(); it++)
     {
-
+        // Get current letter
         char letter = *it;
 
         switch (state)
@@ -145,8 +143,10 @@ endloop:
     // Check for unfinished quotations
     if ( (state == singly_quoted) || (state == doubly_quoted) )
     {
-        runtime_error e("there were unfinished quotations");
-        throw e;
+        std::string error_msg;
+        error_msg += "Encountered unfinished quotations while parsing command: ";
+        error_msg += cmd;
+        throw std::runtime_error(error_msg);
     }
 
     // Push back last token
@@ -154,4 +154,6 @@ endloop:
     {
         cmd_tokens.push_back(token_strm.str());
     }
+
+    return cmd_tokens;
 }
