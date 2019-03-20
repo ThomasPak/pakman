@@ -72,17 +72,13 @@ Parameter PerturbationSampler::perturbParameter(int t, Parameter prmtr_base) con
 {
 
     // Prepare input to perturber
-    std::string input;
-    input += std::to_string(t);
-    input += '\n';
-    input += prmtr_base.str();
-    input += '\n';
+    std::string perturber_input = format_perturber_input(t, prmtr_base);
 
     // Call perturber
-    std::string raw_prmtr_sample;
-    system_call(m_perturber, input, raw_prmtr_sample);
+    std::string perturber_output;
+    system_call(m_perturber, perturber_input, perturber_output);
 
-    return raw_prmtr_sample;
+    return parse_perturber_output(perturber_output);
 }
 
 Parameter PerturbationSampler::sampleParameter() const
