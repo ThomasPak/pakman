@@ -153,21 +153,92 @@ double parse_prior_pdf_output(const std::string& prior_pdf_output)
     catch (std::invalid_argument& e)
     {
         std::string error_msg;
-        error_msg += "Cannot parse output of prior_pdf: ";
-        error_msg += prior_pdf_output;
-        error_msg += '\n';
         error_msg += "Invalid argument: ";
         error_msg += e.what();
+        error_msg += '\n';
+        error_msg += "Cannot parse output of prior_pdf: ";
+        error_msg += prior_pdf_output;
         throw std::runtime_error(error_msg);
     }
     catch (std::out_of_range& e)
     {
         std::string error_msg;
-        error_msg += "Cannot parse output of prior_pdf: ";
-        error_msg += prior_pdf_output;
-        error_msg += '\n';
         error_msg += "Out of range: ";
         error_msg += e.what();
+        error_msg += '\n';
+        error_msg += "Cannot parse output of prior_pdf: ";
+        error_msg += prior_pdf_output;
         throw std::runtime_error(error_msg);
     }
+}
+
+// perturbation_pdf protocol
+std::string format_perturbation_pdf_input(
+        int t,
+        const Parameter& perturbed_parameter,
+        const std::vector<Parameter>& parameter_population)
+{
+    std::string input_string;
+    input_string += std::to_string(t);
+    input_string += '\n';
+    input_string += perturbed_parameter.str();
+    input_string += '\n';
+
+    for (const Parameter& parameter : parameter_population)
+    {
+        input_string += parameter.str();
+        input_string += '\n';
+    }
+
+    return input_string;
+}
+
+std::vector<double> parse_perturbation_pdf_output(
+        const std::string& perturbation_pdf_output)
+{
+    // Ensure that output ends with newline.  Cannot check for too many lines
+    // because the number of lines is unspecified
+    if (perturbation_pdf_output.back() != '\n')
+    {
+        std::string error_msg;
+        error_msg += "Perturbation_pdf output must end with newline, "
+            "given output: ";
+        error_msg += perturbation_pdf_output;
+        throw std::runtime_error(error_msg);
+    }
+
+    // Initialize sstrm and vector
+    std::istringstream sstrm(perturbation_pdf_output);
+    std::string line;
+    std::vector<double> perturbation_pdf_vector;
+
+    // Parse lines as double-precision floating point
+    try
+    {
+        while (std::getline(sstrm, line))
+            perturbation_pdf_vector.push_back(std::stod(line));
+    }
+    catch (std::invalid_argument& e)
+    {
+        std::string error_msg;
+        error_msg += "Invalid argument: ";
+        error_msg += e.what();
+        error_msg += '\n';
+        error_msg += "Cannot parse output of perturbation_pdf: ";
+        error_msg += perturbation_pdf_output;
+        throw std::runtime_error(error_msg);
+    }
+    catch (std::out_of_range& e)
+    {
+        std::string error_msg;
+        error_msg += "Out of range: ";
+        error_msg += e.what();
+        error_msg += '\n';
+        error_msg += "Cannot parse output of perturbation_pdf: ";
+        error_msg += perturbation_pdf_output;
+        throw std::runtime_error(error_msg);
+    }
+
+    // Return vector
+    return perturbation_pdf_vector;
 }

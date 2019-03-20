@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "types.h"
+#include "interface/protocols.h"
 #include "system_call.h"
 #include "Parameter.h"
 
@@ -28,39 +29,22 @@ double smc_weight(const cmd_t& perturbation_pdf,
     if (t == 0)
         return 1.0 / ((double) prmtr_accepted_old.size());
 
-    // Get perturbation pdf
-    string input, output;
-    input += to_string(t);
-    input += '\n';
-    input += prmtr_perturbed.str();
-    input += '\n';
+    // Prepare input to perturbation_pdf
+    std::string perturbation_pdf_input =
+        format_perturbation_pdf_input(t, prmtr_perturbed, prmtr_accepted_old);
 
-    for (auto it = prmtr_accepted_old.begin();
-         it != prmtr_accepted_old.end(); it++)
-    {
-        input += it->str();
-        input += '\n';
-    }
-
-    system_call(perturbation_pdf, input, output);
+    // Call perturbation_pdf
+    std::string perturbation_pdf_output;
+    system_call(perturbation_pdf, perturbation_pdf_input,
+            perturbation_pdf_output);
 
     // Compute denominator
-    istringstream sstrm(output);
+    std::vector<double> perturbation_pdf_old =
+        parse_perturbation_pdf_output(perturbation_pdf_output);
     double denominator = 0.0;
 
-    for (auto it = weights_old.begin();
-         it != weights_old.end(); it++)
-    {
-        double current_pdf;
-        sstrm >> current_pdf;
-        if (!sstrm.good())
-        {
-            runtime_error e("an error occured while reading the output of perturbation_pdf");
-            throw e;
-        }
-
-        denominator += (*it) * current_pdf;
-    }
+    for (int i = 0; i < weights_old.size(); i++)
+        denominator += weights_old[i] * perturbation_pdf_old.at(i);
 
     // Return weight
     return prmtr_prior_pdf / denominator;
