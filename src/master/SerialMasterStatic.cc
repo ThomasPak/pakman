@@ -3,7 +3,7 @@
 
 #include <getopt.h>
 
-#include "common.h"
+#include "core/common.h"
 #include "system/signal_handler.h"
 #include "system/debug.h"
 #include "core/Arguments.h"

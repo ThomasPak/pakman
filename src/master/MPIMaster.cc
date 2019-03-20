@@ -9,7 +9,7 @@
 
 #include "spdlog/spdlog.h"
 
-#include "common.h"
+#include "core/common.h"
 #include "mpi/mpi_utils.h"
 #include "mpi/mpi_common.h"
 

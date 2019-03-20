@@ -1,6 +1,6 @@
 #include <signal.h>
 
-#include "common.h"
+#include "core/common.h"
 #include "signal_handler.h"
 
 void set_terminate_flag(int signal)

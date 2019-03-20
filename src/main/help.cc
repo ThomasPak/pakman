@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 
-#include "common.h"
+#include "core/common.h"
 
 #include "master/AbstractMaster.h"
 #include "controller/AbstractController.h"

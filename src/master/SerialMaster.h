@@ -4,7 +4,7 @@
 #include <string>
 #include <queue>
 
-#include "common.h"
+#include "core/common.h"
 #include "core/types.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"

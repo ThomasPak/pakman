@@ -6,7 +6,7 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
-#include "common.h"
+#include "core/common.h"
 #include "help.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"

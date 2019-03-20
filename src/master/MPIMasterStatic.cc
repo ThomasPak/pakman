@@ -7,7 +7,7 @@
 
 #include <getopt.h>
 
-#include "common.h"
+#include "core/common.h"
 #include "main/help.h"
 #include "system/signal_handler.h"
 #include "Manager.h"

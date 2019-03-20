@@ -7,7 +7,7 @@
 
 #include <mpi.h>
 
-#include "common.h"
+#include "core/common.h"
 #include "AbstractWorkerHandler.h"
 #include "core/types.h"
 

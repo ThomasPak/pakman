@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "common.h"
+#include "core/common.h"
 
 std::string usage();
 

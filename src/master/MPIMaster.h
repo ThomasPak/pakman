@@ -8,7 +8,7 @@
 
 #include <mpi.h>
 
-#include "common.h"
+#include "core/common.h"
 #include "mpi/mpi_common.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
