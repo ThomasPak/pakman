@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <cassert>
 
-#include "write_parameters.h"
+#include "interface/write_parameters.h"
 #include "interface/protocols.h"
 #include "core/types.h"
 #include "system_call.h"

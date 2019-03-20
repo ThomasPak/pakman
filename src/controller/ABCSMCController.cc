@@ -9,7 +9,7 @@
 #include "interface/protocols.h"
 #include "common.h"
 #include "core/types.h"
-#include "write_parameters.h"
+#include "interface/write_parameters.h"
 #include "smc_weight.h"
 #include "core/Parameter.h"
 

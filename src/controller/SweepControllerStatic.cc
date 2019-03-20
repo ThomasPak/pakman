@@ -2,7 +2,7 @@
 #include <fstream>
 
 #include "common.h"
-#include "read_input.h"
+#include "interface/read_input.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 

@@ -14,9 +14,7 @@ add_library (pakman_base
     help.cc
     debug.cc
     pipe_io.cc
-    read_input.cc
     system_call.cc
-    write_parameters.cc
     signal_handler.cc
     )
 

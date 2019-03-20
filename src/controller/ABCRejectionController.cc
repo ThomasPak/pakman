@@ -7,7 +7,7 @@
 #include "common.h"
 #include "interface/protocols.h"
 #include "core/types.h"
-#include "write_parameters.h"
+#include "interface/write_parameters.h"
 #include "Sampler.h"
 #include "AbstractMaster.h"
 #include "core/Parameter.h"
