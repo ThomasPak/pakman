@@ -23,7 +23,7 @@ bool parse_simulator_output(const std::string& simulator_output)
 {
     // Extract line
     std::string line;
-    std::stringstream sstrm(simulator_output);
+    std::istringstream sstrm(simulator_output);
     std::getline(sstrm, line);
 
     // Ensure that end of input has been reached
@@ -64,7 +64,7 @@ Parameter parse_prior_sampler_output(const std::string& prior_sampler_output)
 {
     // Extract line
     std::string line;
-    std::stringstream sstrm(prior_sampler_output);
+    std::istringstream sstrm(prior_sampler_output);
     std::getline(sstrm, line);
 
     // Ensure that end of input has been reached
@@ -132,7 +132,7 @@ double parse_prior_pdf_output(const std::string& prior_pdf_output)
 {
     // Extract line
     std::string line;
-    std::stringstream sstrm(prior_pdf_output);
+    std::istringstream sstrm(prior_pdf_output);
     std::getline(sstrm, line);
 
     // Ensure that end of input has been reached
