@@ -85,6 +85,8 @@ Parameter parse_prior_sampler_output(const std::string& prior_sampler_output)
     catch (std::runtime_error& e)
     {
         std::string error_msg;
+        error_msg += e.what();
+        error_msg += '\n';
         error_msg += "Cannot parse output of prior_sampler: ";
         error_msg += prior_sampler_output;
         throw std::runtime_error(error_msg);
@@ -112,6 +114,8 @@ Parameter parse_perturber_output(const std::string& perturber_output)
     catch (std::runtime_error& e)
     {
         std::string error_msg;
+        error_msg += e.what();
+        error_msg += '\n';
         error_msg += "Cannot parse output of perturber: ";
         error_msg += perturber_output;
         throw std::runtime_error(error_msg);
@@ -272,6 +276,8 @@ std::vector<Parameter> parse_generator_output(
     catch (std::runtime_error& e)
     {
         std::string error_msg;
+        error_msg += e.what();
+        error_msg += '\n';
         error_msg += "Cannot parse output of generator: ";
         error_msg += generator_output;
         throw std::runtime_error(error_msg);
