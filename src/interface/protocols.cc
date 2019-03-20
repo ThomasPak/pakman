@@ -82,7 +82,7 @@ Parameter parse_prior_sampler_output(const std::string& prior_sampler_output)
     {
         return line;
     }
-    catch (std::runtime_error& e)
+    catch (const std::runtime_error& e)
     {
         std::string error_msg;
         error_msg += e.what();
@@ -111,7 +111,7 @@ Parameter parse_perturber_output(const std::string& perturber_output)
     {
         return perturber_output;
     }
-    catch (std::runtime_error& e)
+    catch (const std::runtime_error& e)
     {
         std::string error_msg;
         error_msg += e.what();
@@ -154,7 +154,7 @@ double parse_prior_pdf_output(const std::string& prior_pdf_output)
     {
         return std::stod(line);
     }
-    catch (std::invalid_argument& e)
+    catch (const std::invalid_argument& e)
     {
         std::string error_msg;
         error_msg += "Invalid argument: ";
@@ -164,7 +164,7 @@ double parse_prior_pdf_output(const std::string& prior_pdf_output)
         error_msg += prior_pdf_output;
         throw std::runtime_error(error_msg);
     }
-    catch (std::out_of_range& e)
+    catch (const std::out_of_range& e)
     {
         std::string error_msg;
         error_msg += "Out of range: ";
@@ -222,7 +222,7 @@ std::vector<double> parse_perturbation_pdf_output(
         while (std::getline(sstrm, line))
             perturbation_pdf_vector.push_back(std::stod(line));
     }
-    catch (std::invalid_argument& e)
+    catch (const std::invalid_argument& e)
     {
         std::string error_msg;
         error_msg += "Invalid argument: ";
@@ -232,7 +232,7 @@ std::vector<double> parse_perturbation_pdf_output(
         error_msg += perturbation_pdf_output;
         throw std::runtime_error(error_msg);
     }
-    catch (std::out_of_range& e)
+    catch (const std::out_of_range& e)
     {
         std::string error_msg;
         error_msg += "Out of range: ";
@@ -273,7 +273,7 @@ std::vector<Parameter> parse_generator_output(
         while (std::getline(sstrm, line))
             generator_vector.push_back(std::move(line));
     }
-    catch (std::runtime_error& e)
+    catch (const std::runtime_error& e)
     {
         std::string error_msg;
         error_msg += e.what();
