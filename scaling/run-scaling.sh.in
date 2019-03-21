@@ -47,9 +47,6 @@ export TIMEFORMAT="%R"
 # processes_count,elapsed_time
 echo "num_processes,elapsed_time" > scaling.csv
 
-# Ensure temporary input file is deleted upon error
-trap 'rm -f tmp.rej' ERR
-
 # Run pakman rejection algorithm
 current_num_procs=1
 while [ "$current_num_procs" -le "$num_procs" ]
@@ -60,15 +57,17 @@ do
     # Write processes_count
     echo -n "$current_num_procs," >> scaling.csv
 
-    # Create temporary input file
-    sed "s;num_sqrt_computations;$num_sqrt_computations;" \
-        @CMAKE_CURRENT_BINARY_DIR@/scaling.rej > tmp.rej
-
     # Run pakman and record elapsed time
     { time @MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ $current_num_procs \
         @MPIEXEC_PREFLAGS@ \
         @PROJECT_BINARY_DIR@/src/pakman @MPIEXEC_POSTFLAGS@ mpi rejection \
-        tmp.rej $num_simulations --verbosity=off > /dev/null; } 2>> scaling.csv
+        --verbosity=off \
+        --number-accept=$num_simulations \
+        --epsilon=0 \
+        --parameter-names=p \
+        --prior-sampler="echo 1" \
+        --simulator="@CMAKE_CURRENT_BINARY_DIR@/scaling-simulator.sh $num_sqrt_computations" \
+        > /dev/null; } 2>> scaling.csv
 
     # Show elapsed time
     echo -n "Finished in "
@@ -78,9 +77,6 @@ do
     # Double number of processes
     ((current_num_procs *= 2))
 done
-
-# Remove temporary input file
-rm tmp.rej
 
 # Print message
 echo "Results were stored in scaling.csv"

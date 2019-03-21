@@ -16,12 +16,6 @@ endif ()
 file (COPY plot-scaling.py
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-# Configure input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/scaling.rej.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/scaling.rej"
-    )
-
 # Configure shell scripts
 configure_script (
     "${CMAKE_CURRENT_SOURCE_DIR}/run-scaling.sh.in"
