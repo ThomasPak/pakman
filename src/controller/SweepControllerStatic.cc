@@ -11,69 +11,63 @@
 // Static help function
 std::string SweepController::help()
 {
-    std::string message;
-    message +=
+    return
 R"(* Help message for 'sweep' controller *
 
 Description:
-  The sweep method interprets the stdout of GENERATOR as newline-separated list
-  of parameters and runs SIMULATOR on each of them.
+  The sweep method interprets the stdout of 'generator' as newline-separated
+  list of parameters and runs 'simulator' on each of them.
 
   Upon completion, the controller outputs the parameter names, followed by
   newline-separated list of simulated parameters.
 
 Required arguments:
-  INPUT_FILE                input file
-
-Contents of input file:
-  SIMULATOR                 simulator command
-  PARAMETER_NAMES           comma-separated list of parameter names
-  GENERATOR                 generator command
-
-Usage:
-  )";
-    message += program_name;
-    message +=
-R"( <master> sweep INPUT_FILE [optional args]...
+  -P, --parameter-names=NAMES   NAMES is a comma-separated list of
+                                parameter names
+  -S, --simulator=CMD           CMD is simulator command
+  -G, --generator=CMD           CMD is generator command
 )";
-
-    return message;
 }
 
 void SweepController::addLongOptions(LongOptions& lopts)
 {
-    // No SweepController-specific options to add
+    lopts.add({"parameter-names", required_argument, nullptr, 'P'});
+    lopts.add({"simulator", required_argument, nullptr, 'S'});
+    lopts.add({"generator", required_argument, nullptr, 'G'});
 }
 
 SweepController* SweepController::makeController(const Arguments& args)
 {
-    // Check if correct number of positional arguments were given
-    if (args.numberOfPositionalArguments() < 1)
-    {
-        std::runtime_error e("Insufficient required arguments were given.");
-        throw e;
-    }
-    else if (args.numberOfPositionalArguments() > 1)
-    {
-        std::runtime_error e("Too many required arguments were given.");
-        throw e;
-    }
+    Input input_obj;
 
-    // Open
-    std::ifstream input_file(args.positionalArgument(0));
-    if (!input_file.good())
-    {
-        std::string error_string;
-        error_string += "An error occured while opening ";
-        error_string += args.positionalArgument(0);
-        error_string += ".\n";
-        std::runtime_error e(error_string);
-        throw e;
-    }
-
-    // Parse file and store in input_obj
-    SweepController::Input input_obj(input_file);
+    // Parse command-line options
+    input_obj = Input::makeInput(args);
 
     // Make SweepController
     return new SweepController(input_obj);
+}
+
+// Construct Input from Arguments object
+SweepController::Input SweepController::Input::makeInput(const Arguments& args)
+{
+    // Initialize input
+    Input input_obj;
+
+    try
+    {
+        input_obj.simulator = args.optionalArgument("simulator");
+        input_obj.parameter_names =
+            parse_csv_list(args.optionalArgument("parameter-names"));
+        input_obj.generator = args.optionalArgument("generator");
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::string error_msg;
+        error_msg += "One or more arguments missing, try '";
+        error_msg += program_name;
+        error_msg += " sweep --help' for more info";
+        throw std::runtime_error(error_msg);
+    }
+
+    return input_obj;
 }

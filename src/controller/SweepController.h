@@ -35,17 +35,14 @@ class SweepController : public AbstractController
         // Static addLongOptions function
         static void addLongOptions(LongOptions& lopts);
 
-        // Static function to make from positional arguments
+        // Static function to make from arguments
         static SweepController* makeController(const Arguments& args);
 
         // Input struct to contain input to SweepController
         struct Input
         {
-            // Construct from input stream
-            Input(std::istream& istrm);
-
-            // Number of lines
-            static const int num_lines = 3;
+            // Static function to make Input from optional arguments
+            static Input makeInput(const Arguments& args);
 
             // Data
             Command simulator;

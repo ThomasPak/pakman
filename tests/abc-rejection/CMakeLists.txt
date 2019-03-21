@@ -1,9 +1,3 @@
-# Configure input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/abc-rejection-test.rej.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/abc-rejection-test.rej"
-    )
-
 # Configure shell scripts
 configure_script (
     "${CMAKE_CURRENT_SOURCE_DIR}/test-abc-rejection.sh.in"

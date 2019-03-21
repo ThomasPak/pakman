@@ -1,9 +1,3 @@
-# Configure input file
-configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/abc-smc-test.smc.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/abc-smc-test.smc"
-    )
-
 # Configure shell scripts
 configure_script (
     "${CMAKE_CURRENT_SOURCE_DIR}/test-abc-smc.sh.in"

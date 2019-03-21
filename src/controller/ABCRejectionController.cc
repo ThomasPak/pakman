@@ -16,12 +16,11 @@
 #include "ABCRejectionController.h"
 
 // Constructor
-ABCRejectionController::ABCRejectionController(
-        const Input& input_obj, int num_accept) :
+ABCRejectionController::ABCRejectionController(const Input& input_obj) :
+    m_number_accept(input_obj.number_accept),
     m_epsilon(input_obj.epsilon),
     m_prior_sampler(input_obj.prior_sampler),
     m_parameter_names(input_obj.parameter_names),
-    m_num_accept(num_accept),
     m_simulator(input_obj.simulator)
 {
 }
@@ -72,10 +71,10 @@ void ABCRejectionController::iterate()
 
     // If enough parameters have been accepted, print them and terminate Master
     // and Managers.
-    if (m_prmtr_accepted.size() >= m_num_accept)
+    if (m_prmtr_accepted.size() >= m_number_accept)
     {
         // Trim any superfluous parameters
-        while (m_prmtr_accepted.size() > m_num_accept)
+        while (m_prmtr_accepted.size() > m_number_accept)
             m_prmtr_accepted.pop_back();
 
         // Print accepted parameters
@@ -99,23 +98,4 @@ void ABCRejectionController::iterate()
 Command ABCRejectionController::getSimulator() const
 {
     return m_simulator;
-}
-
-// Construct from input stream
-ABCRejectionController::Input::Input(std::istream& istrm)
-{
-    // Read lines
-    std::vector<std::string> lines = read_lines(istrm, num_lines);
-
-    // Get epsilon
-    epsilon = lines[0];
-
-    // Get simulator
-    simulator = lines[1];
-
-    // Parse parameter names
-    parameter_names = parse_csv_list(lines[2]);
-
-    // Get prior sampler
-    prior_sampler = lines[3];
 }

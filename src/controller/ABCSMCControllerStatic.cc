@@ -13,8 +13,7 @@
 
 std::string ABCSMCController::help()
 {
-    std::string message;
-    message +=
+    return
 R"(* Help message for 'smc' controller *
 
 Description:
@@ -23,106 +22,75 @@ Description:
   distribution, with epsilon decreasing at each generation.  The generations
   are numbered starting from 0.
 
-  The sequence of epsilon values is given by the comma-separated list EPSILONS.
-  The number of values in EPSILONS determines the number of generations.
+  The sequence of epsilon values is given by the comma-separated list
+  'epsilons'.  The number of values in 'epsilons' determines the number of
+  generations.
 
   The first generation of candidate parameters is obtained from the stdout of
-  PRIOR_SAMPLER.
+  'prior_sampler'.
 
   In subsequent generations, candidate parameters are sampled by perturbing a
-  parameter from the previous generation with PERTURBER.  PERTURBER accepts two
-  lines as its input; the first line contains the current generation 'T' and
-  the second line contains the parameter to be perturbed.
+  parameter from the previous generation with 'perturber'.  'perturber' accepts
+  two lines as its input; the first line contains the current generation 't'
+  and the second line contains the parameter to be perturbed.
 
   The parameter to be perturbed is sampled from the previous generation with
-  weights that are calculated using PRIOR_PDF and PERTURBATION_PDF.  PRIOR_PDF
-  accepts a parameter on its stdin and returns the corresponding prior
-  probability density on its stdout.
+  weights that are calculated using 'prior_pdf' and 'perturbation_pdf'.
+  'prior_pdf' accepts a parameter on its stdin and returns the corresponding
+  prior probability density on its stdout.
 
-  PERTURBATION_PDF accepts at least two lines on its stdin, containing the
-  current generation 'T' and the perturbed parameter, respectively.  This is
+  'perturbation_pdf' accepts at least two lines on its stdin, containing the
+  current generation 't' and the perturbed parameter, respectively.  This is
   then followed by an arbitrary number of parameters, each on a separate line.
-  For every parameter from the third line onwards, PERTURBATION_PDF outputs on
-  its stdout the corresponding probability density for reaching the perturbed
-  parameter by perturbing the given parameter.
+  For every parameter from the third line onwards, 'perturbation_pdf' outputs
+  on its stdout the corresponding probability density for reaching the
+  perturbed parameter by perturbing the given parameter.
 
-  For every candidate parameter, SIMULATOR is invoked and given two lines as
+  For every candidate parameter, 'simulator' is invoked and given two lines as
   its input; the first line contains the current epsilon value and the second
   line contains the candidate parameter.
 
-  The output of SIMULATOR indicates whether the parameter was accepted or
-  rejected; an output of '0' means that the parameter was rejected and an
-  output of '1' means that the parameter was accepted.
+  The output of 'simulator' indicates whether the parameter was accepted or
+  rejected; an output of '0', 'reject' or 'rejected' means that the parameter
+  was rejected and an output of '1', 'accept' or 'accepted' means that the
+  parameter was accepted.
 
-  Upon completion, the controller outputs the parameter names in
-  PARAMETER_NAMES, followed by a newline-separated list of accepted parameters.
+  Upon completion, the controller outputs the parameter names, followed by
+  newline-separated list of accepted parameters.
 
 Required arguments:
-  INPUT_FILE                input file
-  N                         population size
-
-Contents of input file:
-  EPSILONS                     comma-separated list of epsilons
-  SIMULATOR                    simulator command
-  PARAMETER_NAMES              comma-separated list of parameter names
-  PRIOR_SAMPLER                prior sampler command
-  PERTURBER                    perturber command
-  PRIOR_PDF                    prior pdf command
-  PERTURBATION_PDF             perturbation pdf command
-
-Usage:
-  )";
-    message += program_name;
-    message +=
-R"( <master> smc INPUT_FILE N [optional args]...
+  -N, --population-size=NUM     NUM is the parameter population size
+  -E, --epsilons=EPS            EPS is comma-separated list of tolerances
+                                that are passed to simulator
+  -P, --parameter-names=NAMES   NAMES is comma-separated list of
+                                parameter names
+  -S, --simulator=CMD           CMD is simulator command
+  -R, --prior-sampler=CMD       CMD is prior_sampler command
+  -T, --perturber=CMD           CMD is perturber command
+  -I, --prior-pdf=CMD           CMD is prior_pdf command
+  -U, --perturbation-pdf=CMD    CMD is perturbation_pdf command
 )";
-
-    return message;
 }
 
 void ABCSMCController::addLongOptions(
         LongOptions& lopts)
 {
-    // No ABCSMCController-specific options to add
+    lopts.add({"population-size", required_argument, nullptr, 'N'});
+    lopts.add({"epsilons", required_argument, nullptr, 'E'});
+    lopts.add({"parameter-names", required_argument, nullptr, 'P'});
+    lopts.add({"simulator", required_argument, nullptr, 'S'});
+    lopts.add({"prior-sampler", required_argument, nullptr, 'R'});
+    lopts.add({"perturber", required_argument, nullptr, 'T'});
+    lopts.add({"prior-pdf", required_argument, nullptr, 'I'});
+    lopts.add({"perturbation-pdf", required_argument, nullptr, 'U'});
 }
 
 ABCSMCController* ABCSMCController::makeController(const Arguments& args)
 {
-    // Check if correct number of positional arguments were given
-    if (args.numberOfPositionalArguments() < 2)
-    {
-        std::runtime_error e("Insufficient required arguments were given.");
-        throw e;
-    }
-    else if (args.numberOfPositionalArguments() > 2)
-    {
-        std::runtime_error e("Too many required arguments were given.");
-        throw e;
-    }
+    Input input_obj;
 
-    // Open input file
-    std::ifstream input_file(args.positionalArgument(0));
-    if (!input_file.good())
-    {
-        std::string error_string;
-        error_string += "An error occured while opening ";
-        error_string += args.positionalArgument(0);
-        error_string += ".\n";
-        std::runtime_error e(error_string);
-        throw e;
-    }
-
-    // Read population size
-    int pop_size = std::stoi(args.positionalArgument(1));
-    if (pop_size <= 0)
-    {
-        std::runtime_error e("Population size "
-                "must be positive integer.\n");
-        throw e;
-    }
-
-    // Parse file and store in input_obj
-    ABCSMCController::Input input_obj(input_file);
+    // Parse command-line options
+    input_obj = Input::makeInput(args);
 
     // Create random number generator
     // TODO accept other seeds
@@ -132,5 +100,40 @@ ABCSMCController* ABCSMCController::makeController(const Arguments& args)
         std::make_shared<std::default_random_engine>(seed);
 
     // Make ABCSMCController
-    return new ABCSMCController(input_obj, p_generator, pop_size);
+    return new ABCSMCController(input_obj, p_generator);
+}
+
+// Construct Input from Arguments object
+ABCSMCController::Input ABCSMCController::Input::makeInput(const Arguments& args)
+{
+    // Initialize input
+    Input input_obj;
+
+    try
+    {
+        input_obj.population_size =
+            std::stoi(args.optionalArgument("population-size"));
+
+        input_obj.epsilons =
+            parse_csv_list(args.optionalArgument("epsilons"));
+
+        input_obj.parameter_names =
+            parse_csv_list(args.optionalArgument("parameter-names"));
+
+        input_obj.simulator = args.optionalArgument("simulator");
+        input_obj.prior_sampler = args.optionalArgument("prior-sampler");
+        input_obj.perturber = args.optionalArgument("perturber");
+        input_obj.prior_pdf = args.optionalArgument("prior-pdf");
+        input_obj.perturbation_pdf = args.optionalArgument("perturbation-pdf");
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::string error_msg;
+        error_msg += "One or more arguments missing, try '";
+        error_msg += program_name;
+        error_msg += " smc --help' for more info";
+        throw std::runtime_error(error_msg);
+    }
+
+    return input_obj;
 }

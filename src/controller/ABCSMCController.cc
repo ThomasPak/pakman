@@ -18,15 +18,14 @@
 
 // Constructor
 ABCSMCController::ABCSMCController(const Input &input_obj,
-        std::shared_ptr<std::default_random_engine> p_generator,
-        int pop_size) :
+        std::shared_ptr<std::default_random_engine> p_generator) :
     m_epsilons(input_obj.epsilons),
     m_parameter_names(input_obj.parameter_names),
-    m_smc_sampler(std::vector<double>(pop_size),
-            std::vector<Parameter>(pop_size), p_generator, input_obj.perturber,
+    m_smc_sampler(std::vector<double>(input_obj.population_size),
+            std::vector<Parameter>(input_obj.population_size), p_generator, input_obj.perturber,
             input_obj.prior_sampler, input_obj.prior_pdf),
     m_perturbation_pdf(input_obj.perturbation_pdf),
-    m_pop_size(pop_size),
+    m_population_size(input_obj.population_size),
     m_simulator(input_obj.simulator)
 {
     m_smc_sampler.setT(m_t);
@@ -94,10 +93,10 @@ void ABCSMCController::iterate()
     // are in the last generation.  If we are in the last generation, then
     // print the accepted parameters and terminate Master.  If we are not in
     // the last generation, then swap the weights and populations
-    if (m_prmtr_accepted_new.size() >= m_pop_size)
+    if (m_prmtr_accepted_new.size() >= m_population_size)
     {
         // Trim any superfluous parameters
-        while (m_prmtr_accepted_new.size() > m_pop_size)
+        while (m_prmtr_accepted_new.size() > m_population_size)
         {
             m_prmtr_accepted_new.pop_back();
             m_weights_new.pop_back();
@@ -144,26 +143,4 @@ void ABCSMCController::iterate()
 Command ABCSMCController::getSimulator() const
 {
     return m_simulator;
-}
-
-// Construct from input stream
-ABCSMCController::Input::Input(std::istream& istrm)
-{
-    // Read lines
-    std::vector<std::string> lines = read_lines(istrm, num_lines);
-
-    // Parse epsilons
-    epsilons = parse_csv_list(lines[0]);
-
-    // Get simulator
-    simulator = lines[1];
-
-    // Parse parameter names
-    parameter_names = parse_csv_list(lines[2]);
-
-    // Get rest
-    prior_sampler = lines[3];
-    perturber = lines[4];
-    prior_pdf = lines[5];
-    perturbation_pdf = lines[6];
 }

@@ -21,8 +21,7 @@ class ABCRejectionController : public AbstractController
         struct Input;
 
         // Constructor
-        ABCRejectionController(const Input& input_obj,
-                int num_accept);
+        ABCRejectionController(const Input& input_obj);
 
         // Default destructor
         virtual ~ABCRejectionController() override = default;
@@ -45,13 +44,11 @@ class ABCRejectionController : public AbstractController
         // Input struct to contain input to ABCRejectionController
         struct Input
         {
-            // Construct from input stream
-            Input(std::istream& istrm);
-
-            // Number of lines
-            static const int num_lines = 4;
+            // Static function to make Input from optional arguments
+            static Input makeInput(const Arguments& args);
 
             // Data
+            int number_accept;
             std::string epsilon;
             Command simulator;
             std::vector<std::string> parameter_names;
@@ -71,7 +68,7 @@ class ABCRejectionController : public AbstractController
         std::vector<std::string> m_parameter_names;
 
         // Number of parameter to accept
-        int m_num_accept;
+        int m_number_accept;
 
         // Vector of accepted parameters
         std::vector<Parameter> m_prmtr_accepted;

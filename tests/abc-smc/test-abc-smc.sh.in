@@ -21,13 +21,17 @@ trap "rm -f $temp_number_file $temp_input_file" ERR
 # Store 0 in temporary number file
 echo 0 > $temp_number_file
 
-# Write temporary input file
-cp @CMAKE_CURRENT_BINARY_DIR@/abc-smc-test.smc $temp_input_file
-sed -i "s;EPSILONS;$epsilons;" $temp_input_file
-sed -i "s;NUMBER_FILE;$temp_number_file;" $temp_input_file
-
 # Run pakman
-@PROJECT_BINARY_DIR@/src/pakman serial smc $temp_input_file $pop_size
+@PROJECT_BINARY_DIR@/src/pakman serial smc $temp_input_file \
+    --parameter-names=p \
+    --population-size=$pop_size \
+    --epsilons=$epsilons \
+    --simulator="@CMAKE_CURRENT_BINARY_DIR@/../abc-rejection/accept-if-epsilon-plus-parameter-is-even.sh" \
+    --prior-sampler="@CMAKE_CURRENT_BINARY_DIR@/../abc-rejection/increment-and-print-number.sh $temp_number_file" \
+    --perturber="@CMAKE_CURRENT_BINARY_DIR@/perturber.sh $epsilons" \
+    --prior-pdf="@CMAKE_CURRENT_BINARY_DIR@/prior-pdf.sh" \
+    --perturbation-pdf="@CMAKE_CURRENT_BINARY_DIR@/perturbation-pdf.sh $epsilons"
+
 
 # Clean up temporary files
 rm -f $temp_number_file $temp_input_file

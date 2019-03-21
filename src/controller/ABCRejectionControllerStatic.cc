@@ -11,88 +11,83 @@
 // Static help function
 std::string ABCRejectionController::help()
 {
-    std::string message;
-    message +=
+    return
 R"(* Help message for 'rejection' controller *
 
 Description:
   The ABC rejection method samples candidate parameters from the stdout of
-  PRIOR_SAMPLER.  For every candidate parameter, SIMULATOR is invoked and given
-  two lines as its input; the first line contains EPSILON and the second line
-  contains the candidate parameter.
+  'prior_sampler'.  For every candidate parameter, 'simulator' is invoked and
+  given two lines as its input; the first line contains 'epsilon' and the
+  second line contains the candidate parameter.
 
-  The output of SIMULATOR indicates whether the parameter was accepted or
-  rejected; an output of '0' means that the parameter was rejected and an
-  output of '1' means that the parameter was accepted.
+  The output of 'simulator' indicates whether the parameter was accepted or
+  rejected; an output of '0', 'reject' or 'rejected' means that the parameter
+  was rejected and an output of '1', 'accept' or 'accepted' means that the
+  parameter was accepted.
 
-  Upon completion, the controller outputs the parameter names in
-  PARAMETER_NAMES, followed by a newline-separated list of accepted parameters.
+  Upon completion, the controller outputs the parameter names, followed by
+  newline-separated list of accepted parameters.
 
 Required arguments:
-  INPUT_FILE                input file
-  N                         number of parameters to accept
-
-Contents of input file:
-  EPSILON                   value of epsilon
-  SIMULATOR                 simulator command
-  PARAMETER_NAMES           comma-separated list of parameter names
-  PRIOR_SAMPLER             prior sampler command
-
-Usage:
-  )";
-    message += program_name;
-    message +=
-R"( <master> rejection INPUT_FILE N [optional args]...
+  -N, --number-accept=NUM       NUM is number of parameters to accept
+  -E, --epsilon=EPS             EPS is the tolerance passed to 'simulator'
+  -P, --parameter-names=NAMES   NAMES is a comma-separated list of
+                                parameter names
+  -S, --simulator=CMD           CMD is simulator command
+  -R, --prior-sampler=CMD       CMD is prior_sampler command
 )";
-
-    return message;
 }
 
 void ABCRejectionController::addLongOptions(
         LongOptions& lopts)
 {
-    // No ABCRejectionController-specific options to add
+    lopts.add({"number-accept", required_argument, nullptr, 'N'});
+    lopts.add({"epsilon", required_argument, nullptr, 'E'});
+    lopts.add({"parameter-names", required_argument, nullptr, 'P'});
+    lopts.add({"simulator", required_argument, nullptr, 'S'});
+    lopts.add({"prior-sampler", required_argument, nullptr, 'R'});
 }
 
 // Static function to make from positional arguments
 ABCRejectionController* ABCRejectionController::makeController(
         const Arguments& args)
 {
-    // Check if correct number of positional arguments were given
-    if (args.numberOfPositionalArguments() < 2)
+    Input input_obj;
+
+    // Parse command-line options
+    input_obj = Input::makeInput(args);
+
+    // Make ABCRejectionController
+    return new ABCRejectionController(input_obj);
+}
+
+// Construct Input from Arguments object
+ABCRejectionController::Input ABCRejectionController::Input::makeInput(const Arguments& args)
+{
+    // Initialize input
+    Input input_obj;
+
+    try
     {
-        std::runtime_error e("Insufficient required arguments were given.");
-        throw e;
+        input_obj.number_accept =
+            std::stoi(args.optionalArgument("number-accept"));
+
+        input_obj.epsilon = args.optionalArgument("epsilon");
+
+        input_obj.parameter_names =
+            parse_csv_list(args.optionalArgument("parameter-names"));
+
+        input_obj.simulator = args.optionalArgument("simulator");
+        input_obj.prior_sampler = args.optionalArgument("prior-sampler");
     }
-    else if (args.numberOfPositionalArguments() > 2)
+    catch (const std::out_of_range& e)
     {
-        std::runtime_error e("Too many required arguments were given.");
-        throw e;
+        std::string error_msg;
+        error_msg += "One or more arguments missing, try '";
+        error_msg += program_name;
+        error_msg += " rejection --help' for more info";
+        throw std::runtime_error(error_msg);
     }
 
-    // Open input file
-    std::ifstream input_file(args.positionalArgument(0));
-    if (!input_file.good())
-    {
-        std::string error_string;
-        error_string += "An error occured while opening ";
-        error_string += args.positionalArgument(0);
-        error_string += ".\n";
-        std::runtime_error e(error_string);
-        throw e;
-    }
-
-    // Read number of accepted parameters
-    int num_accept = std::stoi(args.positionalArgument(1));
-    if (num_accept <= 0)
-    {
-        std::runtime_error e("Number of accepted parameters "
-                "must be positive integer.\n");
-        throw e;
-    }
-
-    // Parse file and store in input_obj
-    ABCRejectionController::Input input_obj(input_file);
-
-    return new ABCRejectionController(input_obj, num_accept);
+    return input_obj;
 }

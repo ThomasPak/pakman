@@ -24,8 +24,7 @@ class ABCSMCController : public AbstractController
 
         // Constructor
         ABCSMCController(const Input &input_obj,
-                std::shared_ptr<std::default_random_engine> p_generator,
-                int pop_size);
+                std::shared_ptr<std::default_random_engine> p_generator);
 
         // Default destructor
         virtual ~ABCSMCController() override = default;
@@ -48,13 +47,11 @@ class ABCSMCController : public AbstractController
         // Input struct to contain input to ABCSMCController
         struct Input
         {
-            // Construct from input stream
-            Input(std::istream& istrm);
-
-            // Number of lines
-            static const int num_lines = 7;
+            // Static function to make Input from optional arguments
+            static Input makeInput(const Arguments& args);
 
             // Data
+            int population_size;
             std::vector<std::string> epsilons;
             Command simulator;
             std::vector<std::string> parameter_names;
@@ -83,7 +80,7 @@ class ABCSMCController : public AbstractController
         std::vector<std::string> m_parameter_names;
 
         // Population size
-        int m_pop_size;
+        int m_population_size;
 
         // New accepted parameters
         std::vector<Parameter> m_prmtr_accepted_new;
