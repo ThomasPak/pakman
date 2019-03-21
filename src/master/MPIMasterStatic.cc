@@ -136,13 +136,13 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
     {
         std::cout << "Error: option --mpi-simulator must be set "
             "if --force_host_spawn is set\n";
-        ::help(mpi_master, controller, EXIT_FAILURE);
+        ::help(mpi, controller, EXIT_FAILURE);
     }
     else if (args.isOptionalArgumentSet("persistent"))
     {
         std::cout << "Error: option --mpi-simulator must be set "
             "if --persistent is set\n";
-        ::help(mpi_master, controller, EXIT_FAILURE);
+        ::help(mpi, controller, EXIT_FAILURE);
     }
 
     // Initialize the MPI environment

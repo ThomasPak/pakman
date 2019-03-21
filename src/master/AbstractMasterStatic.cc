@@ -14,11 +14,11 @@ master_t AbstractMaster::getMaster(const std::string& arg)
 {
     // Check for serial master
     if (arg.compare("serial") == 0)
-        return serial_master;
+        return serial;
 
     // Check for mpi master
     else if (arg.compare("mpi") == 0)
-        return mpi_master;
+        return mpi;
 
     // Else return no_master
     return no_master;
@@ -28,9 +28,9 @@ std::string AbstractMaster::help(master_t master)
 {
     switch (master)
     {
-        case serial_master:
+        case serial:
             return SerialMaster::help();
-        case mpi_master:
+        case mpi:
             return MPIMaster::help();
         default:
             throw std::runtime_error(
@@ -44,10 +44,10 @@ void AbstractMaster::addLongOptions(master_t master,
 {
     switch (master)
     {
-        case serial_master:
+        case serial:
             SerialMaster::addLongOptions(lopts);
             return;
-        case mpi_master:
+        case mpi:
             MPIMaster::addLongOptions(lopts);
             return;
         default:
@@ -62,10 +62,10 @@ void AbstractMaster::run(master_t master, controller_t controller,
 {
     switch (master)
     {
-        case serial_master:
+        case serial:
             SerialMaster::run(controller, args);
             return;
-        case mpi_master:
+        case mpi:
             MPIMaster::run(controller, args);
             return;
         default:

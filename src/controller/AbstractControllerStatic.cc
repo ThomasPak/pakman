@@ -16,15 +16,15 @@ controller_t AbstractController::getController(const std::string& arg)
 {
     // Check for sweep controller
     if (arg.compare("sweep") == 0)
-        return sweep_controller;
+        return sweep;
 
     // Check for rejection controller
     else if (arg.compare("rejection") == 0)
-        return rejection_controller;
+        return rejection;
 
     // Check for smc controller
     else if (arg.compare("smc") == 0)
-        return smc_controller;
+        return smc;
 
     // Else return no_controller
     return no_controller;
@@ -34,11 +34,11 @@ std::string AbstractController::help(controller_t controller)
 {
     switch (controller)
     {
-        case sweep_controller:
+        case sweep:
             return SweepController::help();
-        case rejection_controller:
+        case rejection:
             return ABCRejectionController::help();
-        case smc_controller:
+        case smc:
             return ABCSMCController::help();
         default:
             throw std::runtime_error("Invalid controller type in "
@@ -51,11 +51,11 @@ void AbstractController::addLongOptions(controller_t controller,
 {
     switch (controller)
     {
-        case sweep_controller:
+        case sweep:
             return SweepController::addLongOptions(lopts);
-        case rejection_controller:
+        case rejection:
             return ABCRejectionController::addLongOptions(lopts);
-        case smc_controller:
+        case smc:
             return ABCSMCController::addLongOptions(lopts);
         default:
             throw std::runtime_error("Invalid controller type in "
@@ -68,11 +68,11 @@ AbstractController* AbstractController::makeController(controller_t controller,
 {
     switch (controller)
     {
-        case sweep_controller:
+        case sweep:
             return SweepController::makeController(args);
-        case rejection_controller:
+        case rejection:
             return ABCRejectionController::makeController(args);
-        case smc_controller:
+        case smc:
             return ABCSMCController::makeController(args);
         default:
             throw std::runtime_error("Invalid controller type in "
