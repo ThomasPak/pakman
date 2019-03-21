@@ -25,7 +25,7 @@ class SweepController : public AbstractController
         virtual void iterate() override;
 
         // Simulator getter
-        virtual cmd_t getSimulator() const override;
+        virtual Command getSimulator() const override;
 
         // Static help function
         static std::string help();
@@ -54,7 +54,7 @@ class SweepController : public AbstractController
         bool m_first_iteration = true;
 
         // Simulator command
-        cmd_t m_simulator;
+        Command m_simulator;
 };
 
 #endif // SWEEPCONTROLLER_H

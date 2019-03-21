@@ -25,7 +25,7 @@ class PersistentMPIWorkerHandler : public AbstractWorkerHandler
         // existing MPI child process.
         //
         // The input string is sent to persistent MPI child process.
-        PersistentMPIWorkerHandler(const cmd_t& command, const std::string& input_string);
+        PersistentMPIWorkerHandler(const Command& command, const std::string& input_string);
 
         // Destructor waits for the persistent MPI child process to finish and
         // send its output string and error code if it has not yet done so.

@@ -17,7 +17,7 @@
 #include "Sampler.h"
 
 /**** PriorSampler ****/
-PriorSampler::PriorSampler(const cmd_t &prior_sampler) : m_prior_sampler(prior_sampler) {}
+PriorSampler::PriorSampler(const Command &prior_sampler) : m_prior_sampler(prior_sampler) {}
 
 Parameter PriorSampler::sampleParameter() const
 {
@@ -68,7 +68,7 @@ Parameter PopulationSampler::sampleParameter() const
 
 
 /**** PerturbationSampler ****/
-PerturbationSampler::PerturbationSampler(const cmd_t &perturber) : m_perturber(perturber) {}
+PerturbationSampler::PerturbationSampler(const Command &perturber) : m_perturber(perturber) {}
 
 Parameter PerturbationSampler::perturbParameter(int t, Parameter prmtr_base) const
 {
@@ -107,9 +107,9 @@ Parameter PerturbationSampler::sampleParameter() const
 SMCSampler::SMCSampler(std::vector<double> weights,
                               std::vector<Parameter> prmtr_population,
                               std::shared_ptr<std::default_random_engine> p_generator,
-                              const cmd_t &perturber,
-                              const cmd_t &prior_sampler,
-                              const cmd_t &prior_pdf) :
+                              const Command &perturber,
+                              const Command &prior_sampler,
+                              const Command &prior_pdf) :
     PopulationSampler(weights, prmtr_population, p_generator),
     PerturbationSampler(perturber),
     PriorSampler(prior_sampler),

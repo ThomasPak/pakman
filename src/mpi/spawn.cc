@@ -11,14 +11,10 @@
 #include "spawn.h"
 
 
-MPI_Comm spawn(const cmd_t& cmd, MPI_Info info)
+MPI_Comm spawn(const Command& cmd, MPI_Info info)
 {
-
-    // Create command and break into tokens
-    std::vector<std::string> cmd_tokens = parse_command(cmd);
-
-    // Create argv
-    char **argv = create_c_argv(cmd_tokens);
+    // Get argv from command
+    char **argv = cmd.argv();
 
     // Spawn single process and return intercomm
     // The argument list to Spawn is shifted by one
@@ -34,14 +30,11 @@ MPI_Comm spawn(const cmd_t& cmd, MPI_Info info)
 
     spdlog::debug("Spawn of {} complete", argv[0]);
 
-    // Free argv
-    free_c_argv(argv);
-
     // Return intercommunicator
     return spawn_intercomm;
 }
 
-MPI_Comm spawn_worker(const cmd_t& cmd)
+MPI_Comm spawn_worker(const Command& cmd)
 {
     // Create MPI_Info object
     MPI_Info info;

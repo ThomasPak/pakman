@@ -16,7 +16,7 @@ class ForkedWorkerHandler : public AbstractWorkerHandler
         // This will fork a process whose standard input and output is
         // redirected to pipes. The input string is immediately written to the
         // write pipe.
-        ForkedWorkerHandler(const cmd_t& command, const std::string& input_string);
+        ForkedWorkerHandler(const Command& command, const std::string& input_string);
 
         // Destructor will wait on forked process and close read pipe
         virtual ~ForkedWorkerHandler() override;

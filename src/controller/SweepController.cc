@@ -93,7 +93,7 @@ void SweepController::iterate()
     entered = false;
 }
 
-cmd_t SweepController::getSimulator() const
+Command SweepController::getSimulator() const
 {
     return m_simulator;
 }

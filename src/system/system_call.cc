@@ -19,7 +19,7 @@
 const int READ_END = 0;
 const int WRITE_END = 1;
 
-bool waitpid_success(pid_t pid, int options, const cmd_t& cmd,
+bool waitpid_success(pid_t pid, int options, const Command& cmd,
                      child_err_opt_t child_err_opt)
 {
 
@@ -36,7 +36,7 @@ bool waitpid_success(pid_t pid, int options, const cmd_t& cmd,
     if (retval == -1)
     {
         string error_msg("waitpid of ");
-        error_msg += cmd;
+        error_msg += cmd.str();
         error_msg += " failed";
         runtime_error e(error_msg);
         throw e;
@@ -46,14 +46,14 @@ bool waitpid_success(pid_t pid, int options, const cmd_t& cmd,
     if (child_err_opt == throw_error)
     {
         if (!WIFEXITED(status)) { // Program did not exit normally
-            string error_msg(cmd);
+            string error_msg(cmd.str());
             error_msg += " did not exit normally";
             runtime_error e(error_msg);
             throw e;
         }
 
         if (WEXITSTATUS(status) != 0) { // Check for nonzero exit status
-            string error_msg(cmd);
+            string error_msg(cmd.str());
             error_msg += " threw an error";
             runtime_error e(error_msg);
             throw e;
@@ -64,7 +64,7 @@ bool waitpid_success(pid_t pid, int options, const cmd_t& cmd,
     return true;
 }
 
-bool waitpid_success(pid_t pid, int& error_code, int options, const cmd_t& cmd)
+bool waitpid_success(pid_t pid, int& error_code, int options, const Command& cmd)
 {
 
     using namespace std;
@@ -80,7 +80,7 @@ bool waitpid_success(pid_t pid, int& error_code, int options, const cmd_t& cmd)
     if (retval == -1)
     {
         string error_msg("waitpid of ");
-        error_msg += cmd;
+        error_msg += cmd.str();
         error_msg += " failed";
         runtime_error e(error_msg);
         throw e;
@@ -88,7 +88,7 @@ bool waitpid_success(pid_t pid, int& error_code, int options, const cmd_t& cmd)
 
     // Check exit status of child
     if (!WIFEXITED(status)) { // Program did not exit normally
-        string error_msg(cmd);
+        string error_msg(cmd.str());
         error_msg += " did not exit normally";
         runtime_error e(error_msg);
         throw e;
@@ -125,13 +125,13 @@ void close_check(int fd)
     }
 }
 
-void system_call(const cmd_t& cmd, std::string& output,
+void system_call(const Command& cmd, std::string& output,
                  child_err_opt_t child_err_opt)
 {
 
     using namespace std;
 
-    spdlog::debug("cmd: {}", cmd);
+    spdlog::debug("cmd: {}", cmd.str());
 
     // Create pipe
     int pipefd[2];
@@ -185,16 +185,15 @@ void system_call(const cmd_t& cmd, std::string& output,
         dup2_check(pipefd[WRITE_END], 1);
         close_check(pipefd[WRITE_END]);
 
-        // Break up command into tokens
-        vector<string> cmd_tokens = parse_command(cmd);
-        vector<const char *> argv = vector_argv(cmd_tokens);
+        // Get argv from command
+        char **argv = cmd.argv();
 
         // Execute command
-        execvp(argv[0], (char * const *) argv.data());
+        execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
         string error_msg("exec of ");
-        error_msg += cmd;
+        error_msg += cmd.str();
         error_msg += " failed";
         runtime_error e(error_msg);
         throw e;
@@ -203,7 +202,7 @@ void system_call(const cmd_t& cmd, std::string& output,
     spdlog::debug("output: {}", output);
 }
 
-void system_call(const cmd_t& cmd,
+void system_call(const Command& cmd,
                  const std::string& input,
                  std::string& output,
                  child_err_opt_t child_err_opt)
@@ -211,7 +210,7 @@ void system_call(const cmd_t& cmd,
 
     using namespace std;
 
-    spdlog::debug("cmd: {}", cmd);
+    spdlog::debug("cmd: {}", cmd.str());
     spdlog::debug("input: {}", input);
 
     // Create pipes for sending and receiving
@@ -272,16 +271,15 @@ void system_call(const cmd_t& cmd,
         dup2_check(recv_pipefd[WRITE_END], 1);
         close_check(recv_pipefd[WRITE_END]);
 
-        // Break up command into tokens
-        vector<string> cmd_tokens = parse_command(cmd);
-        vector<const char *> argv = vector_argv(cmd_tokens);
+        // Get argv from command
+        char **argv = cmd.argv();
 
         // Execute command
-        execvp(argv[0], (char * const *) argv.data());
+        execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
         string error_msg("exec of ");
-        error_msg += cmd;
+        error_msg += cmd.str();
         error_msg += " failed";
         runtime_error e(error_msg);
         throw e;
@@ -290,7 +288,7 @@ void system_call(const cmd_t& cmd,
     spdlog::debug("output: {}", output);
 }
 
-void system_call(const cmd_t& cmd,
+void system_call(const Command& cmd,
                  const std::string& input,
                  std::string& output,
                  int& error_code)
@@ -298,7 +296,7 @@ void system_call(const cmd_t& cmd,
 
     using namespace std;
 
-    spdlog::debug("cmd: {}", cmd);
+    spdlog::debug("cmd: {}", cmd.str());
     spdlog::debug("input: {}", input);
 
     // Create pipes for sending and receiving
@@ -359,16 +357,15 @@ void system_call(const cmd_t& cmd,
         dup2_check(recv_pipefd[WRITE_END], 1);
         close_check(recv_pipefd[WRITE_END]);
 
-        // Break up command into tokens
-        vector<string> cmd_tokens = parse_command(cmd);
-        vector<const char *> argv = vector_argv(cmd_tokens);
+        // Get argv from command
+        char **argv = cmd.argv();
 
         // Execute command
-        execvp(argv[0], (char * const *) argv.data());
+        execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
         string error_msg("exec of ");
-        error_msg += cmd;
+        error_msg += cmd.str();
         error_msg += " failed";
         runtime_error e(error_msg);
         throw e;
@@ -377,12 +374,12 @@ void system_call(const cmd_t& cmd,
     spdlog::debug("output: {}", output);
 }
 
-void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd)
+void system_call(const Command& cmd, pid_t& child_pid, int& pipe_read_fd)
 {
 
     using namespace std;
 
-    spdlog::debug("cmd: {}", cmd);
+    spdlog::debug("cmd: {}", cmd.str());
 
     // Create pipe
     int pipefd[2];
@@ -430,29 +427,28 @@ void system_call(const cmd_t& cmd, pid_t& child_pid, int& pipe_read_fd)
         dup2_check(pipefd[WRITE_END], 1);
         close_check(pipefd[WRITE_END]);
 
-        // Break up command into tokens
-        vector<string> cmd_tokens = parse_command(cmd);
-        vector<const char *> argv = vector_argv(cmd_tokens);
+        // Get argv from command
+        char **argv = cmd.argv();
 
         // Execute command
-        execvp(argv[0], (char * const *) argv.data());
+        execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
         string error_msg("exec of ");
-        error_msg += cmd;
+        error_msg += cmd.str();
         error_msg += " failed";
         runtime_error e(error_msg);
         throw e;
     }
 }
 
-void system_call(const cmd_t& cmd, pid_t& child_pid,
+void system_call(const Command& cmd, pid_t& child_pid,
                 int& pipe_write_fd, int& pipe_read_fd)
 {
 
     using namespace std;
 
-    spdlog::debug("cmd: {}", cmd);
+    spdlog::debug("cmd: {}", cmd.str());
 
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
@@ -506,16 +502,15 @@ void system_call(const cmd_t& cmd, pid_t& child_pid,
         dup2_check(recv_pipefd[WRITE_END], 1);
         close_check(recv_pipefd[WRITE_END]);
 
-        // Break up command into tokens
-        vector<string> cmd_tokens = parse_command(cmd);
-        vector<const char *> argv = vector_argv(cmd_tokens);
+        // Get argv from command
+        char **argv = cmd.argv();
 
         // Execute command
-        execvp(argv[0], (char * const *) argv.data());
+        execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
         string error_msg("exec of ");
-        error_msg += cmd;
+        error_msg += cmd.str();
         error_msg += " failed";
         runtime_error e(error_msg);
         throw e;

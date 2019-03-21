@@ -25,13 +25,13 @@ class PriorSampler : public virtual AbstractSampler
 
     public:
 
-        PriorSampler(const cmd_t &prior_sampler);
+        PriorSampler(const Command &prior_sampler);
 
         virtual Parameter sampleParameter() const override;
 
     private:
 
-        const cmd_t m_prior_sampler;
+        const Command m_prior_sampler;
 };
 
 class PopulationSampler : public virtual AbstractSampler
@@ -79,7 +79,7 @@ class PerturbationSampler : public virtual AbstractSampler
 
     public:
 
-        PerturbationSampler(const cmd_t &perturber);
+        PerturbationSampler(const Command &perturber);
 
         void setT(const int t)
         {
@@ -108,7 +108,7 @@ class PerturbationSampler : public virtual AbstractSampler
     private:
 
         // Perturber command
-        const cmd_t m_perturber;
+        const Command m_perturber;
 
         // Base parameter and t
         int m_t = -1;
@@ -125,9 +125,9 @@ class SMCSampler :
         SMCSampler(std::vector<double> weights,
                                       std::vector<Parameter> prmtr_population,
                                       std::shared_ptr<std::default_random_engine> p_generator,
-                                      const cmd_t &perturber,
-                                      const cmd_t &prior_sampler,
-                                      const cmd_t &prior_pdf);
+                                      const Command &perturber,
+                                      const Command &prior_sampler,
+                                      const Command &prior_pdf);
 
         virtual Parameter sampleParameter() const override;
 
@@ -145,7 +145,7 @@ class SMCSampler :
 
         double computePriorPdf(const Parameter& prmtr) const;
 
-        const cmd_t m_prior_pdf;
+        const Command m_prior_pdf;
         mutable double m_prior_pdf_val;
 
         constexpr static double M_INVALID = -1.0;
@@ -156,7 +156,7 @@ class Generator : public virtual AbstractSampler
 
     public:
 
-        Generator(const cmd_t &generator);
+        Generator(const Command &generator);
 
         virtual Parameter sampleParameter() const override;
 

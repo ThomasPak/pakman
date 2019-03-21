@@ -6,7 +6,7 @@
 #include "AbstractWorkerHandler.h"
 
 AbstractWorkerHandler::AbstractWorkerHandler(
-        const cmd_t& command,
+        const Command& command,
         const std::string& input_string) :
     m_command(command),
     m_input_string(input_string)

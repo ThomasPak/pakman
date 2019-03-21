@@ -9,8 +9,10 @@
 #include "core/types.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
-#include "Sampler.h"
 #include "core/Parameter.h"
+#include "core/Command.h"
+
+#include "Sampler.h"
 
 #include "AbstractController.h"
 
@@ -30,7 +32,7 @@ class ABCSMCController : public AbstractController
         virtual void iterate() override;
 
         // Simulator getter
-        virtual cmd_t getSimulator() const override;
+        virtual Command getSimulator() const override;
 
         // Static help function
         static std::string help();
@@ -54,7 +56,7 @@ class ABCSMCController : public AbstractController
         SMCSampler m_smc_sampler;
 
         // Perturbation pdf for weights calculation
-        std::string m_perturbation_pdf;
+        Command m_perturbation_pdf;
 
         // Parameter names
         std::vector<std::string> m_parameter_names;
@@ -69,7 +71,7 @@ class ABCSMCController : public AbstractController
         std::vector<double> m_weights_new;
 
         // Simulator command
-        cmd_t m_simulator;
+        Command m_simulator;
 };
 
 #endif // ABCSMCCONTROLLER_H

@@ -7,7 +7,7 @@
 #include "core/Parameter.h"
 #include "core/types.h"
 
-double smc_weight(const cmd_t& perturbation_pdf,
+double smc_weight(const Command& perturbation_pdf,
                   const double prmtr_prior_pdf,
                   const int t,
                   const std::vector<Parameter>& prmtr_accepted_old,

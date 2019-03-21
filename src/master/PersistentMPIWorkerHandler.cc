@@ -14,7 +14,7 @@
 // null communicators (MPI_COMM_NULL)
 MPI_Comm PersistentMPIWorkerHandler::m_child_comm = MPI_COMM_NULL;
 
-PersistentMPIWorkerHandler::PersistentMPIWorkerHandler(const cmd_t& command,
+PersistentMPIWorkerHandler::PersistentMPIWorkerHandler(const Command& command,
         const std::string& input_string) :
     AbstractWorkerHandler(command, input_string)
 {

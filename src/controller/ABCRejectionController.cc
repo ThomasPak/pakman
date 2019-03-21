@@ -96,7 +96,7 @@ void ABCRejectionController::iterate()
     entered = false;
 }
 
-cmd_t ABCRejectionController::getSimulator() const
+Command ABCRejectionController::getSimulator() const
 {
     return m_simulator;
 }

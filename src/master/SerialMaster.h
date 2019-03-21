@@ -19,7 +19,7 @@ class SerialMaster : public AbstractMaster
         enum state_t { normal, terminated };
 
         // Construct from pointer to program terminated flag
-        SerialMaster(const cmd_t& command, bool *p_program_terminated);
+        SerialMaster(const Command& command, bool *p_program_terminated);
 
         // Destructor
         virtual ~SerialMaster() override = default;
@@ -72,7 +72,7 @@ class SerialMaster : public AbstractMaster
         state_t m_state = normal;
 
         // Simulator command
-        const cmd_t m_command;
+        const Command m_command;
 
         // Finished tasks
         std::queue<TaskHandler> m_finished_tasks;

@@ -15,7 +15,7 @@
 #include "ForkedWorkerHandler.h"
 
 ForkedWorkerHandler::ForkedWorkerHandler(
-        const cmd_t& command,
+        const Command& command,
         const std::string& input_string) :
     AbstractWorkerHandler(command, input_string)
 {

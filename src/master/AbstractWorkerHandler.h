@@ -11,7 +11,7 @@ class AbstractWorkerHandler
     public:
 
         // Construct from command string and input string
-        AbstractWorkerHandler(const cmd_t& command, const std::string& input_string);
+        AbstractWorkerHandler(const Command& command, const std::string& input_string);
 
         // Virtual destructor
         virtual ~AbstractWorkerHandler() = default;
@@ -35,7 +35,7 @@ class AbstractWorkerHandler
     protected:
 
         // Command string
-        const cmd_t m_command;
+        const Command m_command;
 
         // Input string
         const std::string m_input_string;

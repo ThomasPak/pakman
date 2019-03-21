@@ -141,7 +141,7 @@ void ABCSMCController::iterate()
     entered = false;
 }
 
-cmd_t ABCSMCController::getSimulator() const
+Command ABCSMCController::getSimulator() const
 {
     return m_simulator;
 }

@@ -10,7 +10,7 @@
 #include "SerialMaster.h"
 
 // Construct from pointer to program terminated flag
-SerialMaster::SerialMaster(const cmd_t& command, bool *p_program_terminated) :
+SerialMaster::SerialMaster(const Command& command, bool *p_program_terminated) :
     AbstractMaster(p_program_terminated), m_command(command)
 {
 }

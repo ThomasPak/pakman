@@ -27,7 +27,7 @@ class ABCRejectionController : public AbstractController
         virtual void iterate() override;
 
         // Simulator getter
-        virtual cmd_t getSimulator() const override;
+        virtual Command getSimulator() const override;
 
         // Static help function
         static std::string help();
@@ -57,7 +57,7 @@ class ABCRejectionController : public AbstractController
         std::vector<Parameter> m_prmtr_accepted;
 
         // Simulator command
-        cmd_t m_simulator;
+        Command m_simulator;
 };
 
 #endif // ABCREJECTIONCONTROLLER_H

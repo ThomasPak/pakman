@@ -18,7 +18,7 @@ class MPIWorkerHandler : public AbstractWorkerHandler
         // MPIWorkerHandler via the intercommunicator created by
         // MPI_Comm_spawn. The input string is immediately sent to the spawned
         // MPI process.
-        MPIWorkerHandler(const cmd_t& command, const std::string& input_string);
+        MPIWorkerHandler(const Command& command, const std::string& input_string);
 
         // Destructor waits for the spawned MPI process to terminate and
         // disconnects the intercommunicator with the spawned MPI process.

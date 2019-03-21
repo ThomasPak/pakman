@@ -18,7 +18,7 @@
 
 // Construct from command, pointer to program terminated flag, and
 // Worker type (forked vs MPI)
-Manager::Manager(const cmd_t &command, worker_t worker_type,
+Manager::Manager(const Command &command, worker_t worker_type,
         bool *p_program_terminated) :
     m_command(command),
     m_worker_type(worker_type),

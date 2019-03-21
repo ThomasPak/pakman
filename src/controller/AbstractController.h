@@ -31,7 +31,7 @@ class AbstractController
         virtual void iterate() = 0;
 
         // Pure virtual simulator getter
-        virtual cmd_t getSimulator() const = 0;
+        virtual Command getSimulator() const = 0;
 
         // Return controller type based on string
         static controller_t getController(const std::string& arg);

@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-typedef std::string cmd_t;
+#include "Command.h"
 
 /***** Rejection method *****/
 namespace rejection
@@ -13,9 +13,9 @@ namespace rejection
 typedef struct
 {
     std::string epsilon;
-    cmd_t simulator;
+    Command simulator;
     std::vector<std::string> parameter_names;
-    cmd_t prior_sampler;
+    Command prior_sampler;
 } input_t;
 
 }
@@ -27,12 +27,12 @@ namespace mcmc
 typedef struct
 {
     std::string epsilon;
-    cmd_t simulator;
+    Command simulator;
     std::vector<std::string> parameter_names;
-    cmd_t initializer;
-    cmd_t proposer;
-    cmd_t prior_pdf;
-    cmd_t proposal_pdf;
+    Command initializer;
+    Command proposer;
+    Command prior_pdf;
+    Command proposal_pdf;
 } input_t;
 
 }
@@ -44,12 +44,12 @@ namespace smc
 typedef struct
 {
     std::vector<std::string> epsilons;
-    cmd_t simulator;
+    Command simulator;
     std::vector<std::string> parameter_names;
-    cmd_t prior_sampler;
-    cmd_t perturber;
-    cmd_t prior_pdf;
-    cmd_t perturbation_pdf;
+    Command prior_sampler;
+    Command perturber;
+    Command prior_pdf;
+    Command perturbation_pdf;
 } input_t;
 
 }
@@ -60,9 +60,9 @@ namespace sweep
 
 typedef struct
 {
-    cmd_t simulator;
+    Command simulator;
     std::vector<std::string> parameter_names;
-    cmd_t generator;
+    Command generator;
 } input_t;
 
 }

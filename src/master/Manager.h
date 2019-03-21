@@ -20,7 +20,7 @@ class Manager
 
         // Construct from command, pointer to program terminated flag, and
         // Worker type (forked vs MPI)
-        Manager(const cmd_t &command, worker_t worker_type,
+        Manager(const Command &command, worker_t worker_type,
                 bool *p_program_terminated);
 
         // Destructor
@@ -79,7 +79,7 @@ class Manager
         state_t m_state = idle;
 
         // Command for Worker
-        const std::string m_command;
+        const Command m_command;
 
         // Worker type (forked Worker vs MPI Worker)
         const worker_t m_worker_type;
