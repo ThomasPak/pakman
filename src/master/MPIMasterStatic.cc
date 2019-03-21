@@ -74,22 +74,17 @@ MPI master options:
 )";
 }
 
-worker_t get_worker(bool mpi_simulator, bool persistent_simulator)
+Manager::worker_t get_worker(bool mpi_simulator, bool persistent_simulator)
 {
     if (mpi_simulator)
     {
         if (persistent_simulator)
-            return persistent_mpi_worker;
+            return Manager::persistent_mpi_worker;
         else
-            return mpi_worker;
+            return Manager::mpi_worker;
     }
     else
-    {
-        if (persistent_simulator)
-            return persistent_forked_worker;
-        else
-            return forked_worker;
-    }
+        return Manager::forked_worker;
 }
 
 // Static addLongOptions function
@@ -156,7 +151,8 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
     set_signal_handler();
 
     // Determine Worker type
-    worker_t worker_type = get_worker(mpi_simulator, persistent_simulator);
+    Manager::worker_t worker_type =
+        get_worker(mpi_simulator, persistent_simulator);
 
     // Create controller
     std::shared_ptr<AbstractController>

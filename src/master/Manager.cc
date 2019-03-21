@@ -247,15 +247,6 @@ void Manager::createWorker(const std::string& input_string)
                         new ForkedWorkerHandler(m_command, input_string));
             break;
 
-        // Fork persistent Worker
-        case persistent_forked_worker:
-            {
-            std::runtime_error e("persistent forked Worker type not yet "
-                    "implemented\n");
-            throw e;
-            }
-            break;
-
         // Spawn MPI Worker
         case mpi_worker:
             m_p_worker_handler =
@@ -271,10 +262,7 @@ void Manager::createWorker(const std::string& input_string)
             break;
 
         default:
-            {
-            std::runtime_error e("Worker type not recognised");
-            throw e;
-            }
+            throw std::runtime_error("Worker type not recognised");
     }
 }
 

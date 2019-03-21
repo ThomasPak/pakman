@@ -7,12 +7,19 @@
 
 #include <mpi.h>
 
-#include "core/common.h"
 #include "AbstractWorkerHandler.h"
 
 class Manager
 {
     public:
+
+        // Enumerate type for Worker types
+        enum worker_t
+        {
+            forked_worker,
+            mpi_worker,
+            persistent_mpi_worker
+        };
 
         // Enumerate type for Manager states
         enum state_t { idle, busy, terminated };

@@ -1,14 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-typedef enum
-{
-    forked_worker,
-    persistent_forked_worker,
-    mpi_worker,
-    persistent_mpi_worker
-} worker_t;
-
+// Global variables
 extern bool ignore_errors;
 extern bool discard_child_stderr;
 
