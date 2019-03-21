@@ -30,8 +30,6 @@ int mpi_simulator(int argc, char *argv[],
         // If output string does not terminate on newline, add one
         if (output_string.back() != '\n')
             output_string += '\n';
-
-        std::cerr << "output_string: " << output_string << std::endl;
     }
 
     // Process given error code
