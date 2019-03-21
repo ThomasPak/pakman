@@ -77,20 +77,22 @@ Command& Command::operator=(const Command& command)
 // Move-assignment constructor
 Command& Command::operator=(Command&& command)
 {
-    // Move assign raw command
-    m_raw_command = std::move(command.m_raw_command);
+    if (this != &command)
+    {
+        // Move assign raw command
+        m_raw_command = std::move(command.m_raw_command);
 
-    // Free argv if argv is not nullptr
-    if (m_argv != nullptr)
-        freeArgv();
+        // Free argv if argv is not nullptr
+        if (m_argv != nullptr)
+            freeArgv();
 
-    // Move assign command tokens
-    m_cmd_tokens = std::move(command.m_cmd_tokens);
+        // Move assign command tokens
+        m_cmd_tokens = std::move(command.m_cmd_tokens);
 
-    // Move argv
-    m_argv = command.m_argv;
-    command.m_argv = nullptr;
-
+        // Move argv
+        m_argv = command.m_argv;
+        command.m_argv = nullptr;
+    }
     return *this;
 }
 
