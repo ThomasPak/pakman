@@ -35,14 +35,4 @@ const int WORKER_FLUSHED_SIGNAL = 0;
 // Terminate worker
 const int TERMINATE_WORKER_SIGNAL = 0;
 
-/*** Sampled parameter status ***/
-typedef enum
-{
-    rejected,
-    accepted,
-    error,
-    cancelled,
-    busy
-} status_t;
-
 #endif // MPI_COMMON_H
