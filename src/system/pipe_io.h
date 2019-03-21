@@ -2,7 +2,6 @@
 #define PIPE_IO_H
 
 #include <string>
-#include <atomic>
 
 void read_from_pipe(const int pipe_read_fd, std::string& output);
 void read_from_pipe(const int pipefd[], std::string& output);

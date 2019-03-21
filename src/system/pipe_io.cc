@@ -1,6 +1,5 @@
 #include <string>
 #include <stdexcept>
-#include <atomic>
 #include <unistd.h>
 #include <poll.h>
 #include <errno.h>

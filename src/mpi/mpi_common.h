@@ -2,7 +2,6 @@
 #define MPI_COMMON_H
 
 #include <chrono>
-#include <atomic>
 
 extern std::chrono::milliseconds MAIN_TIMEOUT;
 extern std::chrono::milliseconds KILL_TIMEOUT;
