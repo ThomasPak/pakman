@@ -22,9 +22,6 @@ const int WRITE_END = 1;
 bool waitpid_success(pid_t pid, int options, const Command& cmd,
                      child_err_opt_t child_err_opt)
 {
-
-    using namespace std;
-
     // Wait on child
     int status;
     pid_t retval = waitpid(pid, &status, options);
@@ -35,10 +32,10 @@ bool waitpid_success(pid_t pid, int options, const Command& cmd,
 
     if (retval == -1)
     {
-        string error_msg("waitpid of ");
+        std::string error_msg("waitpid of ");
         error_msg += cmd.str();
         error_msg += " failed";
-        runtime_error e(error_msg);
+        std::runtime_error e(error_msg);
         throw e;
     }
 
@@ -46,16 +43,16 @@ bool waitpid_success(pid_t pid, int options, const Command& cmd,
     if (child_err_opt == throw_error)
     {
         if (!WIFEXITED(status)) { // Program did not exit normally
-            string error_msg(cmd.str());
+            std::string error_msg(cmd.str());
             error_msg += " did not exit normally";
-            runtime_error e(error_msg);
+            std::runtime_error e(error_msg);
             throw e;
         }
 
         if (WEXITSTATUS(status) != 0) { // Check for nonzero exit status
-            string error_msg(cmd.str());
+            std::string error_msg(cmd.str());
             error_msg += " threw an error";
-            runtime_error e(error_msg);
+            std::runtime_error e(error_msg);
             throw e;
         }
     }
@@ -66,9 +63,6 @@ bool waitpid_success(pid_t pid, int options, const Command& cmd,
 
 bool waitpid_success(pid_t pid, int& error_code, int options, const Command& cmd)
 {
-
-    using namespace std;
-
     // Wait on child
     int status;
     pid_t retval = waitpid(pid, &status, options);
@@ -79,18 +73,18 @@ bool waitpid_success(pid_t pid, int& error_code, int options, const Command& cmd
 
     if (retval == -1)
     {
-        string error_msg("waitpid of ");
+        std::string error_msg("waitpid of ");
         error_msg += cmd.str();
         error_msg += " failed";
-        runtime_error e(error_msg);
+        std::runtime_error e(error_msg);
         throw e;
     }
 
     // Check exit status of child
     if (!WIFEXITED(status)) { // Program did not exit normally
-        string error_msg(cmd.str());
+        std::string error_msg(cmd.str());
         error_msg += " did not exit normally";
-        runtime_error e(error_msg);
+        std::runtime_error e(error_msg);
         throw e;
     }
 
@@ -128,9 +122,6 @@ void close_check(int fd)
 void system_call(const Command& cmd, std::string& output,
                  child_err_opt_t child_err_opt)
 {
-
-    using namespace std;
-
     spdlog::debug("cmd: {}", cmd.str());
 
     // Create pipe
@@ -138,7 +129,7 @@ void system_call(const Command& cmd, std::string& output,
 
     if (pipe(pipefd) == -1)
     {
-        runtime_error e("pipe failed");
+        std::runtime_error e("pipe failed");
         throw e;
     }
 
@@ -147,7 +138,7 @@ void system_call(const Command& cmd, std::string& output,
 
     if (child_pid == -1)
     {
-        runtime_error e("fork failed");
+        std::runtime_error e("fork failed");
         throw e;
     }
 
@@ -192,10 +183,10 @@ void system_call(const Command& cmd, std::string& output,
         execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
-        string error_msg("exec of ");
+        std::string error_msg("exec of ");
         error_msg += cmd.str();
         error_msg += " failed";
-        runtime_error e(error_msg);
+        std::runtime_error e(error_msg);
         throw e;
     }
 
@@ -207,9 +198,6 @@ void system_call(const Command& cmd,
                  std::string& output,
                  child_err_opt_t child_err_opt)
 {
-
-    using namespace std;
-
     spdlog::debug("cmd: {}", cmd.str());
     spdlog::debug("input: {}", input);
 
@@ -218,7 +206,7 @@ void system_call(const Command& cmd,
 
     if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) )
     {
-        runtime_error e("pipe failed");
+        std::runtime_error e("pipe failed");
         throw e;
     }
 
@@ -227,7 +215,7 @@ void system_call(const Command& cmd,
 
     if (child_pid == -1)
     {
-        runtime_error e("fork failed");
+        std::runtime_error e("fork failed");
         throw e;
     }
 
@@ -278,10 +266,10 @@ void system_call(const Command& cmd,
         execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
-        string error_msg("exec of ");
+        std::string error_msg("exec of ");
         error_msg += cmd.str();
         error_msg += " failed";
-        runtime_error e(error_msg);
+        std::runtime_error e(error_msg);
         throw e;
     }
 
@@ -293,9 +281,6 @@ void system_call(const Command& cmd,
                  std::string& output,
                  int& error_code)
 {
-
-    using namespace std;
-
     spdlog::debug("cmd: {}", cmd.str());
     spdlog::debug("input: {}", input);
 
@@ -304,7 +289,7 @@ void system_call(const Command& cmd,
 
     if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) )
     {
-        runtime_error e("pipe failed");
+        std::runtime_error e("pipe failed");
         throw e;
     }
 
@@ -313,7 +298,7 @@ void system_call(const Command& cmd,
 
     if (child_pid == -1)
     {
-        runtime_error e("fork failed");
+        std::runtime_error e("fork failed");
         throw e;
     }
 
@@ -364,10 +349,10 @@ void system_call(const Command& cmd,
         execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
-        string error_msg("exec of ");
+        std::string error_msg("exec of ");
         error_msg += cmd.str();
         error_msg += " failed";
-        runtime_error e(error_msg);
+        std::runtime_error e(error_msg);
         throw e;
     }
 
@@ -376,9 +361,6 @@ void system_call(const Command& cmd,
 
 void system_call(const Command& cmd, pid_t& child_pid, int& pipe_read_fd)
 {
-
-    using namespace std;
-
     spdlog::debug("cmd: {}", cmd.str());
 
     // Create pipe
@@ -386,7 +368,7 @@ void system_call(const Command& cmd, pid_t& child_pid, int& pipe_read_fd)
 
     if (pipe(pipefd) == -1)
     {
-        runtime_error e("pipe failed");
+        std::runtime_error e("pipe failed");
         throw e;
     }
 
@@ -395,7 +377,7 @@ void system_call(const Command& cmd, pid_t& child_pid, int& pipe_read_fd)
 
     if (child_pid == -1)
     {
-        runtime_error e("fork failed");
+        std::runtime_error e("fork failed");
         throw e;
     }
 
@@ -434,10 +416,10 @@ void system_call(const Command& cmd, pid_t& child_pid, int& pipe_read_fd)
         execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
-        string error_msg("exec of ");
+        std::string error_msg("exec of ");
         error_msg += cmd.str();
         error_msg += " failed";
-        runtime_error e(error_msg);
+        std::runtime_error e(error_msg);
         throw e;
     }
 }
@@ -445,9 +427,6 @@ void system_call(const Command& cmd, pid_t& child_pid, int& pipe_read_fd)
 void system_call(const Command& cmd, pid_t& child_pid,
                 int& pipe_write_fd, int& pipe_read_fd)
 {
-
-    using namespace std;
-
     spdlog::debug("cmd: {}", cmd.str());
 
     // Create pipes for sending and receiving
@@ -455,7 +434,7 @@ void system_call(const Command& cmd, pid_t& child_pid,
 
     if ( (pipe(send_pipefd) == -1) || (pipe(recv_pipefd) == -1) )
     {
-        runtime_error e("pipe failed");
+        std::runtime_error e("pipe failed");
         throw e;
     }
 
@@ -464,7 +443,7 @@ void system_call(const Command& cmd, pid_t& child_pid,
 
     if (child_pid == -1)
     {
-        runtime_error e("fork failed");
+        std::runtime_error e("fork failed");
         throw e;
     }
 
@@ -509,10 +488,10 @@ void system_call(const Command& cmd, pid_t& child_pid,
         execvp(argv[0], argv);
 
         // If program reaches this, command execution has failed
-        string error_msg("exec of ");
+        std::string error_msg("exec of ");
         error_msg += cmd.str();
         error_msg += " failed";
-        runtime_error e(error_msg);
+        std::runtime_error e(error_msg);
         throw e;
     }
 }

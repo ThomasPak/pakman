@@ -12,19 +12,16 @@ void write_parameters(std::ostream& ostrm,
                       const std::vector<std::string>& parameter_names,
                       const std::vector<Parameter>& parameters)
 {
-
-    using namespace std;
-
     // Print header
     {
-        stringstream sstrm;
+        std::stringstream sstrm;
 
         for (auto prmtr_name = parameter_names.cbegin();
              prmtr_name != parameter_names.cend(); prmtr_name++)
             sstrm << *prmtr_name << ",";
 
         sstrm.seekp(sstrm.tellp() - (std::streamoff) 1);
-        sstrm << endl;
+        sstrm << std::endl;
 
         ostrm << sstrm.str();
     }
@@ -33,9 +30,9 @@ void write_parameters(std::ostream& ostrm,
     for (auto set = parameters.cbegin(); set != parameters.cend(); set++)
     {
 
-        stringstream sstrm;
+        std::stringstream sstrm;
 
-        vector<string> prmtr_elements;
+        std::vector<std::string> prmtr_elements;
         vector_strtok(set->str(), prmtr_elements, " \n\t");
 
         for (auto element = prmtr_elements.cbegin();
@@ -45,7 +42,7 @@ void write_parameters(std::ostream& ostrm,
         }
 
         sstrm.seekp(sstrm.tellp() - (std::streamoff) 1);
-        sstrm << endl;
+        sstrm << std::endl;
 
         ostrm << sstrm.str();
     }

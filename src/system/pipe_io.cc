@@ -19,9 +19,6 @@ void read_from_pipe(const int pipefd[], std::string& output)
 
 void read_from_pipe(const int pipe_read_fd, std::string& output)
 {
-
-    using namespace std;
-
     ssize_t count;
     char buffer[BUFFER_SIZE];
 
@@ -58,9 +55,6 @@ void check_poll(struct pollfd *fds, nfds_t nfds, int timeout)
  */
 bool poll_read_from_pipe(const int pipe_read_fd, std::string& output)
 {
-
-    using namespace std;
-
     // Polling struct
     struct pollfd fds;
     fds.fd = pipe_read_fd;
@@ -105,18 +99,15 @@ void write_to_pipe(const int pipefd[], const std::string& input)
 
 void write_to_pipe(const int pipe_write_fd, const std::string& input)
 {
-
-    using namespace std;
-
     ssize_t write_status = write(pipe_write_fd, input.data(), input.size());
 
     if (write_status == -1)
     {
-        runtime_error e("write to pipe failed");
+        std::runtime_error e("write to pipe failed");
         throw e;
     } else if ( write_status < input.size() )
     {
-        runtime_error e("failed to finish write to pipe");
+        std::runtime_error e("failed to finish write to pipe");
         throw e;
     }
 }

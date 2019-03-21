@@ -17,9 +17,6 @@ double smc_weight(const Command& perturbation_pdf,
                   const std::vector<double>& weights_old,
                   const Parameter& prmtr_perturbed)
 {
-
-    using namespace std;
-
     // Sanity check: prmtr_accepted_old and weights_old should have the same
     // size
     assert(prmtr_accepted_old.size() == weights_old.size());

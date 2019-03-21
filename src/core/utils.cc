@@ -162,10 +162,7 @@ endloop:
 void vector_delimited(const std::vector<std::string>& str_vector,
                  std::string& delimited_string, const std::string& delimiter)
 {
-
-    using namespace std;
-
-    stringstream sstrm;
+    std::stringstream sstrm;
 
     for (auto it = str_vector.begin();
          it != str_vector.end(); it++)
@@ -179,20 +176,17 @@ std::string vector_printf(const std::string& format,
                           const std::vector<std::string>& args,
                           const std::string& token)
 {
-
-    using namespace std;
-
     size_t pos = 0, new_pos = 0;
-    stringstream sstrm;
+    std::stringstream sstrm;
 
     for (auto it = args.cbegin(); it != args.cend(); it++)
     {
 
         new_pos = format.find(token, pos);
 
-        if (new_pos == string::npos)
+        if (new_pos == std::string::npos)
         {
-            runtime_error e("too many arguments provided");
+            std::runtime_error e("too many arguments provided");
             throw e;
         }
 
@@ -202,11 +196,11 @@ std::string vector_printf(const std::string& format,
         pos = new_pos + token.size();
     }
 
-    string tail = format.substr(pos, string::npos);
+    std::string tail = format.substr(pos, std::string::npos);
 
-    if (tail.find(token) != string::npos)
+    if (tail.find(token) != std::string::npos)
     {
-        runtime_error e("not enough arguments provided");
+        std::runtime_error e("not enough arguments provided");
         throw e;
     }
 
@@ -218,9 +212,6 @@ void vector_strtok(const std::string& str,
                    std::vector<std::string>& str_vector,
                    const std::string& delimiters)
 {
-
-    using namespace std;
-
     char *c_str = strdup(str.c_str()), *pch;
 
     pch = strtok(c_str, delimiters.c_str());

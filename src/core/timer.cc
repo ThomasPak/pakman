@@ -2,23 +2,22 @@
 
 #include "timer.h"
 
-using namespace std::chrono;
-
-static steady_clock::time_point t1;
-static steady_clock::time_point t2;
+static std::chrono::steady_clock::time_point t1;
+static std::chrono::steady_clock::time_point t2;
 
 void start_timer()
 {
-    t1 = steady_clock::now();
+    t1 = std::chrono::steady_clock::now();
 }
 
 void stop_timer()
 {
-    t2 = steady_clock::now();
+    t2 = std::chrono::steady_clock::now();
 }
 
 double elapsed_time()
 {
-    auto elapsed_time = duration_cast<duration<double>>(t2 - t1);
+    auto elapsed_time =
+        std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
     return elapsed_time.count();
 }
