@@ -1,7 +1,6 @@
 #include <string>
 #include <thread>
 
-#include "core/types.h"
 #include "mpi/mpi_utils.h"
 #include "mpi/mpi_common.h"
 #include "mpi/spawn.h"

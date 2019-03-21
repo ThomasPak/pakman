@@ -3,7 +3,6 @@
 #include <string>
 
 #include "core/common.h"
-#include "core/types.h"
 #include "system/system_call.h"
 
 #include "AbstractMaster.h"

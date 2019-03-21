@@ -71,9 +71,8 @@ SweepController* SweepController::makeController(const Arguments& args)
         throw e;
     }
 
-    // Parse stdin and store in input_obj
-    sweep::input_t input_obj;
-    sweep::read_input(input_file, input_obj);
+    // Parse file and store in input_obj
+    SweepController::Input input_obj(input_file);
 
     // Make SweepController
     return new SweepController(input_obj);

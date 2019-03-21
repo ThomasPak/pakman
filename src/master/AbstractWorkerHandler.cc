@@ -1,8 +1,6 @@
 #include <string>
 #include <cassert>
 
-#include "core/types.h"
-
 #include "AbstractWorkerHandler.h"
 
 AbstractWorkerHandler::AbstractWorkerHandler(

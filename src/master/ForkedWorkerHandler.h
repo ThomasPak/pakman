@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include "core/types.h"
-
 #include "AbstractWorkerHandler.h"
 
 class ForkedWorkerHandler : public AbstractWorkerHandler

@@ -5,7 +5,6 @@
 
 #include <mpi.h>
 
-#include "core/types.h"
 #include "AbstractWorkerHandler.h"
 
 class MPIWorkerHandler : public AbstractWorkerHandler

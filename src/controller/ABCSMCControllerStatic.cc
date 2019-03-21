@@ -121,9 +121,8 @@ ABCSMCController* ABCSMCController::makeController(const Arguments& args)
         throw e;
     }
 
-    // Parse stdin and store in input_obj
-    smc::input_t input_obj;
-    smc::read_input(input_file, input_obj);
+    // Parse file and store in input_obj
+    ABCSMCController::Input input_obj(input_file);
 
     // Create random number generator
     // TODO accept other seeds

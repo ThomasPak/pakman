@@ -2,7 +2,8 @@
 #define SPAWN_H
 
 #include <mpi.h>
-#include "core/types.h"
+
+#include "core/Command.h"
 
 MPI_Comm spawn(const Command& cmd, MPI_Info info = MPI_INFO_NULL);
 MPI_Comm spawn_worker(const Command& cmd);

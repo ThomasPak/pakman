@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 
-#include "core/types.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 #include "core/Parameter.h"
@@ -15,8 +14,11 @@ class SweepController : public AbstractController
 {
     public:
 
+        // Forward declaration of Input
+        struct Input;
+
         // Constructor
-        SweepController(const sweep::input_t &input_obj);
+        SweepController(const Input &input_obj);
 
         // Default destructor
         virtual ~SweepController() override = default;
@@ -35,6 +37,21 @@ class SweepController : public AbstractController
 
         // Static function to make from positional arguments
         static SweepController* makeController(const Arguments& args);
+
+        // Input struct to contain input to SweepController
+        struct Input
+        {
+            // Construct from input stream
+            Input(std::istream& istrm);
+
+            // Number of lines
+            static const int num_lines = 3;
+
+            // Data
+            Command simulator;
+            std::vector<std::string> parameter_names;
+            Command generator;
+        };
 
     private:
 

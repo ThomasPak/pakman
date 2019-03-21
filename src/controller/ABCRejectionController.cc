@@ -5,10 +5,10 @@
 #include <cassert>
 
 #include "core/common.h"
-#include "core/types.h"
 #include "core/Parameter.h"
 #include "interface/protocols.h"
 #include "interface/write_parameters.h"
+#include "interface/read_input.h"
 #include "master/AbstractMaster.h"
 
 #include "Sampler.h"
@@ -17,7 +17,7 @@
 
 // Constructor
 ABCRejectionController::ABCRejectionController(
-        const rejection::input_t& input_obj, int num_accept) :
+        const Input& input_obj, int num_accept) :
     m_epsilon(input_obj.epsilon),
     m_prior_sampler(input_obj.prior_sampler),
     m_parameter_names(input_obj.parameter_names),
@@ -99,4 +99,24 @@ void ABCRejectionController::iterate()
 Command ABCRejectionController::getSimulator() const
 {
     return m_simulator;
+}
+
+// Construct from input stream
+ABCRejectionController::Input::Input(std::istream& istrm)
+{
+    // Read lines
+    std::vector<std::string> lines;
+    read_lines(istrm, num_lines, lines);
+
+    // Get epsilon
+    epsilon = lines[0];
+
+    // Get simulator
+    simulator = lines[1];
+
+    // Parse parameter names
+    parse_csv_list(lines[2], parameter_names);
+
+    // Get prior sampler
+    prior_sampler = lines[3];
 }

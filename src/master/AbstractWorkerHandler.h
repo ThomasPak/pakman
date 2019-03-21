@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "core/types.h"
+#include "core/Command.h"
 
 class AbstractWorkerHandler
 {

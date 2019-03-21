@@ -4,15 +4,15 @@
 #include <stdexcept>
 #include <cassert>
 
-#include "core/types.h"
 #include "core/utils.h"
 #include "system/system_call.h"
 #include "interface/write_parameters.h"
 #include "interface/protocols.h"
+#include "interface/read_input.h"
 
 #include "SweepController.h"
 
-SweepController::SweepController(const sweep::input_t &input_obj) :
+SweepController::SweepController(const Input &input_obj) :
     m_parameter_names(input_obj.parameter_names),
     m_simulator(input_obj.simulator)
 {
@@ -96,4 +96,21 @@ void SweepController::iterate()
 Command SweepController::getSimulator() const
 {
     return m_simulator;
+}
+
+// Construct from input stream
+SweepController::Input::Input(std::istream& istrm)
+{
+    // Read lines
+    std::vector<std::string> lines;
+    read_lines(istrm, num_lines, lines);
+
+    // Get simulator
+    simulator = lines[0];
+
+    // Parse parameter names
+    parse_csv_list(lines[1], parameter_names);
+
+    // Get generator
+    generator = lines[2];
 }

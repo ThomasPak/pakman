@@ -5,7 +5,7 @@
 #include <string>
 
 #include "core/Parameter.h"
-#include "core/types.h"
+#include "core/Command.h"
 
 double smc_weight(const Command& perturbation_pdf,
                   const double prmtr_prior_pdf,

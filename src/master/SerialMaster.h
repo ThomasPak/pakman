@@ -5,7 +5,6 @@
 #include <queue>
 
 #include "core/common.h"
-#include "core/types.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 

@@ -91,9 +91,8 @@ ABCRejectionController* ABCRejectionController::makeController(
         throw e;
     }
 
-    // Parse stdin and store in input_obj
-    rejection::input_t input_obj;
-    rejection::read_input(input_file, input_obj);
+    // Parse file and store in input_obj
+    ABCRejectionController::Input input_obj(input_file);
 
     return new ABCRejectionController(input_obj, num_accept);
 }

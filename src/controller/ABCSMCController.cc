@@ -7,17 +7,17 @@
 #include <cassert>
 
 #include "core/common.h"
-#include "core/types.h"
 #include "core/Parameter.h"
 #include "interface/protocols.h"
 #include "interface/write_parameters.h"
+#include "interface/read_input.h"
 
 #include "smc_weight.h"
 
 #include "ABCSMCController.h"
 
 // Constructor
-ABCSMCController::ABCSMCController(const smc::input_t &input_obj,
+ABCSMCController::ABCSMCController(const Input &input_obj,
         std::shared_ptr<std::default_random_engine> p_generator,
         int pop_size) :
     m_epsilons(input_obj.epsilons),
@@ -144,4 +144,27 @@ void ABCSMCController::iterate()
 Command ABCSMCController::getSimulator() const
 {
     return m_simulator;
+}
+
+// Construct from input stream
+ABCSMCController::Input::Input(std::istream& istrm)
+{
+    // Read lines
+    std::vector<std::string> lines;
+    read_lines(istrm, num_lines, lines);
+
+    // Parse epsilons
+    parse_csv_list(lines[0], epsilons);
+
+    // Get simulator
+    simulator = lines[1];
+
+    // Parse parameter names
+    parse_csv_list(lines[2], parameter_names);
+
+    // Get rest
+    prior_sampler = lines[3];
+    perturber = lines[4];
+    prior_pdf = lines[5];
+    perturbation_pdf = lines[6];
 }

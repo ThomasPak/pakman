@@ -8,8 +8,8 @@
 #include <random>
 #include <stdexcept>
 
+#include "core/Command.h"
 #include "core/Parameter.h"
-#include "core/types.h"
 
 class AbstractSampler
 {

@@ -6,7 +6,6 @@
 #include <ostream>
 
 #include "core/Parameter.h"
-#include "core/types.h"
 
 void write_parameters(std::ostream& ostrm,
                       const std::vector<std::string>& parameter_names,

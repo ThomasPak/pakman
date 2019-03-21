@@ -6,7 +6,6 @@
 #include <string>
 #include <memory>
 
-#include "core/types.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 #include "core/Parameter.h"
@@ -20,8 +19,11 @@ class ABCSMCController : public AbstractController
 {
     public:
 
+        // Forward declaration of Input
+        struct Input;
+
         // Constructor
-        ABCSMCController(const smc::input_t &input_obj,
+        ABCSMCController(const Input &input_obj,
                 std::shared_ptr<std::default_random_engine> p_generator,
                 int pop_size);
 
@@ -42,6 +44,25 @@ class ABCSMCController : public AbstractController
 
         // Static function to make from positional arguments
         static ABCSMCController* makeController(const Arguments& args);
+
+        // Input struct to contain input to ABCSMCController
+        struct Input
+        {
+            // Construct from input stream
+            Input(std::istream& istrm);
+
+            // Number of lines
+            static const int num_lines = 7;
+
+            // Data
+            std::vector<std::string> epsilons;
+            Command simulator;
+            std::vector<std::string> parameter_names;
+            Command prior_sampler;
+            Command perturber;
+            Command prior_pdf;
+            Command perturbation_pdf;
+        };
 
     private:
 

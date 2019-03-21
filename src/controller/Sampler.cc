@@ -6,7 +6,6 @@
 #include <utility>
 #include <stdexcept>
 
-#include "core/types.h"
 #include "core/utils.h"
 #include "core/Parameter.h"
 #include "system/system_call.h"

@@ -1,14 +1,15 @@
 #ifndef ABCREJECTIONCONTROLLER_H
 #define ABCREJECTIONCONTROLLER_H
 
-#include <vector>
 #include <string>
+#include <vector>
+#include <istream>
 
-#include "core/types.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
-#include "Sampler.h"
 #include "core/Parameter.h"
+
+#include "Sampler.h"
 
 #include "AbstractController.h"
 
@@ -16,8 +17,11 @@ class ABCRejectionController : public AbstractController
 {
     public:
 
+        // Forward declaration of Input
+        struct Input;
+
         // Constructor
-        ABCRejectionController(const rejection::input_t& input_obj,
+        ABCRejectionController(const Input& input_obj,
                 int num_accept);
 
         // Default destructor
@@ -37,6 +41,22 @@ class ABCRejectionController : public AbstractController
 
         // Static function to make from positional arguments
         static ABCRejectionController* makeController(const Arguments& args);
+
+        // Input struct to contain input to ABCRejectionController
+        struct Input
+        {
+            // Construct from input stream
+            Input(std::istream& istrm);
+
+            // Number of lines
+            static const int num_lines = 4;
+
+            // Data
+            std::string epsilon;
+            Command simulator;
+            std::vector<std::string> parameter_names;
+            Command prior_sampler;
+        };
 
     private:
 
