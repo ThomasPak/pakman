@@ -150,17 +150,16 @@ Command ABCSMCController::getSimulator() const
 ABCSMCController::Input::Input(std::istream& istrm)
 {
     // Read lines
-    std::vector<std::string> lines;
-    read_lines(istrm, num_lines, lines);
+    std::vector<std::string> lines = read_lines(istrm, num_lines);
 
     // Parse epsilons
-    parse_csv_list(lines[0], epsilons);
+    epsilons = parse_csv_list(lines[0]);
 
     // Get simulator
     simulator = lines[1];
 
     // Parse parameter names
-    parse_csv_list(lines[2], parameter_names);
+    parameter_names = parse_csv_list(lines[2]);
 
     // Get rest
     prior_sampler = lines[3];

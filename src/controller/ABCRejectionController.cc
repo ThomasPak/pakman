@@ -105,8 +105,7 @@ Command ABCRejectionController::getSimulator() const
 ABCRejectionController::Input::Input(std::istream& istrm)
 {
     // Read lines
-    std::vector<std::string> lines;
-    read_lines(istrm, num_lines, lines);
+    std::vector<std::string> lines = read_lines(istrm, num_lines);
 
     // Get epsilon
     epsilon = lines[0];
@@ -115,7 +114,7 @@ ABCRejectionController::Input::Input(std::istream& istrm)
     simulator = lines[1];
 
     // Parse parameter names
-    parse_csv_list(lines[2], parameter_names);
+    parameter_names = parse_csv_list(lines[2]);
 
     // Get prior sampler
     prior_sampler = lines[3];

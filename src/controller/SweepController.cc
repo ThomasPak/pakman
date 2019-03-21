@@ -5,6 +5,7 @@
 #include <cassert>
 
 #include "core/utils.h"
+#include "core/Arguments.h"
 #include "system/system_call.h"
 #include "interface/write_parameters.h"
 #include "interface/protocols.h"
@@ -102,14 +103,13 @@ Command SweepController::getSimulator() const
 SweepController::Input::Input(std::istream& istrm)
 {
     // Read lines
-    std::vector<std::string> lines;
-    read_lines(istrm, num_lines, lines);
+    std::vector<std::string> lines = read_lines(istrm, num_lines);
 
     // Get simulator
     simulator = lines[0];
 
     // Parse parameter names
-    parse_csv_list(lines[1], parameter_names);
+    parameter_names = parse_csv_list(lines[1]);
 
     // Get generator
     generator = lines[2];

@@ -6,9 +6,11 @@
 
 #include "read_input.h"
 
-void parse_csv_list(const std::string& csv_list,
-                 std::vector<std::string>& items)
+std::vector<std::string> parse_csv_list(const std::string& csv_list)
 {
+    // Initialize items
+    std::vector<std::string> items;
+
     // Copy comma-separated list and turn into space-separated list
     std::string item, list_copy(csv_list);
     int num_items = 0;
@@ -41,12 +43,16 @@ void parse_csv_list(const std::string& csv_list,
 
         items.push_back(item);
     }
+
+    return items;
 }
 
-void read_lines(std::istream& istrm, const int num_lines,
-                std::vector<std::string>& lines)
+std::vector<std::string> read_lines(std::istream& istrm, const int num_lines)
 {
+    // Initialize lines and raw_lines
+    std::vector<std::string> lines;
     std::vector<std::string> raw_lines;
+
     // Read lines, ignoring blank lines and comments
     for (int lines_left = num_lines; lines_left > 0; lines_left--)
     {
@@ -98,4 +104,6 @@ void read_lines(std::istream& istrm, const int num_lines,
         std::runtime_error e("an error occurred while reading the input");
         throw e;
     }
+
+    return lines;
 }
