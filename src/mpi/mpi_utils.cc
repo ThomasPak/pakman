@@ -1,10 +1,12 @@
 #include <string>
-#include <cstring>
+
+#include <string.h>
 
 #include <mpi.h>
 
-#include "mpi_utils.h"
 #include "mpi_common.h"
+
+#include "mpi_utils.h"
 
 int get_mpi_comm_world_size()
 {

@@ -1,5 +1,6 @@
 #include <string>
-#include <cassert>
+
+#include <assert.h>
 
 #include "AbstractWorkerHandler.h"
 

@@ -1,8 +1,9 @@
-#include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 #include <stdexcept>
-#include <cassert>
+#include <iostream>
+
+#include <assert.h>
 
 #include "core/utils.h"
 #include "core/Arguments.h"

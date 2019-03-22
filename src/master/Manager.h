@@ -1,9 +1,10 @@
 #ifndef MANAGER_H
 #define MANAGER_H
 
-#include <memory>
 #include <string>
-#include <cassert>
+#include <memory>
+
+#include <assert.h>
 
 #include <mpi.h>
 
