@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "interface/Parameter.h"
+#include "interface/types.h"
 
 // simulator protocol
 std::string format_simulator_input(

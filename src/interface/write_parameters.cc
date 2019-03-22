@@ -4,8 +4,7 @@
 #include <sstream>
 
 #include "core/utils.h"
-#include "interface/Parameter.h"
-#include "interface/ParameterName.h"
+#include "interface/types.h"
 
 #include "write_parameters.h"
 

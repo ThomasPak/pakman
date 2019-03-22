@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "interface/Parameter.h"
+#include "interface/types.h"
 #include "core/Command.h"
 
 double smc_weight(const Command& perturbation_pdf,

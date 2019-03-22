@@ -6,8 +6,7 @@
 
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
-#include "interface/Parameter.h"
-#include "interface/ParameterName.h"
+#include "interface/types.h"
 
 #include "AbstractController.h"
 

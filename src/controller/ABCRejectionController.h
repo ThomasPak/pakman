@@ -8,9 +8,7 @@
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 #include "core/Command.h"
-#include "interface/Parameter.h"
-#include "interface/ParameterName.h"
-#include "interface/Epsilon.h"
+#include "interface/types.h"
 
 #include "Sampler.h"
 

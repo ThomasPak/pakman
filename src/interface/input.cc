@@ -3,8 +3,7 @@
 
 #include "core/Command.h"
 #include "core/utils.h"
-#include "Epsilon.h"
-#include "ParameterName.h"
+#include "types.h"
 
 #include "input.h"
 
@@ -25,7 +24,15 @@ Epsilon parse_epsilon(const std::string& raw_input)
 
 std::vector<Epsilon> parse_epsilons(const std::string& raw_input)
 {
-    return parse_parameter_names(raw_input);
+    // Get raw strings
+    std::vector<std::string> tokens = parse_tokens(raw_input, ",");
+
+    // Construct Epsilon vector
+    std::vector<Epsilon> epsilons;
+    for (std::string& token : tokens)
+        epsilons.push_back(std::move(token));
+
+    return epsilons;
 }
 
 std::vector<ParameterName> parse_parameter_names(const std::string& raw_input)

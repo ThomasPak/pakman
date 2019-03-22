@@ -9,7 +9,7 @@
 #include <stdexcept>
 
 #include "core/Command.h"
-#include "interface/Parameter.h"
+#include "interface/types.h"
 
 class AbstractSampler
 {

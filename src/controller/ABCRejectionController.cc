@@ -5,7 +5,7 @@
 #include <cassert>
 
 #include "core/common.h"
-#include "interface/Parameter.h"
+#include "interface/types.h"
 #include "interface/protocols.h"
 #include "interface/write_parameters.h"
 #include "master/AbstractMaster.h"

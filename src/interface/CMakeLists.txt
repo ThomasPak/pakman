@@ -1,5 +1,5 @@
 add_library (interface
-    Parameter.cc
+    LineString.cc
     input.cc
     protocols.cc
     write_parameters.cc

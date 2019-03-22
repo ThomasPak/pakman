@@ -4,8 +4,8 @@
 #include <stdexcept>
 #include <cassert>
 
-#include "interface/Parameter.h"
 #include "system/system_call.h"
+#include "interface/types.h"
 #include "interface/protocols.h"
 
 #include "smc_weight.h"
