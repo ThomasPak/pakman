@@ -32,8 +32,8 @@ void write_parameters(std::ostream& ostrm,
 
         std::stringstream sstrm;
 
-        std::vector<std::string> prmtr_elements;
-        vector_strtok(set->str(), prmtr_elements, " \n\t");
+        std::vector<std::string> prmtr_elements =
+            parse_tokens(set->str(), " \n\t");
 
         for (auto element = prmtr_elements.cbegin();
              element != prmtr_elements.cend(); element++)

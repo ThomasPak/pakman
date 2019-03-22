@@ -6,8 +6,7 @@
 
 std::vector<std::string> parse_command(const std::string& raw_command);
 
-void vector_strtok(const std::string& str,
-                   std::vector<std::string>& str_vector,
-                   const std::string& delimiters = " ");
+std::vector<std::string> parse_tokens(const std::string& str,
+        const std::string& delimiters = " ");
 
 #endif // UTILS_H

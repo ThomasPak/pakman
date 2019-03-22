@@ -159,20 +159,21 @@ endloop:
     return cmd_tokens;
 }
 
-void vector_strtok(const std::string& str,
-                   std::vector<std::string>& str_vector,
-                   const std::string& delimiters)
+std::vector<std::string> parse_tokens(const std::string& str,
+        const std::string& delimiters)
 {
-    char *c_str = strdup(str.c_str()), *pch;
+    std::vector<std::string> str_vector;
 
-    pch = strtok(c_str, delimiters.c_str());
+    char *c_str = strdup(str.c_str());
+    char *pch = strtok(c_str, delimiters.c_str());
 
-    str_vector.clear();
-    while (pch != NULL)
+    while (pch != nullptr)
     {
         str_vector.push_back(pch);
-        pch = strtok(NULL, delimiters.c_str());
+        pch = strtok(nullptr, delimiters.c_str());
     }
 
     free(c_str);
+
+    return str_vector;
 }
