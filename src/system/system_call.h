@@ -6,7 +6,7 @@
 
 #include "core/Command.h"
 
-typedef enum { throw_error, ignore_error } child_err_opt_t;
+enum child_err_opt_t { throw_error, ignore_error };
 
 bool waitpid_success(pid_t pid, int options = 0, const Command& cmd = "cmd",
                      child_err_opt_t child_err_opt = throw_error);
