@@ -159,55 +159,6 @@ endloop:
     return cmd_tokens;
 }
 
-void vector_delimited(const std::vector<std::string>& str_vector,
-                 std::string& delimited_string, const std::string& delimiter)
-{
-    std::stringstream sstrm;
-
-    for (auto it = str_vector.begin();
-         it != str_vector.end(); it++)
-        sstrm << *it << delimiter;
-
-    delimited_string.assign(sstrm.str());
-    delimited_string.pop_back();
-}
-
-std::string vector_printf(const std::string& format,
-                          const std::vector<std::string>& args,
-                          const std::string& token)
-{
-    size_t pos = 0, new_pos = 0;
-    std::stringstream sstrm;
-
-    for (auto it = args.cbegin(); it != args.cend(); it++)
-    {
-
-        new_pos = format.find(token, pos);
-
-        if (new_pos == std::string::npos)
-        {
-            std::runtime_error e("too many arguments provided");
-            throw e;
-        }
-
-        sstrm << format.substr(pos, new_pos - pos);
-        sstrm << *it;
-
-        pos = new_pos + token.size();
-    }
-
-    std::string tail = format.substr(pos, std::string::npos);
-
-    if (tail.find(token) != std::string::npos)
-    {
-        std::runtime_error e("not enough arguments provided");
-        throw e;
-    }
-
-    sstrm << tail;
-    return sstrm.str();
-}
-
 void vector_strtok(const std::string& str,
                    std::vector<std::string>& str_vector,
                    const std::string& delimiters)
