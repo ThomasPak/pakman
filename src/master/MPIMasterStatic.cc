@@ -159,15 +159,13 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
         p_controller(AbstractController::makeController(controller, args));
 
     // Create Manager object
-    std::shared_ptr<Manager> p_manager =
-        std::make_shared<Manager>(p_controller->getSimulator(), worker_type,
-                &program_terminated);
+    auto p_manager = std::make_shared<Manager>(p_controller->getSimulator(),
+            worker_type, &program_terminated);
 
     if (rank == 0)
     {
         // Create MPI master
-        std::shared_ptr<MPIMaster> p_master =
-            std::make_shared<MPIMaster>(&program_terminated);
+        auto p_master = std::make_shared<MPIMaster>(&program_terminated);
 
         // Associate with each other
         p_master->assignController(p_controller);

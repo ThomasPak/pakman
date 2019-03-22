@@ -37,10 +37,10 @@ void SerialMaster::run(controller_t controller, const Arguments& args)
     set_signal_handler();
 
     // Create controller and SerialMaster
-    std::shared_ptr<AbstractController> p_controller(
-            AbstractController::makeController(controller, args));
+    std::shared_ptr<AbstractController>
+        p_controller(AbstractController::makeController(controller, args));
 
-    std::shared_ptr<SerialMaster> p_master =
+    auto p_master =
         std::make_shared<SerialMaster>(p_controller->getSimulator(),
                 &program_terminated);
 

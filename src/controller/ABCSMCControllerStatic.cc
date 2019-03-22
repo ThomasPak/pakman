@@ -97,8 +97,7 @@ ABCSMCController* ABCSMCController::makeController(const Arguments& args)
     // TODO accept other seeds
     unsigned seed =
         std::chrono::system_clock::now().time_since_epoch().count();
-    std::shared_ptr<std::default_random_engine> p_generator =
-        std::make_shared<std::default_random_engine>(seed);
+    auto p_generator = std::make_shared<std::default_random_engine>(seed);
 
     // Make ABCSMCController
     return new ABCSMCController(input_obj, p_generator);

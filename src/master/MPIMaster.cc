@@ -146,8 +146,7 @@ void MPIMaster::doNormalStuff()
     popBusyQueue();
 
     // Call controller
-    if (std::shared_ptr<AbstractController> p_controller =
-            m_p_controller.lock())
+    if (auto p_controller = m_p_controller.lock())
         p_controller->iterate();
 
     // Delegate tasks to Managers
