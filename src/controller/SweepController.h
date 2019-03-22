@@ -1,12 +1,13 @@
 #ifndef SWEEPCONTROLLER_H
 #define SWEEPCONTROLLER_H
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 #include "interface/Parameter.h"
+#include "interface/ParameterName.h"
 
 #include "AbstractController.h"
 
@@ -46,7 +47,7 @@ class SweepController : public AbstractController
 
             // Data
             Command simulator;
-            std::vector<std::string> parameter_names;
+            std::vector<ParameterName> parameter_names;
             Command generator;
         };
 
@@ -54,7 +55,7 @@ class SweepController : public AbstractController
 
         /**** Member variables ****/
         // Parameter names
-        std::vector<std::string> m_parameter_names;
+        std::vector<ParameterName> m_parameter_names;
 
         // Parameter list
         std::vector<Parameter> m_prmtr_list;

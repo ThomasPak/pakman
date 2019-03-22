@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-std::vector<std::string> parse_command(const std::string& raw_command);
+std::vector<std::string> parse_command_tokens(const std::string& raw_command);
 
 std::vector<std::string> parse_tokens(const std::string& str,
         const std::string& delimiters = " ");

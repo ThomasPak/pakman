@@ -1,15 +1,17 @@
 #ifndef ABCSMCCONTROLLER_H
 #define ABCSMCCONTROLLER_H
 
-#include <random>
-#include <vector>
 #include <string>
+#include <vector>
 #include <memory>
+#include <random>
 
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
-#include "interface/Parameter.h"
 #include "core/Command.h"
+#include "interface/Parameter.h"
+#include "interface/ParameterName.h"
+#include "interface/Epsilon.h"
 
 #include "Sampler.h"
 
@@ -52,9 +54,9 @@ class ABCSMCController : public AbstractController
 
             // Data
             int population_size;
-            std::vector<std::string> epsilons;
+            std::vector<Epsilon> epsilons;
             Command simulator;
-            std::vector<std::string> parameter_names;
+            std::vector<ParameterName> parameter_names;
             Command prior_sampler;
             Command perturber;
             Command prior_pdf;
@@ -65,7 +67,7 @@ class ABCSMCController : public AbstractController
 
         /**** Member variables ****/
         // Epsilons
-        std::vector<std::string> m_epsilons;
+        std::vector<Epsilon> m_epsilons;
 
         // Iteration counter
         int m_t = 0;
@@ -77,7 +79,7 @@ class ABCSMCController : public AbstractController
         Command m_perturbation_pdf;
 
         // Parameter names
-        std::vector<std::string> m_parameter_names;
+        std::vector<ParameterName> m_parameter_names;
 
         // Population size
         int m_population_size;

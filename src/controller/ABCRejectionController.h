@@ -7,7 +7,10 @@
 
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
+#include "core/Command.h"
 #include "interface/Parameter.h"
+#include "interface/ParameterName.h"
+#include "interface/Epsilon.h"
 
 #include "Sampler.h"
 
@@ -49,9 +52,9 @@ class ABCRejectionController : public AbstractController
 
             // Data
             int number_accept;
-            std::string epsilon;
+            Epsilon epsilon;
             Command simulator;
-            std::vector<std::string> parameter_names;
+            std::vector<ParameterName> parameter_names;
             Command prior_sampler;
         };
 
@@ -59,13 +62,13 @@ class ABCRejectionController : public AbstractController
 
         /**** Member variables ****/
         // Epsilon
-        std::string m_epsilon;
+        Epsilon m_epsilon;
 
         // Prior sampler
         PriorSampler m_prior_sampler;
 
         // Parameter names
-        std::vector<std::string> m_parameter_names;
+        std::vector<ParameterName> m_parameter_names;
 
         // Number of parameter to accept
         int m_number_accept;

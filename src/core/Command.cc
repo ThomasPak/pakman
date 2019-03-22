@@ -16,7 +16,7 @@ Command::Command(const std::string& raw_command)
     : m_raw_command(raw_command)
 {
     // Split raw command into tokens
-    m_cmd_tokens = parse_command(m_raw_command);
+    m_cmd_tokens = parse_command_tokens(m_raw_command);
 
     // Allocate memory for argv
     m_argv = new char*[m_cmd_tokens.size() + 1];

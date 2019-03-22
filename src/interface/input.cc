@@ -1,0 +1,42 @@
+#include <string>
+#include <vector>
+
+#include "core/Command.h"
+#include "core/utils.h"
+#include "Epsilon.h"
+#include "ParameterName.h"
+
+#include "input.h"
+
+int parse_integer(const std::string& raw_input)
+{
+    return std::stoi(raw_input);
+}
+
+Command parse_command(const std::string& raw_input)
+{
+    return static_cast<Command>(raw_input);
+}
+
+Epsilon parse_epsilon(const std::string& raw_input)
+{
+    return static_cast<Epsilon>(raw_input);
+}
+
+std::vector<Epsilon> parse_epsilons(const std::string& raw_input)
+{
+    return parse_parameter_names(raw_input);
+}
+
+std::vector<ParameterName> parse_parameter_names(const std::string& raw_input)
+{
+    // Get raw strings
+    std::vector<std::string> tokens = parse_tokens(raw_input, ",");
+
+    // Construct ParameterName vector
+    std::vector<ParameterName> parameter_names;
+    for (std::string& token : tokens)
+        parameter_names.push_back(std::move(token));
+
+    return parameter_names;
+}

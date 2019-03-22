@@ -88,7 +88,7 @@ void ABCRejectionController::iterate()
     // There is still work to be done, so make sure there are as many tasks
     // queued as there are Managers
     while (m_p_master->needMorePendingTasks())
-        m_p_master->pushPendingTask(format_simulator_input(m_epsilon,
+        m_p_master->pushPendingTask(format_simulator_input(m_epsilon.str(),
                     m_prior_sampler.sampleParameter()));
 
     entered = false;

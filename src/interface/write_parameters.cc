@@ -5,43 +5,39 @@
 
 #include "core/utils.h"
 #include "interface/Parameter.h"
+#include "interface/ParameterName.h"
 
 #include "write_parameters.h"
 
 void write_parameters(std::ostream& ostrm,
-                      const std::vector<std::string>& parameter_names,
-                      const std::vector<Parameter>& parameters)
+        const std::vector<ParameterName>& parameter_names,
+        const std::vector<Parameter>& parameters)
 {
     // Print header
     {
         std::stringstream sstrm;
 
-        for (auto prmtr_name = parameter_names.cbegin();
-             prmtr_name != parameter_names.cend(); prmtr_name++)
-            sstrm << *prmtr_name << ",";
+        for (const ParameterName& parameter_name : parameter_names)
+            sstrm << parameter_name.str() << ",";
 
-        sstrm.seekp(sstrm.tellp() - (std::streamoff) 1);
+        sstrm.seekp(sstrm.tellp() - static_cast<std::streamoff>(1));
         sstrm << std::endl;
 
         ostrm << sstrm.str();
     }
 
-    // Print accepted parameter sets
-    for (auto set = parameters.cbegin(); set != parameters.cend(); set++)
+    // Print accepted parameters
+    for (const Parameter& parameter : parameters)
     {
+        std::vector<std::string> parameter_tokens =
+            parse_tokens(parameter.str(), " \n\t");
 
         std::stringstream sstrm;
 
-        std::vector<std::string> prmtr_elements =
-            parse_tokens(set->str(), " \n\t");
+        for (const std::string& token : parameter_tokens)
+            sstrm << token << ",";
 
-        for (auto element = prmtr_elements.cbegin();
-             element != prmtr_elements.cend(); element++)
-        {
-            sstrm << *element << ",";
-        }
-
-        sstrm.seekp(sstrm.tellp() - (std::streamoff) 1);
+        sstrm.seekp(sstrm.tellp() - static_cast<std::streamoff>(1));
         sstrm << std::endl;
 
         ostrm << sstrm.str();

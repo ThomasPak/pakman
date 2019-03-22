@@ -2,9 +2,9 @@
 #include <string>
 
 #include "core/common.h"
-#include "core/utils.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
+#include "interface/input.h"
 
 #include "ABCRejectionController.h"
 
@@ -70,15 +70,18 @@ ABCRejectionController::Input ABCRejectionController::Input::makeInput(const Arg
     try
     {
         input_obj.number_accept =
-            std::stoi(args.optionalArgument("number-accept"));
+            parse_integer(args.optionalArgument("number-accept"));
 
-        input_obj.epsilon = args.optionalArgument("epsilon");
+        input_obj.epsilon = parse_epsilon(args.optionalArgument("epsilon"));
 
         input_obj.parameter_names =
-            parse_tokens(args.optionalArgument("parameter-names"), ",");
+            parse_parameter_names(args.optionalArgument("parameter-names"));
 
-        input_obj.simulator = args.optionalArgument("simulator");
-        input_obj.prior_sampler = args.optionalArgument("prior-sampler");
+        input_obj.simulator =
+            parse_command(args.optionalArgument("simulator"));
+
+        input_obj.prior_sampler =
+            parse_command(args.optionalArgument("prior-sampler"));
     }
     catch (const std::out_of_range& e)
     {

@@ -133,7 +133,8 @@ void ABCSMCController::iterate()
     // There is still work to be done, so make sure there are as many tasks
     // queued as there are Managers
     while (m_p_master->needMorePendingTasks())
-        m_p_master->pushPendingTask(format_simulator_input(m_epsilons[m_t],
+        m_p_master->pushPendingTask(
+                format_simulator_input(m_epsilons[m_t].str(),
                     m_smc_sampler.sampleParameter()));
 
     entered = false;

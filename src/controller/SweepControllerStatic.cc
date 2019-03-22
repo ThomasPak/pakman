@@ -2,9 +2,9 @@
 #include <fstream>
 
 #include "core/common.h"
-#include "core/utils.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
+#include "interface/input.h"
 
 #include "SweepController.h"
 
@@ -55,10 +55,14 @@ SweepController::Input SweepController::Input::makeInput(const Arguments& args)
 
     try
     {
-        input_obj.simulator = args.optionalArgument("simulator");
+        input_obj.simulator =
+            parse_command(args.optionalArgument("simulator"));
+
         input_obj.parameter_names =
-            parse_tokens(args.optionalArgument("parameter-names"), ",");
-        input_obj.generator = args.optionalArgument("generator");
+            parse_parameter_names(args.optionalArgument("parameter-names"));
+
+        input_obj.generator =
+            parse_command(args.optionalArgument("generator"));
     }
     catch (const std::out_of_range& e)
     {

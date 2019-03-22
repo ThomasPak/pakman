@@ -8,6 +8,7 @@
 #include "core/utils.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
+#include "interface/input.h"
 
 #include "ABCSMCController.h"
 
@@ -112,19 +113,27 @@ ABCSMCController::Input ABCSMCController::Input::makeInput(const Arguments& args
     try
     {
         input_obj.population_size =
-            std::stoi(args.optionalArgument("population-size"));
+            parse_integer(args.optionalArgument("population-size"));
 
-        input_obj.epsilons =
-            parse_tokens(args.optionalArgument("epsilons"), ",");
+        input_obj.epsilons = parse_epsilons(args.optionalArgument("epsilons"));
 
         input_obj.parameter_names =
-            parse_tokens(args.optionalArgument("parameter-names"), ",");
+            parse_parameter_names(args.optionalArgument("parameter-names"));
 
-        input_obj.simulator = args.optionalArgument("simulator");
-        input_obj.prior_sampler = args.optionalArgument("prior-sampler");
-        input_obj.perturber = args.optionalArgument("perturber");
-        input_obj.prior_pdf = args.optionalArgument("prior-pdf");
-        input_obj.perturbation_pdf = args.optionalArgument("perturbation-pdf");
+        input_obj.simulator =
+            parse_command(args.optionalArgument("simulator"));
+
+        input_obj.prior_sampler =
+            parse_command(args.optionalArgument("prior-sampler"));
+
+        input_obj.perturber =
+            parse_command(args.optionalArgument("perturber"));
+
+        input_obj.prior_pdf =
+            parse_command(args.optionalArgument("prior-pdf"));
+
+        input_obj.perturbation_pdf =
+            parse_command(args.optionalArgument("perturbation-pdf"));
     }
     catch (const std::out_of_range& e)
     {

@@ -13,7 +13,7 @@ bool is_whitespace(const char letter)
         || (letter == '\n');
 }
 
-std::vector<std::string> parse_command(const std::string& raw_command)
+std::vector<std::string> parse_command_tokens(const std::string& raw_command)
 {
     // Define states of finite state machine
     enum state_t { start, unquoted, singly_quoted, doubly_quoted };
