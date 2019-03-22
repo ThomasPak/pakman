@@ -5,9 +5,9 @@
 #include <random>
 
 #include "core/common.h"
+#include "core/utils.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
-#include "interface/read_input.h"
 
 #include "ABCSMCController.h"
 
@@ -115,10 +115,10 @@ ABCSMCController::Input ABCSMCController::Input::makeInput(const Arguments& args
             std::stoi(args.optionalArgument("population-size"));
 
         input_obj.epsilons =
-            parse_csv_list(args.optionalArgument("epsilons"));
+            parse_tokens(args.optionalArgument("epsilons"), ",");
 
         input_obj.parameter_names =
-            parse_csv_list(args.optionalArgument("parameter-names"));
+            parse_tokens(args.optionalArgument("parameter-names"), ",");
 
         input_obj.simulator = args.optionalArgument("simulator");
         input_obj.prior_sampler = args.optionalArgument("prior-sampler");

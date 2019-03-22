@@ -8,7 +8,6 @@
 #include "interface/Parameter.h"
 #include "interface/protocols.h"
 #include "interface/write_parameters.h"
-#include "interface/read_input.h"
 #include "master/AbstractMaster.h"
 
 #include "Sampler.h"

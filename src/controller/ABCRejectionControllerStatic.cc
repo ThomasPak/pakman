@@ -2,9 +2,9 @@
 #include <string>
 
 #include "core/common.h"
+#include "core/utils.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
-#include "interface/read_input.h"
 
 #include "ABCRejectionController.h"
 
@@ -75,7 +75,7 @@ ABCRejectionController::Input ABCRejectionController::Input::makeInput(const Arg
         input_obj.epsilon = args.optionalArgument("epsilon");
 
         input_obj.parameter_names =
-            parse_csv_list(args.optionalArgument("parameter-names"));
+            parse_tokens(args.optionalArgument("parameter-names"), ",");
 
         input_obj.simulator = args.optionalArgument("simulator");
         input_obj.prior_sampler = args.optionalArgument("prior-sampler");

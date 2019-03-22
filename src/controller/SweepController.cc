@@ -9,7 +9,6 @@
 #include "system/system_call.h"
 #include "interface/write_parameters.h"
 #include "interface/protocols.h"
-#include "interface/read_input.h"
 
 #include "SweepController.h"
 

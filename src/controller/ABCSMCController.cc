@@ -10,7 +10,6 @@
 #include "interface/Parameter.h"
 #include "interface/protocols.h"
 #include "interface/write_parameters.h"
-#include "interface/read_input.h"
 
 #include "smc_weight.h"
 
