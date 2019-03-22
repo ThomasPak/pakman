@@ -7,7 +7,7 @@
 
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
-#include "core/Parameter.h"
+#include "interface/Parameter.h"
 
 #include "Sampler.h"
 

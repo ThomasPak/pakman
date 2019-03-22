@@ -3,7 +3,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "core/Parameter.h"
+#include "interface/Parameter.h"
 
 #include "protocols.h"
 

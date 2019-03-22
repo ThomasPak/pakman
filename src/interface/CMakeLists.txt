@@ -1,4 +1,5 @@
 add_library (interface
+    Parameter.cc
     protocols.cc
     read_input.cc
     write_parameters.cc

@@ -5,7 +5,7 @@
 #include <vector>
 #include <ostream>
 
-#include "core/Parameter.h"
+#include "interface/Parameter.h"
 
 void write_parameters(std::ostream& ostrm,
                       const std::vector<std::string>& parameter_names,

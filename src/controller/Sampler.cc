@@ -7,7 +7,7 @@
 #include <stdexcept>
 
 #include "core/utils.h"
-#include "core/Parameter.h"
+#include "interface/Parameter.h"
 #include "system/system_call.h"
 #include "interface/protocols.h"
 
