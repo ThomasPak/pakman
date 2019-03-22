@@ -8,7 +8,7 @@
 
 // simulator protocol
 std::string format_simulator_input(
-        const std::string& epsilon,
+        const Epsilon& epsilon,
         const Parameter& parameter);
 bool parse_simulator_output(const std::string& simulator_output);
 

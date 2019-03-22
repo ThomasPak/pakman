@@ -8,10 +8,12 @@
 #include "protocols.h"
 
 // simulator protocol
-std::string format_simulator_input(const std::string& epsilon, const Parameter& parameter)
+std::string format_simulator_input(
+        const Epsilon& epsilon,
+        const Parameter& parameter)
 {
     std::string input_string;
-    input_string += epsilon;
+    input_string += epsilon.str();
     input_string += '\n';
     input_string += parameter.str();
     input_string += '\n';
