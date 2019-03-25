@@ -1,0 +1,81 @@
+#!/bin/bash
+set -euo pipefail
+
+# Run ABC rejection
+echo "Running ABC rejection"
+@PROJECT_BINARY_DIR@/src/pakman serial rejection \
+    --discard-child-stderr \
+    --number-accept=10 \
+    --epsilon=0 \
+    --parameter-names=p \
+    --simulator="python simulator.py heads.txt" \
+    --prior-sampler="python prior-sampler.py 0 1"
+
+# Run ABC SMC
+echo
+echo "Running ABC SMC"
+@PROJECT_BINARY_DIR@/src/pakman serial smc \
+    --discard-child-stderr \
+    --population-size=10 \
+    --epsilons=2,1,0 \
+    --parameter-names=p \
+    --simulator="python simulator.py heads.txt" \
+    --prior-sampler="python prior-sampler.py 0 1" \
+    --perturber="python perturber.py 0.1" \
+    --prior-pdf="python prior-pdf.py 0 1" \
+    --perturbation-pdf="python perturbation-pdf.py 0.1" \
+
+# If given argument, read argument as number of parameters to accept and run
+# ABC rejection and ABC SMC using MPI Master
+
+if [ $# != 1 ]
+then
+    exit 0
+fi
+
+number_accept=$1
+
+# Run ABC rejection
+echo
+echo "Running ABC rejection with number-accept=$number_accept"
+@PROJECT_BINARY_DIR@/src/pakman serial rejection \
+    --discard-child-stderr \
+    --number-accept=$number_accept \
+    --epsilon=0 \
+    --parameter-names=p \
+    --simulator="python simulator.py heads.txt" \
+    --prior-sampler="python prior-sampler.py 0 1" \
+    > abc-rejection-python.out
+
+echo "Results saved in abc-rejection-python.out"
+
+# Create histogram
+python plot-histogram.py \
+    5 20 --epsilon 0 --inputfile abc-rejection-python.out \
+    --bboxtight --outputfile abc-rejection-python-histogram.png
+
+echo "Histogram saved in abc-rejection-python-histogram.png"
+
+# Run ABC SMC
+echo
+echo "Running ABC SMC with population-size=$number_accept"
+@PROJECT_BINARY_DIR@/src/pakman serial smc \
+    --discard-child-stderr \
+    --population-size=$number_accept \
+    --epsilons=2,1,0 \
+    --parameter-names=p \
+    --simulator="python simulator.py heads.txt" \
+    --prior-sampler="python prior-sampler.py 0 1" \
+    --perturber="python perturber.py 0.1" \
+    --prior-pdf="python prior-pdf.py 0 1" \
+    --perturbation-pdf="python perturbation-pdf.py 0.1" \
+    > abc-smc-python.out
+
+echo "Results saved in abc-smc-python.out"
+
+# Create histogram
+python plot-histogram.py \
+    5 20 --epsilon 0 --inputfile abc-smc-python.out \
+    --bboxtight --outputfile abc-smc-python-histogram.png
+
+echo "Histogram saved in abc-smc-python-histogram.png"

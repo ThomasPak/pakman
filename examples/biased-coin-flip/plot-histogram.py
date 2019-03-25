@@ -41,8 +41,6 @@ for line in inputfile:
 
 data = np.array(data)
 
-print("data: {}".format(data))
-
 # Analytical log-likelihood function
 logC = (  ( np.sum(np.log(np.arange(1, n + 1))) -
              np.sum(np.log(np.arange(1, k + 1))) -

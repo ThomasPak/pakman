@@ -1,0 +1,52 @@
+# Copy Python scripts
+file (COPY prior-sampler.py
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY simulator.py
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY perturber.py
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY prior-pdf.py
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY perturbation-pdf.py
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY plot-histogram.py
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# Copy C++ code
+file (COPY prior-sampler.cc
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY simulator.cc
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY perturber.cc
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY prior-pdf.cc
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY perturbation-pdf.cc
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# Copy data file
+file (COPY heads.txt
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# Configure shell scripts
+configure_script (run-python-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-python-example.sh)
+
+configure_script (run-cpp-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-cpp-example.sh)
+
+# Add executables
+add_executable (prior-sampler prior-sampler.cc)
+add_executable (simulator simulator.cc)
+add_executable (prior-pdf prior-pdf.cc)
+add_executable (perturber perturber.cc)
+add_executable (perturbation-pdf perturbation-pdf.cc)
