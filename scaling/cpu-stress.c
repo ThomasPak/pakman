@@ -17,5 +17,7 @@ int main(int argc, char *argv[])
 
     long long i;
     for (i = 0; i < num; i++)
-        sqrt(rand());
+    {
+        double val = sqrt(rand());
+    }
 }
