@@ -18,10 +18,8 @@ bool waitpid_success(pid_t pid, int& error_code, int options = 0, const Command&
 void dup2_check(int oldfd, int newfd);
 void close_check(int fd);
 
-std::string system_call(const Command& cmd,
-        child_err_opt_t child_err_opt = throw_error);
-std::string system_call(const Command& cmd, const std::string& input,
-        child_err_opt_t child_err_opt = throw_error);
+std::string system_call(const Command& cmd);
+std::string system_call(const Command& cmd, const std::string& input);
 
 std::pair<std::string, int> system_call_error_code(const Command& cmd,
         const std::string& input);

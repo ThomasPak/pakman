@@ -124,7 +124,7 @@ void close_check(int fd)
     }
 }
 
-std::string system_call(const Command& cmd, child_err_opt_t child_err_opt)
+std::string system_call(const Command& cmd)
 {
     spdlog::debug("cmd: {}", cmd.str());
 
@@ -162,7 +162,7 @@ std::string system_call(const Command& cmd, child_err_opt_t child_err_opt)
         close_check(pipefd[READ_END]);
 
         // Wait on child
-        waitpid_success(child_pid, 0, cmd, child_err_opt);
+        waitpid_success(child_pid, 0, cmd);
 
     }
     else // I am the child
@@ -205,9 +205,7 @@ std::string system_call(const Command& cmd, child_err_opt_t child_err_opt)
     return output;
 }
 
-std::string system_call(const Command& cmd,
-                 const std::string& input,
-                 child_err_opt_t child_err_opt)
+std::string system_call(const Command& cmd, const std::string& input)
 {
     spdlog::debug("cmd: {}", cmd.str());
     spdlog::debug("input: {}", input);
@@ -249,7 +247,7 @@ std::string system_call(const Command& cmd,
         close_check(recv_pipefd[READ_END]);
 
         // Wait on child
-        waitpid_success(child_pid, 0, cmd, child_err_opt);
+        waitpid_success(child_pid, 0, cmd);
 
     }
     else // I am the child
