@@ -18,8 +18,7 @@ SweepController::SweepController(const Input &input_obj) :
     m_simulator(input_obj.simulator)
 {
     // Read output from generator
-    std::string generator_output;
-    system_call(input_obj.generator, generator_output);
+    std::string generator_output = system_call(input_obj.generator);
 
     // Decompose into individual parameters
     m_prmtr_list = parse_generator_output(generator_output);

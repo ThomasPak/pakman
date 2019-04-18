@@ -20,7 +20,8 @@ ForkedWorkerHandler::ForkedWorkerHandler(
 {
 
     // Start process
-    system_call(m_command, m_child_pid, m_pipe_write_fd, m_pipe_read_fd);
+    std::tie(m_child_pid, m_pipe_write_fd, m_pipe_read_fd) =
+        system_call_non_blocking_read_write(m_command);
 
     // Write input string to stdin of process
     write_to_pipe(m_pipe_write_fd, input_string);

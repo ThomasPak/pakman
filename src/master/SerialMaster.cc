@@ -1,5 +1,6 @@
 #include <string>
 #include <memory>
+#include <utility>
 
 #include <assert.h>
 
@@ -109,7 +110,8 @@ void SerialMaster::processTask()
     // Process current task and get output string and error code
     std::string output_string;
     int error_code;
-    system_call(m_command, current_task.getInputString(), output_string, error_code);
+    std::tie(output_string, error_code) =
+        system_call_error_code(m_command, current_task.getInputString());
 
     // Record output string and error code
     current_task.recordOutputAndErrorCode(output_string, error_code);

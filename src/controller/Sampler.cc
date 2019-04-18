@@ -21,8 +21,7 @@ PriorSampler::PriorSampler(const Command &prior_sampler) : m_prior_sampler(prior
 Parameter PriorSampler::sampleParameter() const
 {
 
-    std::string prior_sampler_output;
-    system_call(m_prior_sampler, prior_sampler_output);
+    std::string prior_sampler_output = system_call(m_prior_sampler);
 
     return parse_prior_sampler_output(prior_sampler_output);
 }
@@ -76,8 +75,7 @@ Parameter PerturbationSampler::perturbParameter(int t, Parameter prmtr_base) con
     std::string perturber_input = format_perturber_input(t, prmtr_base);
 
     // Call perturber
-    std::string perturber_output;
-    system_call(m_perturber, perturber_input, perturber_output);
+    std::string perturber_output = system_call(m_perturber, perturber_input);
 
     return parse_perturber_output(perturber_output);
 }
@@ -156,8 +154,7 @@ double SMCSampler::computePriorPdf(const Parameter& prmtr) const
     std::string prior_pdf_input = format_prior_pdf_input(prmtr);
 
     // Call prior_pdf
-    std::string prior_pdf_output;
-    system_call(m_prior_pdf, prior_pdf_input, prior_pdf_output);
+    std::string prior_pdf_output = system_call(m_prior_pdf, prior_pdf_input);
 
     return parse_prior_pdf_output(prior_pdf_output);
 }

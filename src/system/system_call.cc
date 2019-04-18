@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <utility>
+#include <tuple>
 
 #include <unistd.h>
 #include <sys/wait.h>
@@ -42,14 +44,16 @@ bool waitpid_success(pid_t pid, int options, const Command& cmd,
     // Check exit status of child
     if (child_err_opt == throw_error)
     {
-        if (!WIFEXITED(status)) { // Program did not exit normally
+        if (!WIFEXITED(status)) // Program did not exit normally
+        {
             std::string error_msg(cmd.str());
             error_msg += " did not exit normally";
             std::runtime_error e(error_msg);
             throw e;
         }
 
-        if (WEXITSTATUS(status) != 0) { // Check for nonzero exit status
+        if (WEXITSTATUS(status) != 0) // Check for nonzero exit status
+        {
             std::string error_msg(cmd.str());
             error_msg += " threw an error";
             std::runtime_error e(error_msg);
@@ -81,7 +85,8 @@ bool waitpid_success(pid_t pid, int& error_code, int options, const Command& cmd
     }
 
     // Check exit status of child
-    if (!WIFEXITED(status)) { // Program did not exit normally
+    if (!WIFEXITED(status)) // Program did not exit normally
+    {
         std::string error_msg(cmd.str());
         error_msg += " did not exit normally";
         std::runtime_error e(error_msg);
@@ -119,10 +124,12 @@ void close_check(int fd)
     }
 }
 
-void system_call(const Command& cmd, std::string& output,
-                 child_err_opt_t child_err_opt)
+std::string system_call(const Command& cmd, child_err_opt_t child_err_opt)
 {
     spdlog::debug("cmd: {}", cmd.str());
+
+    // Initialize output
+    std::string output;
 
     // Create pipe
     int pipefd[2];
@@ -142,7 +149,8 @@ void system_call(const Command& cmd, std::string& output,
         throw e;
     }
 
-    if (child_pid > 0) { // I am the parent
+    if (child_pid > 0) // I am the parent
+    {
 
         // Close write end of pipe
         close_check(pipefd[WRITE_END]);
@@ -156,7 +164,9 @@ void system_call(const Command& cmd, std::string& output,
         // Wait on child
         waitpid_success(child_pid, 0, cmd, child_err_opt);
 
-    } else { // I am the child
+    }
+    else // I am the child
+    {
 
         // Suppress stderr of child process
         if (discard_child_stderr)
@@ -191,15 +201,19 @@ void system_call(const Command& cmd, std::string& output,
     }
 
     spdlog::debug("output: {}", output);
+
+    return output;
 }
 
-void system_call(const Command& cmd,
+std::string system_call(const Command& cmd,
                  const std::string& input,
-                 std::string& output,
                  child_err_opt_t child_err_opt)
 {
     spdlog::debug("cmd: {}", cmd.str());
     spdlog::debug("input: {}", input);
+
+    // Initialize output
+    std::string output;
 
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
@@ -219,7 +233,8 @@ void system_call(const Command& cmd,
         throw e;
     }
 
-    if (child_pid > 0) { // I am the parent
+    if (child_pid > 0) // I am the parent
+    {
 
         // Close read end of send pipe and write end of receive pipe
         close_check(send_pipefd[READ_END]);
@@ -230,14 +245,15 @@ void system_call(const Command& cmd,
         close_check(send_pipefd[WRITE_END]);
 
         // Read output from child
-        output.clear();
         read_from_pipe(recv_pipefd, output);
         close_check(recv_pipefd[READ_END]);
 
         // Wait on child
         waitpid_success(child_pid, 0, cmd, child_err_opt);
 
-    } else { // I am the child
+    }
+    else // I am the child
+    {
 
         // Suppress stderr of child process
         if (discard_child_stderr)
@@ -274,15 +290,19 @@ void system_call(const Command& cmd,
     }
 
     spdlog::debug("output: {}", output);
+
+    return output;
 }
 
-void system_call(const Command& cmd,
-                 const std::string& input,
-                 std::string& output,
-                 int& error_code)
+std::pair<std::string, int> system_call_error_code(const Command& cmd,
+                 const std::string& input)
 {
     spdlog::debug("cmd: {}", cmd.str());
     spdlog::debug("input: {}", input);
+
+    // Initialize output and error_code
+    std::string output;
+    int error_code;
 
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
@@ -302,7 +322,8 @@ void system_call(const Command& cmd,
         throw e;
     }
 
-    if (child_pid > 0) { // I am the parent
+    if (child_pid > 0) // I am the parent
+    {
 
         // Close read end of send pipe and write end of receive pipe
         close_check(send_pipefd[READ_END]);
@@ -313,14 +334,15 @@ void system_call(const Command& cmd,
         close_check(send_pipefd[WRITE_END]);
 
         // Read output from child
-        output.clear();
         read_from_pipe(recv_pipefd, output);
         close_check(recv_pipefd[READ_END]);
 
         // Wait on child
         waitpid_success(child_pid, error_code, 0, cmd);
 
-    } else { // I am the child
+    }
+    else // I am the child
+    {
 
         // Suppress stderr of child process
         if (discard_child_stderr)
@@ -357,77 +379,18 @@ void system_call(const Command& cmd,
     }
 
     spdlog::debug("output: {}", output);
+
+    return std::make_pair(std::move(output), error_code);
 }
 
-void system_call(const Command& cmd, pid_t& child_pid, int& pipe_read_fd)
+std::tuple<pid_t, int, int> system_call_non_blocking_read_write(
+        const Command& cmd)
 {
     spdlog::debug("cmd: {}", cmd.str());
 
-    // Create pipe
-    int pipefd[2];
-
-    if (pipe(pipefd) == -1)
-    {
-        std::runtime_error e("pipe failed");
-        throw e;
-    }
-
-    // Fork and record child pid
-    child_pid = fork();
-
-    if (child_pid == -1)
-    {
-        std::runtime_error e("fork failed");
-        throw e;
-    }
-
-    if (child_pid > 0) { // I am the parent
-
-        // Close write end of pipe
-        close_check(pipefd[WRITE_END]);
-
-        // Save read end of pipe to pipe_read_fd
-        pipe_read_fd = pipefd[READ_END];
-
-    } else { // I am the child
-
-        // Suppress stderr of child process
-        if (discard_child_stderr)
-        {
-            int devnull = open("/dev/null", O_WRONLY);
-            dup2_check(devnull, STDERR_FILENO);
-            close_check(devnull);
-        }
-
-        // Suppress stdin of child process
-        int devnull = open("/dev/null", O_RDONLY);
-        dup2_check(devnull, STDIN_FILENO);
-        close_check(devnull);
-
-        // Close read end of pipe and redirect stdout to write end
-        close_check(pipefd[READ_END]);
-        dup2_check(pipefd[WRITE_END], 1);
-        close_check(pipefd[WRITE_END]);
-
-        // Get argv from command
-        char **argv = cmd.argv();
-
-        // Execute command
-        execvp(argv[0], argv);
-
-        // If program reaches this, command execution has failed
-        std::string error_msg("exec of ");
-        error_msg += cmd.str();
-        error_msg += " failed";
-        std::runtime_error e(error_msg);
-        throw e;
-    }
-}
-
-void system_call(const Command& cmd, pid_t& child_pid,
-                int& pipe_write_fd, int& pipe_read_fd)
-{
-    spdlog::debug("cmd: {}", cmd.str());
+    // Initialize child_pid, pipe_read_fd, pipe_write_fd
+    pid_t child_pid;
+    int pipe_read_fd, pipe_write_fd;
 
     // Create pipes for sending and receiving
     int send_pipefd[2], recv_pipefd[2];
@@ -447,7 +410,8 @@ void system_call(const Command& cmd, pid_t& child_pid,
         throw e;
     }
 
-    if (child_pid > 0) { // I am the parent
+    if (child_pid > 0) // I am the parent
+    {
 
         // Close read end of send pipe and write end of receive pipe
         close_check(send_pipefd[READ_END]);
@@ -459,7 +423,9 @@ void system_call(const Command& cmd, pid_t& child_pid,
         // Save read end of recv pipe to pipe_read_fd
         pipe_read_fd = recv_pipefd[READ_END];
 
-    } else { // I am the child
+    }
+    else // I am the child
+    {
 
         // Suppress stderr of child process
         if (discard_child_stderr)
@@ -494,4 +460,6 @@ void system_call(const Command& cmd, pid_t& child_pid,
         std::runtime_error e(error_msg);
         throw e;
     }
+
+    return std::make_tuple(child_pid, pipe_write_fd, pipe_read_fd);
 }
