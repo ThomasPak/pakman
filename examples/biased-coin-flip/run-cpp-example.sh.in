@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Run ABC rejection
 echo "Running ABC rejection"
-@PROJECT_BINARY_DIR@/src/pakman serial rejection \
+"@PROJECT_BINARY_DIR@/src/pakman" serial rejection \
     --number-accept=10 \
     --epsilon=0 \
     --parameter-names=p \
@@ -13,7 +13,7 @@ echo "Running ABC rejection"
 # Run ABC SMC
 echo
 echo "Running ABC SMC"
-@PROJECT_BINARY_DIR@/src/pakman serial smc \
+"@PROJECT_BINARY_DIR@/src/pakman" serial smc \
     --population-size=10 \
     --epsilons=2,1,0 \
     --parameter-names=p \
@@ -36,7 +36,7 @@ number_accept=$1
 # Run ABC rejection
 echo
 echo "Running ABC rejection with number-accept=$number_accept"
-@PROJECT_BINARY_DIR@/src/pakman serial rejection \
+"@PROJECT_BINARY_DIR@/src/pakman" serial rejection \
     --number-accept=$number_accept \
     --epsilon=0 \
     --parameter-names=p \
@@ -56,7 +56,7 @@ echo "Histogram saved in abc-rejection-cpp-histogram.png"
 # Run ABC SMC
 echo
 echo "Running ABC SMC with population-size=$number_accept"
-@PROJECT_BINARY_DIR@/src/pakman serial smc \
+"@PROJECT_BINARY_DIR@/src/pakman" serial smc \
     --population-size=$number_accept \
     --epsilons=2,1,0 \
     --parameter-names=p \

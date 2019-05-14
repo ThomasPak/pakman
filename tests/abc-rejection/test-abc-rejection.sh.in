@@ -22,12 +22,12 @@ trap "rm -f $temp_number_file $temp_input_file" ERR
 echo 0 > $temp_number_file
 
 # Run pakman
-@PROJECT_BINARY_DIR@/src/pakman serial rejection $temp_input_file \
+"@PROJECT_BINARY_DIR@/src/pakman" serial rejection $temp_input_file \
     --parameter-names=p \
     --number-accept=$num_accept \
     --epsilon=$epsilon \
-    --simulator="@CMAKE_CURRENT_BINARY_DIR@/accept-if-epsilon-plus-parameter-is-even.sh" \
-    --prior-sampler="@CMAKE_CURRENT_BINARY_DIR@/increment-and-print-number.sh $temp_number_file"
+    --simulator="'@CMAKE_CURRENT_BINARY_DIR@/accept-if-epsilon-plus-parameter-is-even.sh'" \
+    --prior-sampler="'@CMAKE_CURRENT_BINARY_DIR@/increment-and-print-number.sh' $temp_number_file"
 
 # Clean up temporary files
 rm -f $temp_number_file $temp_input_file

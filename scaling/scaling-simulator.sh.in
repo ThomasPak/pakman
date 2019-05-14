@@ -15,7 +15,7 @@ num_sqrt_computations=$1
 cat > /dev/null
 
 # Run cpu-stress with specified number of sqrt computations
-@CMAKE_CURRENT_BINARY_DIR@/cpu-stress $num_sqrt_computations
+"@CMAKE_CURRENT_BINARY_DIR@/cpu-stress" $num_sqrt_computations
 
 # Always accept
 echo 1

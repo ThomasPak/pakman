@@ -7,6 +7,9 @@ function (get_base_command _command
         simulator
         test_type)
 
+    # Correct for spaces in project path
+    string (REPLACE " " "\\ " PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}")
+
     # Set executable
     set (executable "${PROJECT_BINARY_DIR}/src/pakman")
 
@@ -54,7 +57,7 @@ function (get_base_command _command
     endif ()
 
     # Separate arguments
-    separate_arguments (command)
+    separate_arguments (command UNIX_COMMAND "${command}")
 
     # Set _command
     set (${_command} ${command} PARENT_SCOPE)
@@ -89,6 +92,9 @@ function (get_sweep_options _options
         return_code
         parameter_names
         parameter_list)
+
+    # Correct for spaces in project path
+    string (REPLACE " " "\\\\ " PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}")
 
     # Initialize empty options
     set (options "")
@@ -191,6 +197,9 @@ function (get_rejection_options _options
         parameter_names
         sampled_parameter
         number_of_parameters)
+
+    # Correct for spaces in project path
+    string (REPLACE " " "\\\\ " PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}")
 
     # Initialize empty options
     set (options "")
@@ -313,6 +322,9 @@ function (get_smc_options _options
         parameter_names
         sampled_parameter
         number_of_parameters)
+
+    # Correct for spaces in project path
+    string (REPLACE " " "\\\\ " PROJECT_BINARY_DIR "${PROJECT_BINARY_DIR}")
 
     # Initialize empty options
     set (options "")

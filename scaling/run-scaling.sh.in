@@ -60,13 +60,13 @@ do
     # Run pakman and record elapsed time
     { time @MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ $current_num_procs \
         @MPIEXEC_PREFLAGS@ \
-        @PROJECT_BINARY_DIR@/src/pakman @MPIEXEC_POSTFLAGS@ mpi rejection \
+        "@PROJECT_BINARY_DIR@/src/pakman" @MPIEXEC_POSTFLAGS@ mpi rejection \
         --verbosity=off \
         --number-accept=$num_simulations \
         --epsilon=0 \
         --parameter-names=p \
         --prior-sampler="echo 1" \
-        --simulator="@CMAKE_CURRENT_BINARY_DIR@/scaling-simulator.sh $num_sqrt_computations" \
+        --simulator="'@CMAKE_CURRENT_BINARY_DIR@/scaling-simulator.sh' $num_sqrt_computations" \
         > /dev/null; } 2>> scaling.csv
 
     # Show elapsed time
@@ -84,7 +84,7 @@ echo "Results were stored in scaling.csv"
 # Create performance plot
 if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
-    @PYTHON_EXECUTABLE@ @CMAKE_CURRENT_BINARY_DIR@/plot-scaling.py scaling.csv scaling.png
+    @PYTHON_EXECUTABLE@ "@CMAKE_CURRENT_BINARY_DIR@/plot-scaling.py" scaling.csv scaling.png
 
     # Print message
     echo "Results were plotted in scaling.png"
