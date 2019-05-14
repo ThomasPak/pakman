@@ -6,7 +6,8 @@ endif ()
 
 # Check if python module 'module' is available and store result in 'var'
 function (find_python_module module var)
-    execute_process (COMMAND ${PYTHON_EXECUTABLE} -c "import imp; imp.find_module('${module}')"
+    execute_process (COMMAND ${PYTHON_EXECUTABLE} -c
+        "import pkgutil; exit(not pkgutil.find_loader('${module}'))"
         RESULT_VARIABLE result)
     if (result EQUAL 0)
         set (${var} TRUE PARENT_SCOPE)

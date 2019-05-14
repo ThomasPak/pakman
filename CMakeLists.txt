@@ -28,6 +28,22 @@ if (NOT PYTHON_VERSION_MAJOR EQUAL "3")
         "but scripts were written for Python 3. Some scripts may fail.")
 endif ()
 
+if (PYTHONINTERP_FOUND)
+    include ("cmake/FindPythonModule.cmake")
+
+    find_python_module ("numpy" NUMPY_FOUND)
+    if (NOT NUMPY_FOUND)
+        message (WARNING "Python module 'numpy' was not found, "
+            "this may affect Python scripts")
+    endif ()
+
+    find_python_module ("matplotlib" MATPLOTLIB_FOUND)
+    if (NOT MATPLOTLIB_FOUND)
+        message (WARNING "Python module 'matplotlib' was not found, "
+            "this may affect Python scripts")
+    endif ()
+endif ()
+
 # If the MPI installation is OpenMPI, make sure to add `--oversubscribe` flags
 # to MPIEXEC_PREFLAGS
 execute_process (COMMAND ${MPIEXEC_EXECUTABLE} --version
