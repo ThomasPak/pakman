@@ -84,9 +84,9 @@ echo "Results were stored in scaling.csv"
 # Create performance plot
 if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
-    @PYTHON_EXECUTABLE@ "@CMAKE_CURRENT_BINARY_DIR@/plot-scaling.py" scaling.csv scaling.png
+    @PYTHON_EXECUTABLE@ "@CMAKE_CURRENT_BINARY_DIR@/plot-scaling.py" scaling.csv speedup.png efficiency.png
 
     # Print message
-    echo "Results were plotted in scaling.png"
+    echo "Results were plotted in speedup.png and efficiency.png"
 fi
 
