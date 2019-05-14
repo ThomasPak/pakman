@@ -16,7 +16,7 @@ bool is_whitespace(const char letter)
 std::vector<std::string> parse_command_tokens(const std::string& raw_command)
 {
     // Define states of finite state machine
-    enum state_t { start, unquoted, singly_quoted, doubly_quoted };
+    enum state_t { start, unquoted, quote_next_letter, singly_quoted, doubly_quoted };
 
     // Initialize
     state_t state = start;
@@ -43,8 +43,14 @@ std::vector<std::string> parse_command_tokens(const std::string& raw_command)
                     letter = *it;
                 }
 
+                // If backslash, transition to quote_next_letter
+                if (letter == '\\')
+                {
+                    state = quote_next_letter;
+                }
+
                 // If single quote, transition to singly_quoted
-                if (letter == '\'')
+                else if (letter == '\'')
                 {
                     state = singly_quoted;
                 }
@@ -62,6 +68,17 @@ std::vector<std::string> parse_command_tokens(const std::string& raw_command)
                     token_strm << letter;
                     state = unquoted;
                 }
+
+                break;
+
+            // Quote next letter state
+            case quote_next_letter:
+
+                // Add next character literally
+                token_strm << letter;
+
+                // Transition to unquoted
+                state = unquoted;
 
                 break;
 
@@ -107,6 +124,7 @@ std::vector<std::string> parse_command_tokens(const std::string& raw_command)
                 // If normal character, add and stay in
                 // unquoted state
                 while ( !is_whitespace(letter) &&
+                        (letter != '\\') &&
                         (letter != '\'') &&
                         (letter != '\"') )
                 {
@@ -125,6 +143,11 @@ std::vector<std::string> parse_command_tokens(const std::string& raw_command)
                     state = start;
                 }
 
+                // If backslash, transition
+                // to quote_next_letter state
+                else if (letter == '\\')
+                    state = quote_next_letter;
+
                 // If single quote, transition
                 // to singly quoted state
                 else if (letter == '\'')
@@ -142,7 +165,8 @@ std::vector<std::string> parse_command_tokens(const std::string& raw_command)
 endloop:
 
     // Check for unfinished quotations
-    if ( (state == singly_quoted) || (state == doubly_quoted) )
+    if ( (state == singly_quoted) || (state == doubly_quoted) ||
+            (state == quote_next_letter))
     {
         std::string error_msg;
         error_msg += "Encountered unfinished quotations while parsing command: ";
