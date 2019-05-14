@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+python=@PYTHON_EXECUTABLE@
+
 # Run ABC rejection
 echo "Running ABC rejection"
 "@PROJECT_BINARY_DIR@/src/pakman" serial rejection \
@@ -47,11 +49,14 @@ echo "Running ABC rejection with number-accept=$number_accept"
 echo "Results saved in abc-rejection-cpp.out"
 
 # Create histogram
-python plot-histogram.py \
-    5 20 --epsilon 0 --inputfile abc-rejection-cpp.out \
-    --bboxtight --outputfile abc-rejection-cpp-histogram.png
+if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
+then
+    $python plot-histogram.py \
+        5 20 --epsilon 0 --inputfile abc-rejection-cpp.out \
+        --bboxtight --outputfile abc-rejection-cpp-histogram.png
 
-echo "Histogram saved in abc-rejection-cpp-histogram.png"
+    echo "Histogram saved in abc-rejection-cpp-histogram.png"
+fi
 
 # Run ABC SMC
 echo
@@ -70,8 +75,11 @@ echo "Running ABC SMC with population-size=$number_accept"
 echo "Results saved in abc-smc-cpp.out"
 
 # Create histogram
-python plot-histogram.py \
-    5 20 --epsilon 0 --inputfile abc-smc-cpp.out \
-    --bboxtight --outputfile abc-smc-cpp-histogram.png
+if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
+then
+    $python plot-histogram.py \
+        5 20 --epsilon 0 --inputfile abc-smc-cpp.out \
+        --bboxtight --outputfile abc-smc-cpp-histogram.png
 
-echo "Histogram saved in abc-smc-cpp-histogram.png"
+    echo "Histogram saved in abc-smc-cpp-histogram.png"
+fi

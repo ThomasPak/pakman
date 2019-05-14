@@ -30,7 +30,7 @@ inputfile = args.inputfile
 # Process header
 if type(inputfile) == str:
     inputfile = open(inputfile, 'r')
-header = inputfile.next()
+header = inputfile.readline()
 
 # Process data
 data = []
@@ -53,7 +53,7 @@ p = np.linspace(0.001, 1 - 0.001, 1001)
 fig = plt.figure()
 
 # Plot computed histogram
-plt.hist(data, bins=bins, normed=True, label="Computed", edgecolor='black')
+plt.hist(data, bins=bins, density=True, label="Computed", edgecolor='black')
 plt.plot(p, np.exp(loglikelihood(p)), label="Analytical")
 
 titlestr = "Posterior with N = {}".format(len(data))

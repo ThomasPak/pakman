@@ -14,12 +14,18 @@ if (MPIEXEC_HOSTS_FLAGS)
     message ("Host flags are: ${MPIEXEC_HOSTS_FLAGS}")
 endif ()
 
-# Find Python
+# Find Python 3
+set (Python_ADDITIONAL_VERSIONS "3")
 include (FindPythonInterp)
 
 if (NOT PYTHONINTERP_FOUND)
     message (WARNING "Python interpreter was not found, "
         "cannot generate plots")
+endif ()
+
+if (NOT PYTHON_VERSION_MAJOR EQUAL "3")
+    message (WARNING "Python version found was ${PYTHON_VERSION_MAJOR}, "
+        "but scripts were written for Python 3. Some scripts may fail.")
 endif ()
 
 # If the MPI installation is OpenMPI, make sure to add `--oversubscribe` flags
