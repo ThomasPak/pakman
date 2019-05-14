@@ -5,7 +5,7 @@ import sys
 
 # Process arguments
 if not (len(sys.argv) == 4):
-    print("Usage: {} SCALING_CSV_FILE SCALING_OUTPUT_PLOT".format(sys.argv[0]))
+    print("Usage: {} SCALING_CSV_FILE SPEEDUP_PLOT EFFICIENCY_PLOT".format(sys.argv[0]))
     exit(1)
 
 # Read data
