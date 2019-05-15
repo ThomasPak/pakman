@@ -24,6 +24,15 @@ then
     num_procs=$1
 else
     num_procs=@cpu_count@
+    mpi_num_procs=@MPIEXEC_MAX_NUMPROCS@
+    if [ $mpi_num_procs -ne $num_procs ]
+    then
+        echo "Warning: the number of processors detected ($num_procs) may not correspond"
+        echo "to the number of physical cores.  This may skew the scaling results."
+        echo "If so, try running this script with the number of physical cores to"
+        echo "get better results.  See '$0 --help' for instructions."
+        echo
+    fi
 fi
 
 if [ $# -ge 2 ]
