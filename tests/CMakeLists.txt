@@ -1,5 +1,5 @@
 # Include TestPakman
-include (TestPakman.cmake)
+include ("../cmake/TestPakman.cmake")
 
 # Add test subdirectories
 add_subdirectory (standard-simulator)
