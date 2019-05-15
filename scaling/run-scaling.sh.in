@@ -76,7 +76,7 @@ do
         --parameter-names=p \
         --prior-sampler="echo 1" \
         --simulator="'@CMAKE_CURRENT_BINARY_DIR@/scaling-simulator.sh' $num_sqrt_computations" \
-        > /dev/null; } 2>> scaling.csv
+        > /dev/null 2>/dev/null; } 2>> scaling.csv
 
     # Show elapsed time
     echo -n "Finished in "
@@ -89,6 +89,9 @@ done
 
 # Print message
 echo "Results were stored in scaling.csv"
+
+echo "Printing scaling.csv..."
+cat scaling.csv
 
 # Create performance plot
 if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
