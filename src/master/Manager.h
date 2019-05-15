@@ -18,7 +18,7 @@ class Manager
         enum worker_t
         {
             forked_worker,
-            persistent_mpi_worker
+            mpi_worker
         };
 
         // Enumerate type for Manager states

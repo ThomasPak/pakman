@@ -12,7 +12,7 @@
 #include "mpi/mpi_utils.h"
 
 #include "ForkedWorkerHandler.h"
-#include "PersistentMPIWorkerHandler.h"
+#include "MPIWorkerHandler.h"
 
 #include "Manager.h"
 
@@ -247,11 +247,11 @@ void Manager::createWorker(const std::string& input_string)
                         new ForkedWorkerHandler(m_command, input_string));
             break;
 
-        // Spawn persistent MPI Worker
-        case persistent_mpi_worker:
+        // Spawn MPI Worker
+        case mpi_worker:
             m_p_worker_handler =
-                std::unique_ptr<PersistentMPIWorkerHandler>(
-                        new PersistentMPIWorkerHandler(m_command, input_string));
+                std::unique_ptr<MPIWorkerHandler>(
+                        new MPIWorkerHandler(m_command, input_string));
             break;
 
         default:

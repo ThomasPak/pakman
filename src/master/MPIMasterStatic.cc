@@ -14,7 +14,7 @@
 #include "main/help.h"
 
 #include "Manager.h"
-#include "PersistentMPIWorkerHandler.h"
+#include "MPIWorkerHandler.h"
 
 #include "MPIMaster.h"
 
@@ -71,7 +71,7 @@ Manager::worker_t get_worker(bool mpi_simulator)
 {
     if (mpi_simulator)
     {
-        return Manager::persistent_mpi_worker;
+        return Manager::mpi_worker;
     }
     else
         return Manager::forked_worker;
@@ -177,8 +177,8 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
     p_manager.reset();
     p_controller.reset();
 
-    // Terminate any remaining persistent Workers
-    PersistentMPIWorkerHandler::terminatePersistent();
+    // Terminate any remaining Workers
+    MPIWorkerHandler::terminateStatic();
 
     // Finalize
     MPI_Finalize();

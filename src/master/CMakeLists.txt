@@ -11,7 +11,7 @@ add_library (master
     Manager.cc
     AbstractWorkerHandler.cc
     ForkedWorkerHandler.cc
-    PersistentMPIWorkerHandler.cc
+    MPIWorkerHandler.cc
     )
 
 target_link_libraries (master core system mpi controller ${MPI_CXX_LIBRARIES})

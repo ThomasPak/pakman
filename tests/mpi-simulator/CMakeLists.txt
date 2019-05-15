@@ -8,9 +8,9 @@ include_directories (${MPI_C_INCLUDE_DIRS} "${PROJECT_SOURCE_DIR}/include")
 add_compile_options (${MPI_C_COMPILE_OPTIONS})
 link_libraries (${MPI_CXX_LIBRARIES})
 
-# Add persistent-mpi-simulator and persistent-mpi-simulator-cpp
-add_executable (persistent-mpi-simulator persistent-mpi-simulator.c)
-add_executable (persistent-mpi-simulator-cpp persistent-mpi-simulator-cpp.cc)
+# Add mpi-simulator and mpi-simulator-cpp
+add_executable (mpi-simulator mpi-simulator.c)
+add_executable (mpi-simulator-cpp mpi-simulator-cpp.cc)
 
 #####################
 ## Test sweep mode ##
@@ -19,7 +19,7 @@ add_executable (persistent-mpi-simulator-cpp persistent-mpi-simulator-cpp.cc)
 # Test if output matches expected output
 add_sweep_match_test (
     MPI                     # Master type
-    PersistentMPI           # Simulator type
+    MPI                     # Simulator type
     ""                      # Postfix
     p                       # Parameter name
     "1\\n2\\n3\\n4\\n5"     # Parameter list
@@ -28,7 +28,7 @@ add_sweep_match_test (
 # Test if Pakman throws error when simulator throws error
 add_sweep_error_test (
     MPI                     # Master type
-    PersistentMPI           # Simulator type
+    MPI                     # Simulator type
     ""                      # Postfix
     p                       # Parameter name
     "1\\n2\\n3\\n4\\n5"     # Parameter list
@@ -38,7 +38,7 @@ add_sweep_error_test (
 # Test if output matches expected output
 add_sweep_match_test (
     MPI                     # Master type
-    PersistentMPI           # Simulator type
+    MPI                     # Simulator type
     "Cpp"                   # Postfix
     p                       # Parameter name
     "1\\n2\\n3\\n4\\n5"     # Parameter list
@@ -47,7 +47,7 @@ add_sweep_match_test (
 # Test if Pakman throws error when simulator throws error
 add_sweep_error_test (
     MPI                     # Master type
-    PersistentMPI           # Simulator type
+    MPI                     # Simulator type
     "Cpp"                   # Postfix
     p                       # Parameter name
     "1\\n2\\n3\\n4\\n5"     # Parameter list
@@ -60,7 +60,7 @@ add_sweep_error_test (
 # Test if output matches expected output
 add_rejection_match_test (
     MPI             # Master type
-    PersistentMPI   # Simulator type
+    MPI             # Simulator type
     ""              # Postfix
     10              # Number of parameters
     p               # Parameter name
@@ -70,7 +70,7 @@ add_rejection_match_test (
 # Test if Pakman throws error when simulator throws error
 add_rejection_error_test (
     MPI             # Master type
-    PersistentMPI   # Simulator type
+    MPI             # Simulator type
     ""              # Postfix
     10              # Number of parameters
     p               # Parameter name
@@ -81,7 +81,7 @@ add_rejection_error_test (
 # Test if output matches expected output
 add_rejection_match_test (
     MPI             # Master type
-    PersistentMPI   # Simulator type
+    MPI             # Simulator type
     "Cpp"           # Postfix
     10              # Number of parameters
     p               # Parameter name
@@ -91,7 +91,7 @@ add_rejection_match_test (
 # Test if Pakman throws error when simulator throws error
 add_rejection_error_test (
     MPI             # Master type
-    PersistentMPI   # Simulator type
+    MPI             # Simulator type
     "Cpp"           # Postfix
     10              # Number of parameters
     p               # Parameter name
@@ -105,7 +105,7 @@ add_rejection_error_test (
 # Test if output matches expected output
 add_smc_match_test (
     MPI             # Master type
-    PersistentMPI   # Simulator type
+    MPI             # Simulator type
     ""              # Postfix
     10              # Number of parameters
     p               # Parameter name
@@ -115,7 +115,7 @@ add_smc_match_test (
 # Test if Pakman throws error when simulator throws error
 add_smc_error_test (
     MPI             # Master type
-    PersistentMPI   # Simulator type
+    MPI             # Simulator type
     ""              # Postfix
     10              # Number of parameters
     p               # Parameter name
@@ -126,7 +126,7 @@ add_smc_error_test (
 # Test if output matches expected output
 add_smc_match_test (
     MPI             # Master type
-    PersistentMPI   # Simulator type
+    MPI             # Simulator type
     "Cpp"           # Postfix
     10              # Number of parameters
     p               # Parameter name
@@ -136,7 +136,7 @@ add_smc_match_test (
 # Test if Pakman throws error when simulator throws error
 add_smc_error_test (
     MPI             # Master type
-    PersistentMPI   # Simulator type
+    MPI             # Simulator type
     "Cpp"           # Postfix
     10              # Number of parameters
     p               # Parameter name

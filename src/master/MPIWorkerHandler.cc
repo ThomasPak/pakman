@@ -7,17 +7,17 @@
 
 #include "AbstractWorkerHandler.h"
 
-#include "PersistentMPIWorkerHandler.h"
+#include "MPIWorkerHandler.h"
 
-// Initialize static child communicator of PersistentMPIWorkerHandler to the
+// Initialize static child communicator of MPIWorkerHandler to the
 // null communicators (MPI_COMM_NULL)
-MPI_Comm PersistentMPIWorkerHandler::m_child_comm = MPI_COMM_NULL;
+MPI_Comm MPIWorkerHandler::m_child_comm = MPI_COMM_NULL;
 
-PersistentMPIWorkerHandler::PersistentMPIWorkerHandler(const Command& command,
+MPIWorkerHandler::MPIWorkerHandler(const Command& command,
         const std::string& input_string) :
     AbstractWorkerHandler(command, input_string)
 {
-    // Spawn persistent MPI child process if it has not yet been spawned
+    // Spawn  MPI child process if it has not yet been spawned
     if (m_child_comm == MPI_COMM_NULL)
         m_child_comm = spawn_worker(m_command);
 
@@ -26,15 +26,15 @@ PersistentMPIWorkerHandler::PersistentMPIWorkerHandler(const Command& command,
             WORKER_RANK, MANAGER_MSG_TAG, m_child_comm);
 }
 
-PersistentMPIWorkerHandler::~PersistentMPIWorkerHandler()
+MPIWorkerHandler::~MPIWorkerHandler()
 {
-    // Just discard results, do not terminate persistent MPI child process
+    // Just discard results, do not terminate MPI child process
     discardResults();
 }
 
-void PersistentMPIWorkerHandler::terminate()
+void MPIWorkerHandler::terminate()
 {
-    // Discard results from persistent MPI child process
+    // Discard results from MPI child process
     discardResults();
 
     // Send termination signal
@@ -45,7 +45,7 @@ void PersistentMPIWorkerHandler::terminate()
     MPI_Comm_disconnect(&m_child_comm);
 }
 
-bool PersistentMPIWorkerHandler::isDone()
+bool MPIWorkerHandler::isDone()
 {
     // Probe for result if result has not yet been received
     if (    !m_result_received &&
@@ -64,17 +64,17 @@ bool PersistentMPIWorkerHandler::isDone()
     return m_result_received;
 }
 
-std::string PersistentMPIWorkerHandler::receiveMessage() const
+std::string MPIWorkerHandler::receiveMessage() const
 {
     return receive_string(m_child_comm, WORKER_RANK, WORKER_MSG_TAG);
 }
 
-int PersistentMPIWorkerHandler::receiveErrorCode() const
+int MPIWorkerHandler::receiveErrorCode() const
 {
     return receive_integer(m_child_comm, WORKER_RANK, WORKER_ERROR_CODE_TAG);
 }
 
-void PersistentMPIWorkerHandler::discardResults()
+void MPIWorkerHandler::discardResults()
 {
     // MPI does not provide process control, so
     // we can only wait for the simulation to finish
@@ -96,17 +96,17 @@ void PersistentMPIWorkerHandler::discardResults()
     }
 }
 
-void PersistentMPIWorkerHandler::terminatePersistent()
+void MPIWorkerHandler::terminateStatic()
 {
-    // If this function is called, the persistent Worker must be in an idle
-    // state, so it is not necessary to discard results from Worker.
+    // If this function is called, the Worker must be in an idle state, so it
+    // is not necessary to discard results from Worker.
 
-    // If m_child_comm is the null communicator, the persistent Worker has
-    // already been terminated, so nothing needs to be done.
+    // If m_child_comm is the null communicator, the Worker has already been
+    // terminated, so nothing needs to be done.
     if (m_child_comm == MPI_COMM_NULL)
         return;
 
-    // Else, send termination signal to persistent Worker
+    // Else, send termination signal to Worker
     int signal = TERMINATE_WORKER_SIGNAL;
     MPI_Send(&signal, 1, MPI_INT, WORKER_RANK, MANAGER_SIGNAL_TAG, m_child_comm);
 
