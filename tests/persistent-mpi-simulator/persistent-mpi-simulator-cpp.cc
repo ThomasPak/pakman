@@ -54,8 +54,7 @@ int main(int argc, char *argv[])
     MPI_Init(nullptr, nullptr);
 
     // Create MPI Worker
-    PakmanMPIWorker worker(&mpi_simulator,
-            PakmanMPIWorker::PAKMAN_O_PERSISTENT);
+    PakmanMPIWorker worker(&mpi_simulator);
 
     // Run MPI Worker
     worker.run(argc, argv);

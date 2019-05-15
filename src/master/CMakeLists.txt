@@ -11,7 +11,6 @@ add_library (master
     Manager.cc
     AbstractWorkerHandler.cc
     ForkedWorkerHandler.cc
-    MPIWorkerHandler.cc
     PersistentMPIWorkerHandler.cc
     )
 

@@ -12,7 +12,7 @@ class PakmanMPIWorker
 
         // Constructor
         PakmanMPIWorker(std::function<int(int, char**, const std::string&,
-                    std::string&)> simulator, int flags);
+                    std::string&)> simulator, int flags = PAKMAN_DEFAULT);
 
         // Destructor
         ~PakmanMPIWorker() = default;
@@ -21,10 +21,9 @@ class PakmanMPIWorker
         int run(int argc, char*argv[]);
 
         // Options
-        static constexpr int PAKMAN_DEFAULT          = 0b000;
-        static constexpr int PAKMAN_O_PERSISTENT     = 0b001;
-        static constexpr int PAKMAN_O_INITIALIZE_MPI = 0b010;
-        static constexpr int PAKMAN_O_FINALIZE_MPI   = 0b100;
+        static constexpr int PAKMAN_DEFAULT          = 0b00;
+        static constexpr int PAKMAN_O_INITIALIZE_MPI = 0b01;
+        static constexpr int PAKMAN_O_FINALIZE_MPI   = 0b10;
 
         // Exit status of run()
         static constexpr int PAKMAN_EXIT_SUCCESS = 0;
@@ -151,10 +150,6 @@ int PakmanMPIWorker::run(int argc, char*argv[])
                 return PAKMAN_EXIT_FAILURE;
                 }
         }
-
-        // If not persistent Worker, set loop condition to false
-        if (! (m_flags & PAKMAN_O_PERSISTENT))
-            continue_loop = false;
     }
 
     // Disconnect parent communicator

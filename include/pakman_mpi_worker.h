@@ -10,10 +10,9 @@
 #define PAKMAN_EXIT_SUCCESS 0
 #define PAKMAN_EXIT_FAILURE 1
 
-#define PAKMAN_DEFAULT          0b000
-#define PAKMAN_O_PERSISTENT     0b001
-#define PAKMAN_O_INITIALIZE_MPI 0b010
-#define PAKMAN_O_FINALIZE_MPI   0b100
+#define PAKMAN_DEFAULT          0b00
+#define PAKMAN_O_INITIALIZE_MPI 0b01
+#define PAKMAN_O_FINALIZE_MPI   0b10
 
 #define PAKMAN_ROOT                     0
 #define PAKMAN_MANAGER_MSG_TAG          2
@@ -174,10 +173,6 @@ int pakman_run_mpi_worker(
                 return PAKMAN_EXIT_FAILURE;
                 }
         }
-
-        /* If not persistent Worker, set loop condition to false */
-        if (! (flags & PAKMAN_O_PERSISTENT))
-            continue_loop = 0;
     }
 
     /* Disconnect parent communicator */

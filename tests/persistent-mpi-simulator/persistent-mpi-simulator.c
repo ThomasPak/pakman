@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     MPI_Init(NULL, NULL);
 
     /* Run MPI Worker */
-    pakman_run_mpi_worker(argc, argv, &mpi_simulator, PAKMAN_O_PERSISTENT);
+    pakman_run_mpi_worker(argc, argv, &mpi_simulator, PAKMAN_DEFAULT);
 
     /* Finalize MPI */
     MPI_Finalize();

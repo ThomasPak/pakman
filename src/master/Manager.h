@@ -18,7 +18,6 @@ class Manager
         enum worker_t
         {
             forked_worker,
-            mpi_worker,
             persistent_mpi_worker
         };
 

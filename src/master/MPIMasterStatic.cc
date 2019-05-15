@@ -39,12 +39,6 @@ Description:
   to communicate with pakman through MPI.  The MPI simulator must then be
   written with the header pakman_mpi_worker.h or PakmanMPIWorker.hpp.
 
-  If the optional arguments --mpi-simulator and --persistent are given, the
-  simulator is assumed to communicate through MPI and be persistent.  This
-  means that the simulator is not shut down when it is finished and has the
-  same lifetime as the program.  The flag PAKMAN_O_PERSISTENT must then be used
-  when running the pakman MPI worker.
-
   In order to maximize the number of CPU cycles devoted to the workers, the MPI
   master is implemented using an event loop.  The time spent sleeping at each
   iteration of the event loop can be adjusted using the optional argument
@@ -65,7 +59,6 @@ Description:
 
 MPI master options:
   -m, --mpi-simulator          simulator is spawned using MPI
-  -p, --persistent             MPI simulator is persistent
   -f, --force-host-spawn       force MPI simulator to spawn on same host
                                as manager (requires -m option)
   -t, --main-timeout=TIME      sleep for TIME ms in event loop (default 1)
@@ -74,14 +67,11 @@ MPI master options:
 )";
 }
 
-Manager::worker_t get_worker(bool mpi_simulator, bool persistent_simulator)
+Manager::worker_t get_worker(bool mpi_simulator)
 {
     if (mpi_simulator)
     {
-        if (persistent_simulator)
-            return Manager::persistent_mpi_worker;
-        else
-            return Manager::mpi_worker;
+        return Manager::persistent_mpi_worker;
     }
     else
         return Manager::forked_worker;
@@ -93,7 +83,6 @@ void MPIMaster::addLongOptions(LongOptions& lopts)
     lopts.add({"main-timeout", required_argument, nullptr, 't'});
     lopts.add({"kill-timeout", required_argument, nullptr, 'k'});
     lopts.add({"mpi-simulator", no_argument, nullptr, 'm'});
-    lopts.add({"persistent", no_argument, nullptr, 'p'});
     lopts.add({"force-host-spawn", no_argument, nullptr, 'f'});
 }
 
@@ -102,7 +91,6 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
 {
     // Initialize flags for mpi simulator and persistence
     bool mpi_simulator = false;
-    bool persistent_simulator = false;
 
     // Process optional arguments
     if (args.isOptionalArgumentSet("main-timeout"))
@@ -121,9 +109,6 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
     {
         mpi_simulator = true;
 
-        if (args.isOptionalArgumentSet("persistent"))
-            persistent_simulator = true;
-
         if (args.isOptionalArgumentSet("force-host-spawn"))
             force_host_spawn = true;
     }
@@ -131,12 +116,6 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
     {
         std::cout << "Error: option --mpi-simulator must be set "
             "if --force_host_spawn is set\n";
-        ::help(mpi, controller, EXIT_FAILURE);
-    }
-    else if (args.isOptionalArgumentSet("persistent"))
-    {
-        std::cout << "Error: option --mpi-simulator must be set "
-            "if --persistent is set\n";
         ::help(mpi, controller, EXIT_FAILURE);
     }
 
@@ -152,7 +131,7 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
 
     // Determine Worker type
     Manager::worker_t worker_type =
-        get_worker(mpi_simulator, persistent_simulator);
+        get_worker(mpi_simulator);
 
     // Create controller
     std::shared_ptr<AbstractController>

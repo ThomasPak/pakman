@@ -38,8 +38,6 @@ function (get_base_command _command
 
     # Append command based on simulator type
     if (simulator MATCHES "PersistentMPI")
-        string (APPEND command "--mpi-simulator --persistent ")
-    elseif (simulator MATCHES "MPI")
         string (APPEND command "--mpi-simulator ")
     endif ()
 
@@ -115,9 +113,6 @@ function (get_sweep_options _options
     elseif (simulator MATCHES "PersistentMPI")
         string (APPEND options
             "${PROJECT_BINARY_DIR}/tests/persistent-mpi-simulator/persistent-mpi-simulator ")
-    elseif (simulator MATCHES "MPI")
-        string (APPEND options
-            "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator ")
     endif ()
 
     string (APPEND options "'' ${return_code}\"")
@@ -225,9 +220,6 @@ function (get_rejection_options _options
     elseif (simulator MATCHES "PersistentMPI")
         string (APPEND options
             "${PROJECT_BINARY_DIR}/tests/persistent-mpi-simulator/persistent-mpi-simulator ")
-    elseif (simulator MATCHES "MPI")
-        string (APPEND options
-            "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator ")
     endif ()
 
     string (APPEND options "1 ${return_code}\"")
@@ -359,9 +351,6 @@ function (get_smc_options _options
     elseif (simulator MATCHES "PersistentMPI")
         string (APPEND options
             "${PROJECT_BINARY_DIR}/tests/persistent-mpi-simulator/persistent-mpi-simulator ")
-    elseif (simulator MATCHES "MPI")
-        string (APPEND options
-            "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator ")
     endif ()
 
     string (APPEND options "1 ${return_code}\"")
