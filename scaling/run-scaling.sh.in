@@ -9,7 +9,7 @@ then
     if [ $1 == "--help" ] || [ $1 == "-h" ]
     then
         echo $usage 1>&2
-        exit 1
+        exit 0
     fi
 fi
 
