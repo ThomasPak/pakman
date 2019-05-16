@@ -34,5 +34,7 @@ install: [ "$TRAVIS_OS_NAME" == "osx" ] && pip3 install --user matplotlib
 script:
   - mkdir build && cd build && cmake .. && make -j6 && ctest
   - cd scaling && ./run-scaling.sh
-  - cd ../examples/biased-coin-flip && ./run-cpp-example.sh 
-  - ./run-python-example.sh
+  - cd ../examples/biased-coin-flip && ./run-cpp-abc-rejection-serial-example.sh
+  - ./run-cpp-abc-smc-serial-example.sh
+  - ./run-python-abc-rejection-serial-example.sh
+  - ./run-python-abc-smc-serial-example.sh

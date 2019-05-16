@@ -1,0 +1,45 @@
+#!/bin/bash
+set -euo pipefail
+
+python=@PYTHON_EXECUTABLE@
+
+# Process arguments
+usage="Usage: $0 [num_accepted_parameters (default 10)]"
+
+if [ $# -ge 1 ]
+then
+    if [ $1 == "--help" ] || [ $1 == "-h" ]
+    then
+        echo $usage 1>&2
+        exit 0
+    fi
+fi
+
+if [ $# == 1 ]
+then
+    number_accept=$1
+else
+    number_accept=10
+fi
+
+# Run ABC rejection
+echo "Running ABC rejection with number-accept=$number_accept"
+"@PROJECT_BINARY_DIR@/src/pakman" serial rejection \
+    --number-accept=$number_accept \
+    --epsilon=0 \
+    --parameter-names=p \
+    --simulator="./simulator heads.txt" \
+    --prior-sampler="./prior-sampler 0 1" \
+    > cpp-abc-rejection-serial.out
+
+echo "Results saved in cpp-abc-rejection-serial.out"
+
+# Create histogram
+if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
+then
+    $python plot-histogram.py \
+        5 20 --epsilon 0 --inputfile cpp-abc-rejection-serial.out \
+        --bboxtight --outputfile cpp-abc-rejection-serial-histogram.png
+
+    echo "Histogram saved in cpp-abc-rejection-serial-histogram.png"
+fi

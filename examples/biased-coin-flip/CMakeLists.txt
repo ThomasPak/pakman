@@ -38,11 +38,17 @@ file (COPY heads.txt
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Configure shell scripts
-configure_script (run-python-example.sh.in
-    ${CMAKE_CURRENT_BINARY_DIR}/run-python-example.sh)
+configure_script (run-python-abc-rejection-serial-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-python-abc-rejection-serial-example.sh)
 
-configure_script (run-cpp-example.sh.in
-    ${CMAKE_CURRENT_BINARY_DIR}/run-cpp-example.sh)
+configure_script (run-python-abc-smc-serial-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-python-abc-smc-serial-example.sh)
+
+configure_script (run-cpp-abc-rejection-serial-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-cpp-abc-rejection-serial-example.sh)
+
+configure_script (run-cpp-abc-smc-serial-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-cpp-abc-smc-serial-example.sh)
 
 # Add executables
 add_executable (prior-sampler prior-sampler.cc)
