@@ -14,6 +14,13 @@ if (MPIEXEC_HOSTS_FLAGS)
     message ("Host flags are: ${MPIEXEC_HOSTS_FLAGS}")
 endif ()
 
+# When testing in Travis CI, mpiexec will use only on one process by default.
+# Since this would preclude Travis CI from testing Pakman with multiple
+# processes, we hardcode 2 processes in the Travis CI environment
+if ($ENV{TRAVIS})
+    set (MPIEXEC_MAX_NUMPROCS 2)
+endif ()
+
 # Find Python 3
 set (Python_ADDITIONAL_VERSIONS "3")
 include (FindPythonInterp)
