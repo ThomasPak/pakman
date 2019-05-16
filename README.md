@@ -1,5 +1,7 @@
 # Pakman
 
+[![Build Status](https://travis-ci.com/ThomasPak/pakman.svg?branch=master)](https://travis-ci.com/ThomasPak/pakman)
+
 A modular, efficient and portable tool for running parallel approximate
 Bayesian computation algorithms.
 
