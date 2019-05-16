@@ -1,3 +1,7 @@
+os:
+  - linux
+  - osx
+
 dist: xenial
 
 services:
@@ -20,6 +24,12 @@ addons:
       - python3-numpy
       - python3-matplotlib
       - python3-tk
+
+  homebrew:
+    packages:
+      - openmpi
+
+install: [ "$TRAVIS_OS_NAME" == "osx" ] && pip3 install --user matplotlib
 
 script:
   - mkdir build && cd build && cmake .. && make -j6 && ctest
