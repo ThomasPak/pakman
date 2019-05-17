@@ -29,7 +29,8 @@ addons:
     packages:
       - openmpi
 
-install: [ "$TRAVIS_OS_NAME" == "osx" ] && pip3 install --user matplotlib
+install:
+  - '[ "$TRAVIS_OS_NAME" == "osx" ] && pip3 install --user matplotlib || true'
 
 script:
   - mkdir build && cd build && cmake .. && make -j6 && ctest
