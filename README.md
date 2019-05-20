@@ -59,7 +59,7 @@ Examples of how to use Pakman can be found in the folder `examples` inside the
 build folder.  See the [wiki](https://github.com/ThomasPak/pakman/wiki) for
 further documentation.
 
-* [Biased coin](https://github.com/ThomasPak/pakman/wiki/Example:-biased-coin-flip)
+* [Biased coin and ABC rejection](https://github.com/ThomasPak/pakman/wiki/Example:-biased-coin-flip-and-ABC-rejection)
 
 # Testing on multiple nodes (advanced)
 
