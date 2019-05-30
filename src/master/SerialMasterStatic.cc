@@ -58,3 +58,8 @@ void SerialMaster::run(controller_t controller, const Arguments& args)
     p_master.reset();
     p_controller.reset();
 }
+
+// Static cleanup function
+void SerialMaster::cleanup()
+{
+}

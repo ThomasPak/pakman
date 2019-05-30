@@ -89,6 +89,15 @@ class AbstractMaster
         static void run(master_t master, controller_t controller,
                 const Arguments& args);
 
+        // Execute cleanup function based on master type
+        // When subclassing AbstractMaster, be sure to include a static method
+        // with the signature
+        //
+        // 'static void cleanup()'
+        //
+        // and add an entry in the switch statement of AbstractMaster::cleanup()
+        static void cleanup(master_t master);
+
     protected:
 
         /**** Member functions ****/

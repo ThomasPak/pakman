@@ -1,3 +1,5 @@
+#include <iostream>
+#include <exception>
 #include <chrono>
 
 #include <getopt.h>
@@ -140,7 +142,28 @@ int main(int argc, char *argv[])
     process_general_options(master, controller, args);
 
     // Execute appropriate run function
-    AbstractMaster::run(master, controller, args);
+    try
+    {
+        AbstractMaster::run(master, controller, args);
+    }
+    catch (const std::exception& e)
+    {
+        // Print error message
+        std::string error_msg;
+        error_msg += "An exception occurred while running ";
+        error_msg += program_name;
+        error_msg += "!\n";
+        error_msg += "  what(): ";
+        error_msg += e.what();
+        error_msg += "\n";
+        std::cerr << error_msg;
+
+        // Clean up
+        AbstractMaster::cleanup(master);
+
+        // Return nonzero exit code
+        return EXIT_FAILURE;
+    }
 
     // Exit
     return 0;

@@ -59,6 +59,9 @@ class SerialMaster : public AbstractMaster
         // Static run function
         static void run(controller_t controller, const Arguments& args);
 
+        // Static cleanup function
+        static void cleanup();
+
     private:
 
         /**** Member functions ****/

@@ -4,6 +4,10 @@ os:
 
 dist: xenial
 
+env:
+  - MPI_LIBRARY=openmpi
+  - MPI_LIBRARY=mpich
+
 services:
   - xvfb
 
@@ -20,20 +24,50 @@ addons:
       - cmake
       - libopenmpi-dev
       - openmpi-bin
+      - mpich
+      - libmpich-dev
       - python3
       - python3-numpy
       - python3-matplotlib
       - python3-tk
 
-  homebrew:
-    packages:
-      - openmpi
+        #  homebrew:
+        #    packages:
+        #      - openmpi
+        #        #- mpich
 
 install:
-  - '[ "$TRAVIS_OS_NAME" == "osx" ] && pip3 install --user matplotlib || true'
+  - |
+    if [ "$TRAVIS_OS_NAME" == "osx" ]
+    then
+      pip3 install --user matplotlib
+
+      if [ "$MPI_LIBRARY" = "openmpi" ]
+      then
+        echo 'brew "openmpi"' > Brewfile
+      elif [ "$MPI_LIBRARY" = "mpich" ]
+      then
+        echo 'brew "mpich"' > Brewfile
+      fi
+
+      rvm $brew_ruby do brew bundle --verbose
+    fi
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ]
+    then
+      if [ "$MPI_LIBRARY" = "openmpi" ]
+      then
+        sudo update-alternatives --set mpi /usr/lib/openmpi/include
+        sudo update-alternatives --set mpirun /usr/bin/mpirun.openmpi
+      elif [ "$MPI_LIBRARY" = "mpich" ]
+      then
+        sudo update-alternatives --set mpi /usr/include/mpich
+        sudo update-alternatives --set mpirun /usr/bin/mpirun.mpich
+      fi
+    fi
 
 script:
-  - mkdir build && cd build && cmake .. && make -j6 && ctest
+  - mkdir build && cd build && cmake .. && make -j6 && ctest --verbose
   - cd scaling && ./run-scaling.sh
   - cd ../examples/biased-coin-flip && ./run-cpp-abc-rejection-serial-example.sh
   - ./run-cpp-abc-smc-serial-example.sh

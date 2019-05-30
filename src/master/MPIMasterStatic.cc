@@ -11,6 +11,7 @@
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 #include "system/signal_handler.h"
+#include "mpi/mpi_utils.h"
 #include "main/help.h"
 
 #include "Manager.h"
@@ -182,4 +183,26 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
 
     // Finalize
     MPI_Finalize();
+}
+
+// Static cleanup function
+void MPIMaster::cleanup()
+{
+    // Terminate all managers
+    int comm_size = get_mpi_comm_world_size();
+    int signal = TERMINATE_MANAGER_SIGNAL;
+
+    for (int manager_rank = 1; manager_rank < comm_size; manager_rank++)
+        MPI_Send(&signal, 1, MPI_INT, manager_rank,
+                MASTER_SIGNAL_TAG, MPI_COMM_WORLD);
+
+    // Terminate Worker associated with MPI process with rank 0
+    MPIWorkerHandler::terminateStatic();
+
+    // Finalize MPI if not yet finalized
+    int is_finalized = 0;
+    MPI_Finalized(&is_finalized);
+
+    if (!is_finalized)
+        MPI_Finalize();
 }

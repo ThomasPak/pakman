@@ -74,3 +74,20 @@ void AbstractMaster::run(master_t master, controller_t controller,
                     "AbstractMaster::run");
     }
 }
+
+void AbstractMaster::cleanup(master_t master)
+{
+    switch (master)
+    {
+        case serial:
+            SerialMaster::cleanup();
+            return;
+        case mpi:
+            MPIMaster::cleanup();
+            return;
+        default:
+            throw std::runtime_error(
+                    "Invalid master type in "
+                    "AbstractMaster::cleanup");
+    }
+}
