@@ -28,11 +28,11 @@ echo "Running ABC SMC with population-size=$pop_size"
     --population-size=$pop_size \
     --epsilons=2,1,0 \
     --parameter-names=p \
-    --simulator="./simulator heads.txt" \
-    --prior-sampler="./prior-sampler 0 1" \
-    --perturber="./perturber 0.1" \
-    --prior-pdf="./prior-pdf 0 1" \
-    --perturbation-pdf="./perturbation-pdf 0.1" \
+    --simulator="./coin-simulator heads.txt" \
+    --prior-sampler="./coin-prior-sampler 0 1" \
+    --perturber="./coin-perturber 0.1" \
+    --prior-pdf="./coin-prior-pdf 0 1" \
+    --perturbation-pdf="./coin-perturbation-pdf 0.1" \
     > cpp-abc-smc-serial.out
 
 echo "Results saved in cpp-abc-smc-serial.out"

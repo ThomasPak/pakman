@@ -52,8 +52,8 @@ configure_script (plot-histogram.py.in
     ${CMAKE_CURRENT_BINARY_DIR}/plot-histogram.py)
 
 # Add executables
-add_executable (prior-sampler prior-sampler.cc)
-add_executable (simulator simulator.cc)
-add_executable (prior-pdf prior-pdf.cc)
-add_executable (perturber perturber.cc)
-add_executable (perturbation-pdf perturbation-pdf.cc)
+add_executable (coin-prior-sampler prior-sampler.cc)
+add_executable (coin-simulator simulator.cc)
+add_executable (coin-prior-pdf prior-pdf.cc)
+add_executable (coin-perturber perturber.cc)
+add_executable (coin-perturbation-pdf perturbation-pdf.cc)

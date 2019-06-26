@@ -28,8 +28,8 @@ echo "Running ABC rejection with number-accept=$number_accept"
     --number-accept=$number_accept \
     --epsilon=0 \
     --parameter-names=p \
-    --simulator="./simulator heads.txt" \
-    --prior-sampler="./prior-sampler 0 1" \
+    --simulator="./coin-simulator heads.txt" \
+    --prior-sampler="./coin-prior-sampler 0 1" \
     > cpp-abc-rejection-serial.out
 
 echo "Results saved in cpp-abc-rejection-serial.out"
