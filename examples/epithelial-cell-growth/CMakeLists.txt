@@ -10,8 +10,6 @@ if (NOT DEFINED CHASTE_DIR)
     set (CHASTE_DIR "$ENV{CHASTE_DIR}")
 endif ()
 
-message ("CHASTE_DIR: ${CHASTE_DIR}")
-
 # Check if $CHASTE_DIR/projects/chaste-project already exists
 if (EXISTS "${CHASTE_DIR}/projects/chaste-project")
     message (WARNING "The directory ${CHASTE_DIR}/projects/chaste-project already exists, "
