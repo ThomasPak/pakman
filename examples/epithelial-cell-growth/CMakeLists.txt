@@ -59,14 +59,14 @@ file (COPY chaste-project
 file (COPY prior-sampler.cc
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-#file (COPY perturber.cc
-#    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-#
-#file (COPY prior-pdf.cc
-#    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-#
-#file (COPY perturbation-pdf.cc
-#    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file (COPY perturber.cc
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY prior-pdf.cc
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY perturbation-pdf.cc
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Copy data file
 file (COPY cell_count.txt
@@ -76,8 +76,8 @@ file (COPY cell_count.txt
 configure_script (run-abc-rejection-serial-example.sh.in
     ${CMAKE_CURRENT_BINARY_DIR}/run-abc-rejection-serial-example.sh)
 
-#configure_script (run-abc-smc-serial-example.sh.in
-#    ${CMAKE_CURRENT_BINARY_DIR}/run-abc-smc-serial-example.sh)
+configure_script (run-abc-smc-serial-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-abc-smc-serial-example.sh)
 
 # Configure Python script
 #configure_script (plot-histogram.py.in
@@ -85,6 +85,6 @@ configure_script (run-abc-rejection-serial-example.sh.in
 
 # Add executables
 add_executable (cell-prior-sampler prior-sampler.cc)
-#add_executable (sis-prior-pdf prior-pdf.cc)
-#add_executable (sis-perturber perturber.cc)
-#add_executable (sis-perturbation-pdf perturbation-pdf.cc)
+add_executable (cell-prior-pdf prior-pdf.cc)
+add_executable (cell-perturber perturber.cc)
+add_executable (cell-perturbation-pdf perturbation-pdf.cc)
