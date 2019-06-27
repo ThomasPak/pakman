@@ -31,4 +31,8 @@ mpirun -n 1 "@PROJECT_BINARY_DIR@/src/pakman" mpi rejection \
     --prior-sampler="./cell-prior-sampler 0 30" \
     > abc-rejection-serial.out
 
+# Remove Chaste warnings
+grep -v 'Chaste warning' abc-rejection-serial.out > tmp
+mv tmp abc-rejection-serial.out
+
 echo "Results saved in abc-rejection-serial.out"
