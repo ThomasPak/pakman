@@ -1,0 +1,34 @@
+#!/bin/bash
+set -euo pipefail
+
+# Process arguments
+usage="Usage: $0 [num_accepted_parameters (default 10)]"
+
+if [ $# -ge 1 ]
+then
+    if [ $1 == "--help" ] || [ $1 == "-h" ]
+    then
+        echo $usage 1>&2
+        exit 0
+    fi
+fi
+
+if [ $# == 1 ]
+then
+    number_accept=$1
+else
+    number_accept=10
+fi
+
+# Run ABC rejection
+echo "Running ABC rejection with number-accept=$number_accept"
+mpirun -n 1 "@PROJECT_BINARY_DIR@/src/pakman" mpi rejection \
+    --mpi-simulator \
+    --number-accept=$number_accept \
+    --epsilon=0 \
+    --parameter-names=tcycle \
+    --simulator="./cell-simulator cell_count.txt" \
+    --prior-sampler="./cell-prior-sampler 0 30" \
+    > abc-rejection-serial.out
+
+echo "Results saved in abc-rejection-serial.out"
