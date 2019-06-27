@@ -22,7 +22,9 @@ fi
 
 # Run ABC rejection
 echo "Running ABC rejection with number-accept=$number_accept"
-mpirun -n 1 "@PROJECT_BINARY_DIR@/src/pakman" mpi rejection \
+@MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ 1 \
+    @MPIEXEC_PREFLAGS@ "@PROJECT_BINARY_DIR@/src/pakman" @MPIEXEC_POSTFLAGS@ \
+    mpi rejection \
     --mpi-simulator \
     --number-accept=$number_accept \
     --epsilon=0 \
