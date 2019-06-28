@@ -33,9 +33,7 @@ add_custom_command (OUTPUT cell-simulator
     COMMAND echo "Building Chaste simulator"
     COMMAND echo '******************'
     COMMAND rm -rf "${CHASTE_DIR}/projects/chaste-project"
-    COMMAND cp -r "${CMAKE_CURRENT_SOURCE_DIR}/chaste-project" "${CHASTE_DIR}/projects"
-    COMMAND cp "${PROJECT_SOURCE_DIR}/include/pakman_mpi_worker.h"
-    "${CHASTE_DIR}/projects/chaste-project/src"
+    COMMAND ln -s "${CMAKE_CURRENT_SOURCE_DIR}/chaste-project" "${CHASTE_DIR}/projects"
     COMMAND cmake -B"${CHASTE_BUILD_DIR}" -H"${CHASTE_DIR}"
     COMMAND make -C "${CHASTE_BUILD_DIR}" VertexBasedMonolayerSimulator
     COMMAND cp
