@@ -31,15 +31,16 @@ endif ()
 add_custom_target (chaste-test ALL DEPENDS cell-simulator)
 add_custom_command (OUTPUT cell-simulator
     COMMAND echo "Building Chaste simulator"
-    COMMAND echo '******************'
+    COMMAND echo '************************************'
     COMMAND rm -rf "${CHASTE_DIR}/projects/chaste-project"
     COMMAND ln -s "${CMAKE_CURRENT_SOURCE_DIR}/chaste-project" "${CHASTE_DIR}/projects"
     COMMAND cmake -B"${CHASTE_BUILD_DIR}" -H"${CHASTE_DIR}"
-    COMMAND make -C "${CHASTE_BUILD_DIR}" VertexBasedMonolayerSimulator
+    COMMAND cmake --build "${CHASTE_BUILD_DIR}" --target
+    VertexBasedMonolayerSimulator -- ${CHASTE_BUILD_OPTIONS}
     COMMAND cp
     "${CHASTE_BUILD_DIR}/projects/chaste-project/apps/VertexBasedMonolayerSimulator"
     cell-simulator
-    COMMAND echo '******************'
+    COMMAND echo '************************************'
     COMMAND echo "Done building Chaste simulator"
     MAIN_DEPENDENCY chaste-project/apps/src/VertexBasedMonolayerSimulator.cpp
     DEPENDS chaste-project/src/VertexBasedMonolayerSimulation.cpp
