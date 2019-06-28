@@ -34,8 +34,12 @@ void ABCRejectionController::iterate()
     entered = true;
 
     // Check if there are any new accepted parameters
-    while (!m_p_master->finishedTasksEmpty())
+    while (!m_p_master->finishedTasksEmpty()
+            && m_prmtr_accepted.size() < m_number_accept)
     {
+        // Increment counter
+        m_number_simulated++;
+
         // Get reference to front finished task
         AbstractMaster::TaskHandler& task = m_p_master->frontFinishedTask();
 
@@ -71,11 +75,12 @@ void ABCRejectionController::iterate()
 
     // If enough parameters have been accepted, print them and terminate Master
     // and Managers.
-    if (m_prmtr_accepted.size() >= m_number_accept)
+    if (m_prmtr_accepted.size() == m_number_accept)
     {
-        // Trim any superfluous parameters
-        while (m_prmtr_accepted.size() > m_number_accept)
-            m_prmtr_accepted.pop_back();
+        // Print message
+        fprintf(stderr, "Accepted/simulated: %d/%d (%5.2f%%)\n",
+                m_number_accept, m_number_simulated, (100.0 * m_number_accept /
+                    (double) m_number_simulated));
 
         // Print accepted parameters
         write_parameters(std::cout, m_parameter_names, m_prmtr_accepted);

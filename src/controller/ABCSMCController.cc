@@ -39,13 +39,26 @@ void ABCSMCController::iterate()
     if (entered) throw;
     entered = true;
 
+    // Display message if first iteration
+    static bool first = true;
+    if (first)
+    {
+        std::cerr << "Computing generation " << m_t << ", epsilon = " <<
+            m_epsilons[m_t].str() << std::endl;
+        first = false;
+    }
+
     // If m_t is equal to the number of epsilons, something went wrong because
     // the algorithm should have finished
     assert(m_t < m_epsilons.size());
 
     // Check if there are any new accepted parameters
-    while (!m_p_master->finishedTasksEmpty())
+    while (!m_p_master->finishedTasksEmpty()
+            && m_prmtr_accepted_new.size() < m_population_size)
     {
+        // Increment counter
+        m_number_simulated++;
+
         // Get reference to front finished task
         AbstractMaster::TaskHandler& task = m_p_master->frontFinishedTask();
 
@@ -93,14 +106,13 @@ void ABCSMCController::iterate()
     // are in the last generation.  If we are in the last generation, then
     // print the accepted parameters and terminate Master.  If we are not in
     // the last generation, then swap the weights and populations
-    if (m_prmtr_accepted_new.size() >= m_population_size)
+    if (m_prmtr_accepted_new.size() == m_population_size)
     {
-        // Trim any superfluous parameters
-        while (m_prmtr_accepted_new.size() > m_population_size)
-        {
-            m_prmtr_accepted_new.pop_back();
-            m_weights_new.pop_back();
-        }
+        // Print message
+        fprintf(stderr, "Accepted/simulated: %d/%d (%5.2f%%)\n",
+                m_population_size, m_number_simulated, (100.0 * m_population_size /
+                    (double) m_number_simulated));
+        m_number_simulated = 0;
 
         // Increment generation counter
         m_t++;
@@ -128,6 +140,10 @@ void ABCSMCController::iterate()
         // Flush Master
         m_p_master->flush();
         entered = false;
+
+        // Print message
+        std::cerr << "Computing generation " << m_t << ", epsilon = " <<
+            m_epsilons[m_t].str() << std::endl;
         return;
     }
 

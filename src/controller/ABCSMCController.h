@@ -88,6 +88,9 @@ class ABCSMCController : public AbstractController
         // New weights
         std::vector<double> m_weights_new;
 
+        // Number of parameters simulated
+        int m_number_simulated = 0;
+
         // Simulator command
         Command m_simulator;
 };

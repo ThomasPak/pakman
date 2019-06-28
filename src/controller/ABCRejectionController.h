@@ -74,6 +74,9 @@ class ABCRejectionController : public AbstractController
         // Vector of accepted parameters
         std::vector<Parameter> m_prmtr_accepted;
 
+        // Number of parameters simulated
+        int m_number_simulated = 0;
+
         // Simulator command
         Command m_simulator;
 };
