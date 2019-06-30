@@ -55,7 +55,6 @@ install:
         tar -xzf openmpi-4.0.1.tar.gz
         rm openmpi-4.0.1.tar.gz
         echo "Configuring and building openmpi source."
-        mkdir openmpi-4.0.1-build
         cd openmpi-4.0.1
         mkdir build
         cd build
@@ -78,7 +77,6 @@ install:
         tar -xzf mpich-3.3.1.tar.gz
         rm mpich-3.3.1.tar.gz
         echo "Configuring and building mpich source."
-        mkdir mpich-3.3.1-build
         cd mpich-3.3.1
         mkdir build
         cd build
