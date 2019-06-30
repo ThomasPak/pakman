@@ -91,8 +91,14 @@ script:
   - mkdir build && cd build && cmake .. && make -j6 && ctest --verbose
   - cd scaling && ./run-scaling.sh
   - cd ../examples/biased-coin-flip && ./run-cpp-abc-rejection-serial-example.sh
+  - ./run-cpp-abc-rejection-mpi-example.sh
   - ./run-cpp-abc-smc-serial-example.sh
+  - ./run-cpp-abc-smc-mpi-example.sh
   - ./run-python-abc-rejection-serial-example.sh
+  - ./run-python-abc-rejection-mpi-example.sh
   - ./run-python-abc-smc-serial-example.sh
+  - ./run-python-abc-smc-mpi-example.sh
   - cd ../sis-model && ./run-abc-rejection-serial-example.sh
+  - ./run-abc-rejection-mpi-example.sh
   - ./run-abc-smc-serial-example.sh
+  - ./run-abc-smc-mpi-example.sh

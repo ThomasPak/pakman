@@ -47,6 +47,18 @@ configure_script (run-cpp-abc-rejection-serial-example.sh.in
 configure_script (run-cpp-abc-smc-serial-example.sh.in
     ${CMAKE_CURRENT_BINARY_DIR}/run-cpp-abc-smc-serial-example.sh)
 
+configure_script (run-python-abc-rejection-mpi-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-python-abc-rejection-mpi-example.sh)
+
+configure_script (run-python-abc-smc-mpi-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-python-abc-smc-mpi-example.sh)
+
+configure_script (run-cpp-abc-rejection-mpi-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-cpp-abc-rejection-mpi-example.sh)
+
+configure_script (run-cpp-abc-smc-mpi-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-cpp-abc-smc-mpi-example.sh)
+
 # Configure Python script
 configure_script (plot-histogram.py.in
     ${CMAKE_CURRENT_BINARY_DIR}/plot-histogram.py)

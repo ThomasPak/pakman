@@ -1,0 +1,43 @@
+#!/bin/bash
+set -euo pipefail
+
+# Process arguments
+usage="Usage: $0 [population_size (default 10)]"
+
+if [ $# -ge 1 ]
+then
+    if [ $1 == "--help" ] || [ $1 == "-h" ]
+    then
+        echo $usage 1>&2
+        exit 0
+    fi
+fi
+
+if [ $# == 1 ]
+then
+    pop_size=$1
+else
+    pop_size=10
+fi
+
+# Run ABC smc
+echo "Running ABC SMC with population-size=$pop_size"
+@MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ @MPIEXEC_MAX_NUMPROCS@ \
+    @MPIEXEC_PREFLAGS@ "@PROJECT_BINARY_DIR@/src/pakman" @MPIEXEC_POSTFLAGS@ \
+    mpi smc \
+    --mpi-simulator \
+    --population-size=$pop_size \
+    --epsilons=2,1,0 \
+    --parameter-names=tcycle \
+    --simulator="./cell-simulator cell_count.txt" \
+    --prior-sampler="./cell-prior-sampler 0 30" \
+    --prior-pdf="./cell-prior-pdf 0 30" \
+    --perturber="./cell-perturber 2" \
+    --perturbation-pdf="./cell-perturbation-pdf 2" \
+    > abc-smc-mpi.out
+
+# Remove Chaste warnings
+grep -v 'Chaste warning' abc-smc-mpi.out > tmp
+mv tmp abc-smc-mpi.out
+
+echo "Results saved in abc-smc-mpi.out"

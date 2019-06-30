@@ -78,6 +78,12 @@ configure_script (run-abc-rejection-serial-example.sh.in
 configure_script (run-abc-smc-serial-example.sh.in
     ${CMAKE_CURRENT_BINARY_DIR}/run-abc-smc-serial-example.sh)
 
+configure_script (run-abc-rejection-mpi-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-abc-rejection-mpi-example.sh)
+
+configure_script (run-abc-smc-mpi-example.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-abc-smc-mpi-example.sh)
+
 # Configure Python script
 #configure_script (plot-histogram.py.in
 #    ${CMAKE_CURRENT_BINARY_DIR}/plot-histogram.py)

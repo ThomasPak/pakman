@@ -1,0 +1,38 @@
+#!/bin/bash
+set -euo pipefail
+
+# Process arguments
+usage="Usage: $0 [population_size (default 10)]"
+
+if [ $# -ge 1 ]
+then
+    if [ $1 == "--help" ] || [ $1 == "-h" ]
+    then
+        echo $usage 1>&2
+        exit 0
+    fi
+fi
+
+if [ $# == 1 ]
+then
+    pop_size=$1
+else
+    pop_size=10
+fi
+
+# Run ABC smc
+echo "Running ABC SMC with population-size=$pop_size"
+@MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ @MPIEXEC_MAX_NUMPROCS@ \
+    @MPIEXEC_PREFLAGS@ \
+    "@PROJECT_BINARY_DIR@/src/pakman" mpi smc \
+    --population-size=$pop_size \
+    --epsilon=75,70,65,60,55,50,45,40,35 \
+    --parameter-names=beta,gamma \
+    --simulator="./sis-simulator 100 1 40 10 S_data.txt" \
+    --prior-sampler="./sis-prior-sampler 0 0.06 0 2" \
+    --perturber="./sis-perturber 0.006 0.2" \
+    --prior-pdf="./sis-prior-pdf 0 0.06 0 2" \
+    --perturbation-pdf="./sis-perturbation-pdf 0.006 0.2" \
+    > abc-smc-mpi.out
+
+echo "Results saved in abc-smc-mpi.out"

@@ -1,0 +1,50 @@
+#!/bin/bash
+set -euo pipefail
+
+python=@PYTHON_EXECUTABLE@
+
+# Process arguments
+usage="Usage: $0 [population_size (default 10)]"
+
+if [ $# -ge 1 ]
+then
+    if [ $1 == "--help" ] || [ $1 == "-h" ]
+    then
+        echo $usage 1>&2
+        exit 0
+    fi
+fi
+
+if [ $# == 1 ]
+then
+    pop_size=$1
+else
+    pop_size=10
+fi
+
+# Run ABC smc
+echo "Running ABC SMC with population-size=$pop_size"
+@MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ @MPIEXEC_MAX_NUMPROCS@ \
+    @MPIEXEC_PREFLAGS@ \
+    "@PROJECT_BINARY_DIR@/src/pakman" @MPIEXEC_POSTFLAGS@ mpi smc \
+    --population-size=$pop_size \
+    --epsilons=2,1,0 \
+    --parameter-names=p \
+    --simulator="./coin-simulator heads.txt" \
+    --prior-sampler="./coin-prior-sampler 0 1" \
+    --perturber="./coin-perturber 0.1" \
+    --prior-pdf="./coin-prior-pdf 0 1" \
+    --perturbation-pdf="./coin-perturbation-pdf 0.1" \
+    > cpp-abc-smc-mpi.out
+
+echo "Results saved in cpp-abc-smc-mpi.out"
+
+# Create histogram
+if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
+then
+    $python plot-histogram.py \
+        5 20 --epsilon 0 --inputfile cpp-abc-smc-mpi.out \
+        --bboxtight --outputfile cpp-abc-smc-mpi-histogram.png
+
+    echo "Histogram saved in cpp-abc-smc-mpi-histogram.png"
+fi
