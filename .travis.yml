@@ -18,53 +18,61 @@ compiler:
   - gcc
 
 addons:
+  homebrew:
+    update: true
+    packages:
+    - cmake
   apt:
     update: true
     packages:
       - cmake
-      - libopenmpi-dev
-      - openmpi-bin
-      - mpich
-      - libmpich-dev
       - python3
       - python3-numpy
       - python3-matplotlib
       - python3-tk
-
-        #  homebrew:
-        #    packages:
-        #      - openmpi
-        #        #- mpich
 
 install:
   - |
     if [ "$TRAVIS_OS_NAME" == "osx" ]
     then
       pip3 install --user matplotlib
-
-      if [ "$MPI_LIBRARY" = "openmpi" ]
-      then
-        echo 'brew "openmpi"' > Brewfile
-      elif [ "$MPI_LIBRARY" = "mpich" ]
-      then
-        echo 'brew "mpich"' > Brewfile
-      fi
-
-      rvm $brew_ruby do brew bundle --verbose
     fi
   - |
-    if [ "$TRAVIS_OS_NAME" == "linux" ]
+    pushd "$HOME"
+    if [ "$MPI_LIBRARY" = "openmpi" ]
     then
-      if [ "$MPI_LIBRARY" = "openmpi" ]
-      then
-        sudo update-alternatives --set mpi /usr/lib/openmpi/include
-        sudo update-alternatives --set mpirun /usr/bin/mpirun.openmpi
-      elif [ "$MPI_LIBRARY" = "mpich" ]
-      then
-        sudo update-alternatives --set mpi /usr/include/mpich
-        sudo update-alternatives --set mpirun /usr/bin/mpirun.mpich
-      fi
+      wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.1.tar.gz
+      tar -xzf openmpi-4.0.1.tar.gz
+      rm openmpi-4.0.1.tar.gz
+      mkdir openmpi-4.0.1-build
+      cd openmpi-4.0.1
+      mkdir build
+      cd build
+      ../configure --prefix="$HOME/openmpi-4.0.1-build"
+      make -j6
+      make install
+      cd
+      rm -rf openmpi-4.0.1
+      export PATH="$HOME/openmpi-4.0.1-build/bin:$PATH"
+      export LD_LIBRARY_PATH="$HOME/openmpi-4.0.1-build/bin:$LD_LIBRARY_PATH"
+    elif [ "$MPI_LIBRARY" = "mpich" ]
+    then
+      wget http://www.mpich.org/static/downloads/3.3.1/mpich-3.3.1.tar.gz
+      tar -xzf mpich-3.3.1.tar.gz
+      rm mpich-3.3.1.tar.gz
+      mkdir mpich-3.3.1-build
+      cd mpich-3.3.1
+      mkdir build
+      cd build
+      ../configure --prefix="$HOME/mpich-3.3.1-build" --disable-fortran
+      make -j6
+      make install
+      cd
+      rm -rf mpich-3.3.1
+      export PATH="$HOME/mpich-3.3.1-build/bin:$PATH"
+      export LD_LIBRARY_PATH="$HOME/mpich-3.3.1-build/bin:$LD_LIBRARY_PATH"
     fi
+    popd
 
 script:
   - mkdir build && cd build && cmake .. && make -j6 && ctest --verbose
