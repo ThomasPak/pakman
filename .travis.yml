@@ -10,8 +10,8 @@ env:
 
 cache:
   directories:
-  - $HOME/mpich-3.3.1-build
-  - $HOME/openmpi-4.0.1-build
+  - mpich-3.3.1-build
+  - openmpi-4.0.1-build
 
 services:
   - xvfb
@@ -43,7 +43,6 @@ install:
       pip3 install --user matplotlib
     fi
   - |
-    pushd "$HOME"
     if [ "$MPI_LIBRARY" = "openmpi" ]
     then
       if [ -f "openmpi-4.0.1-build/bin/mpiexec" ]
@@ -56,16 +55,14 @@ install:
         rm openmpi-4.0.1.tar.gz
         echo "Configuring and building openmpi source."
         cd openmpi-4.0.1
-        mkdir build
-        cd build
-        ../configure --prefix="$HOME/openmpi-4.0.1-build"
+        ../configure --prefix="$(pwd)/../openmpi-4.0.1-build"
         make -j6
         make install
-        cd
+        cd -
         rm -rf openmpi-4.0.1
       fi
-      export PATH="$HOME/openmpi-4.0.1-build/bin:$PATH"
-      export LD_LIBRARY_PATH="$HOME/openmpi-4.0.1-build/bin:$LD_LIBRARY_PATH"
+      export PATH="$(pwd)/openmpi-4.0.1-build/bin:$PATH"
+      export LD_LIBRARY_PATH="$(pwd)/openmpi-4.0.1-build/bin:$LD_LIBRARY_PATH"
     elif [ "$MPI_LIBRARY" = "mpich" ]
     then
       if [ -f "mpich-3.3.1-build/bin/mpiexec" ]
@@ -78,18 +75,15 @@ install:
         rm mpich-3.3.1.tar.gz
         echo "Configuring and building mpich source."
         cd mpich-3.3.1
-        mkdir build
-        cd build
-        ../configure --prefix="$HOME/mpich-3.3.1-build" --disable-fortran
+        ../configure --prefix="$(pwd)/../mpich-3.3.1-build" --disable-fortran
         make -j6
         make install
-        cd
+        cd -
         rm -rf mpich-3.3.1
       fi
-      export PATH="$HOME/mpich-3.3.1-build/bin:$PATH"
-      export LD_LIBRARY_PATH="$HOME/mpich-3.3.1-build/bin:$LD_LIBRARY_PATH"
+      export PATH="$(pwd)/mpich-3.3.1-build/bin:$PATH"
+      export LD_LIBRARY_PATH="$(pwd)/mpich-3.3.1-build/bin:$LD_LIBRARY_PATH"
     fi
-    popd
 
 script:
   - mkdir build && cd build && cmake .. && make -j6 && ctest --verbose
