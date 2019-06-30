@@ -10,8 +10,8 @@ env:
 
 cache:
   directories:
-  - /home/travis/mpich-3.3.1-build
-  - /home/travis/openmpi-4.0.1-build
+  - $HOME/mpich-3.3.1-build
+  - $HOME/openmpi-4.0.1-build
 
 services:
   - xvfb
