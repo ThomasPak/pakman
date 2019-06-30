@@ -87,6 +87,7 @@ endfunction ()
 # Function to make sweep options
 function (get_sweep_options _options
         simulator
+        postfix
         return_code
         parameter_names
         parameter_list)
@@ -111,8 +112,13 @@ function (get_sweep_options _options
         string (APPEND options
             "${PROJECT_BINARY_DIR}/tests/standard-simulator/standard-simulator ")
     elseif (simulator MATCHES "MPI")
-        string (APPEND options
-            "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator ")
+        if (postfix MATCHES "Cpp")
+            string (APPEND options
+                "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator-cpp ")
+        else ()
+            string (APPEND options
+                "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator ")
+        endif ()
     endif ()
 
     string (APPEND options "'' ${return_code}\"")
@@ -150,7 +156,8 @@ function (add_sweep_match_test
     get_base_command (command ${master} Sweep ${simulator} Match)
 
     # Get sweep options
-    get_sweep_options (options ${simulator} 0 ${parameter_names} ${parameter_list})
+    get_sweep_options (options ${simulator} "${postfix}" 0 ${parameter_names}
+        ${parameter_list})
 
     # Append options to base command
     list (APPEND command ${options})
@@ -174,7 +181,8 @@ function (add_sweep_error_test
     get_base_command (command ${master} Sweep ${simulator} Error)
 
     # Get sweep options
-    get_sweep_options (options ${simulator} 1 ${parameter_names} ${parameter_list})
+    get_sweep_options (options ${simulator} "${postfix}" 1 ${parameter_names}
+        ${parameter_list})
 
     # Append options to base command
     list (APPEND command ${options})
@@ -188,6 +196,7 @@ endfunction ()
 # Function to make rejection options
 function (get_rejection_options _options
         simulator
+        postfix
         return_code
         parameter_names
         sampled_parameter
@@ -218,8 +227,13 @@ function (get_rejection_options _options
         string (APPEND options
             "${PROJECT_BINARY_DIR}/tests/standard-simulator/standard-simulator ")
     elseif (simulator MATCHES "MPI")
-        string (APPEND options
-            "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator ")
+        if (postfix MATCHES "Cpp")
+            string (APPEND options
+                "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator-cpp ")
+        else ()
+            string (APPEND options
+                "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator ")
+        endif ()
     endif ()
 
     string (APPEND options "1 ${return_code}\"")
@@ -269,7 +283,7 @@ function (add_rejection_match_test
     get_base_command (command ${master} Rejection ${simulator} Match)
 
     # Get rejection options
-    get_rejection_options (options ${simulator} 0 ${parameter_names}
+    get_rejection_options (options ${simulator} "${postfix}" 0 ${parameter_names}
         ${sampled_parameter} ${number_of_parameters})
 
     # Append options to base command
@@ -295,7 +309,7 @@ function (add_rejection_error_test
     get_base_command (command ${master} Rejection ${simulator} Error)
 
     # Get rejection options
-    get_rejection_options (options ${simulator} 1 ${parameter_names}
+    get_rejection_options (options ${simulator} "${postfix}" 1 ${parameter_names}
         ${sampled_parameter} ${number_of_parameters})
 
     # Append options to base command
@@ -310,6 +324,7 @@ endfunction ()
 # Function to make smc options
 function (get_smc_options _options
         simulator
+        postfix
         return_code
         parameter_names
         sampled_parameter
@@ -349,8 +364,13 @@ function (get_smc_options _options
         string (APPEND options
             "${PROJECT_BINARY_DIR}/tests/standard-simulator/standard-simulator ")
     elseif (simulator MATCHES "MPI")
-        string (APPEND options
-            "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator ")
+        if (postfix MATCHES "Cpp")
+            string (APPEND options
+                "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator-cpp ")
+        else ()
+            string (APPEND options
+                "${PROJECT_BINARY_DIR}/tests/mpi-simulator/mpi-simulator ")
+        endif ()
     endif ()
 
     string (APPEND options "1 ${return_code}\"")
@@ -400,7 +420,7 @@ function (add_smc_match_test
     get_base_command (command ${master} SMC ${simulator} Match)
 
     # Get smc options
-    get_smc_options (options ${simulator} 0 ${parameter_names}
+    get_smc_options (options ${simulator} "${postfix}" 0 ${parameter_names}
         ${sampled_parameter} ${number_of_parameters})
 
     # Append options to base command
@@ -427,7 +447,7 @@ function (add_smc_error_test
     get_base_command (command ${master} SMC ${simulator} Match)
 
     # Get smc options
-    get_smc_options (options ${simulator} 1 ${parameter_names}
+    get_smc_options (options ${simulator} "${postfix}" 1 ${parameter_names}
         ${sampled_parameter} ${number_of_parameters})
 
     # Append options to base command
