@@ -100,8 +100,6 @@ include (CTest)
 include ("${PROJECT_SOURCE_DIR}/cmake/ConfigureScript.cmake")
 
 # Subdirectories
-add_subdirectory (samplers)
-add_subdirectory (densities)
 add_subdirectory (src)
 add_subdirectory (include)
 add_subdirectory (tests)
