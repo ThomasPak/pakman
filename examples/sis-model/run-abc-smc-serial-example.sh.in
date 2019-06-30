@@ -24,7 +24,7 @@ fi
 echo "Running ABC SMC with population-size=$pop_size"
 "@PROJECT_BINARY_DIR@/src/pakman" serial smc \
     --population-size=$pop_size \
-    --epsilon=75,37.5,18.75 \
+    --epsilon=75,70,65,60,55,50,45,40,35 \
     --parameter-names=beta,gamma \
     --simulator="./sis-simulator 100 1 40 10 S_data.txt" \
     --prior-sampler="./sis-prior-sampler 0 0.06 0 2" \
