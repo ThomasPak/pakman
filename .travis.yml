@@ -5,13 +5,15 @@ os:
 dist: xenial
 
 env:
-  - MPI_LIBRARY=openmpi
+  - MPI_LIBRARY=openmpi-4.0.1
+  - MPI_LIBRARY=openmpi-3.1.4
   - MPI_LIBRARY=mpich
 
 cache:
   directories:
   - $HOME/mpich-3.3.1-build
   - $HOME/openmpi-4.0.1-build
+  - $HOME/openmpi-3.1.4-build
 
 services:
   - xvfb
@@ -44,27 +46,27 @@ install:
     fi
   - |
     pushd $HOME
-    if [ "$MPI_LIBRARY" = "openmpi" ]
+    if [ "${MPI_LIBRARY:0:7}" == "openmpi" ]
     then
-      if [ -f "openmpi-4.0.1-build/bin/mpiexec" ]
+      if [ -f "${MPI_LIBRARY}-build/bin/mpiexec" ]
       then
         echo "mpiexec found, nothing to build"
       else
         echo "Downloading openmpi source."
-        wget https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-4.0.1.tar.gz
-        tar -xzf openmpi-4.0.1.tar.gz
-        rm openmpi-4.0.1.tar.gz
+        wget "https://download.open-mpi.org/release/open-mpi/v${MPI_LIBRARY:8:3}/${MPI_LIBRARY}.tar.gz"
+        tar -xzf ${MPI_LIBRARY}.tar.gz
+        rm ${MPI_LIBRARY}.tar.gz
         echo "Configuring and building openmpi source."
-        cd openmpi-4.0.1
-        ./configure --prefix="$HOME/openmpi-4.0.1-build"
+        cd ${MPI_LIBRARY}
+        ./configure --prefix="$HOME/${MPI_LIBRARY}-build"
         make -j6
         make install
         cd -
-        rm -rf openmpi-4.0.1
+        rm -rf ${MPI_LIBRARY}
       fi
-      export PATH="$HOME/openmpi-4.0.1-build/bin:$PATH"
-      export LD_LIBRARY_PATH="$HOME/openmpi-4.0.1-build/bin:$LD_LIBRARY_PATH"
-    elif [ "$MPI_LIBRARY" = "mpich" ]
+      export PATH="$HOME/${MPI_LIBRARY}-build/bin:$PATH"
+      export LD_LIBRARY_PATH="$HOME/${MPI_LIBRARY}-build/bin:$LD_LIBRARY_PATH"
+    elif [ "$MPI_LIBRARY" == "mpich" ]
     then
       if [ -f "mpich-3.3.1-build/bin/mpiexec" ]
       then
