@@ -100,3 +100,5 @@ script:
   - ./run-cpp-abc-smc-serial-example.sh
   - ./run-python-abc-rejection-serial-example.sh
   - ./run-python-abc-smc-serial-example.sh
+  - cd ../examples/sis-model && ./run-abc-rejection-serial-example.sh
+  - ./run-abc-smc-serial-example.sh
