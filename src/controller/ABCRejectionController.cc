@@ -5,6 +5,8 @@
 
 #include <assert.h>
 
+#include "spdlog/spdlog.h"
+
 #include "core/common.h"
 #include "interface/types.h"
 #include "interface/protocols.h"
@@ -78,7 +80,7 @@ void ABCRejectionController::iterate()
     if (m_prmtr_accepted.size() == m_number_accept)
     {
         // Print message
-        fprintf(stderr, "Accepted/simulated: %d/%d (%5.2f%%)\n",
+        spdlog::info("Accepted/simulated: {}/{} ({:5.2f}%)",
                 m_number_accept, m_number_simulated, (100.0 * m_number_accept /
                     (double) m_number_simulated));
 

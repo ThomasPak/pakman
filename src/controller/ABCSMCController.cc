@@ -7,6 +7,8 @@
 
 #include <assert.h>
 
+#include "spdlog/spdlog.h"
+
 #include "core/common.h"
 #include "interface/types.h"
 #include "interface/protocols.h"
@@ -43,8 +45,8 @@ void ABCSMCController::iterate()
     static bool first = true;
     if (first)
     {
-        std::cerr << "Computing generation " << m_t << ", epsilon = " <<
-            m_epsilons[m_t].str() << std::endl;
+        spdlog::info("Computing generation {}, epsilon = {}", m_t,
+                m_epsilons[m_t].str());
         first = false;
     }
 
@@ -109,7 +111,7 @@ void ABCSMCController::iterate()
     if (m_prmtr_accepted_new.size() == m_population_size)
     {
         // Print message
-        fprintf(stderr, "Accepted/simulated: %d/%d (%5.2f%%)\n",
+        spdlog::info("Accepted/simulated: {}/{} ({:5.2f}%)",
                 m_population_size, m_number_simulated, (100.0 * m_population_size /
                     (double) m_number_simulated));
         m_number_simulated = 0;
@@ -142,8 +144,8 @@ void ABCSMCController::iterate()
         entered = false;
 
         // Print message
-        std::cerr << "Computing generation " << m_t << ", epsilon = " <<
-            m_epsilons[m_t].str() << std::endl;
+        spdlog::info("Computing generation {}, epsilon = {}", m_t,
+                m_epsilons[m_t].str());
         return;
     }
 
