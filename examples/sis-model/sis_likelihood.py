@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.linalg import expm
-from scipy.integrate import dblquad
+from scipy.integrate import quad, dblquad
 
 def evaluate_SIS_likelihood(beta, gamma, Npop, dt, y):
 
@@ -12,6 +12,12 @@ def evaluate_SIS_likelihood(beta, gamma, Npop, dt, y):
 
     if (type(gamma) == float):
         gamma = np.array(gamma)
+
+    if (beta.shape != gamma.shape):
+        if beta.shape == ():
+            beta = np.full(gamma.shape, beta)
+        elif gamma.shape == ():
+            gamma = np.full(beta.shape, gamma)
 
     assert (beta.shape == gamma.shape), "beta and gamma should numpy arrays with the same shape"
 
@@ -56,12 +62,28 @@ def evaluate_SIS_likelihood(beta, gamma, Npop, dt, y):
     # Return output with appropriate output shape
     return np.reshape(prod_array, output_shape)
 
-def integrate_SIS_likelihood(beta1, beta2, gamma1, gamma2, Npop, dt, y):
+def evaluate_marginal_SIS_likelihood_in_beta(beta, gamma_low, gamma_high, Npop, dt, y):
+
+    # Define integrand
+    f = lambda gamma: evaluate_SIS_likelihood(beta, gamma, Npop, dt, y)
+
+    return quad(f, gamma_low, gamma_high)
+
+def evaluate_marginal_SIS_likelihood_in_gamma(beta_low, beta_high, gamma, Npop, dt, y):
+
+    # Define integrand
+    f = lambda beta: evaluate_SIS_likelihood(beta, gamma, Npop, dt, y)
+
+    return quad(f, beta_low, beta_high)
+
+def integrate_SIS_likelihood(beta_low, beta_high, gamma_low, gamma_high, Npop,
+    dt, y):
 
     # Integrand
     f = lambda beta, gamma: evaluate_SIS_likelihood(beta, gamma, Npop, dt, y)
 
-    return dblquad(f, gamma1, gamma2, lambda gamma: beta1, lambda gamma: beta2, epsabs=1e-19)
+    return dblquad(f, gamma_low, gamma_high, lambda gamma: beta_low, lambda
+        gamma: beta_high, epsabs=1e-19)
 
 if __name__ == "__main__":
 
@@ -81,8 +103,7 @@ if __name__ == "__main__":
     # Calculated norm_W: 1.0783711147429725e-16
     norm_W = W[0]
 
-    # Normalize likelihood to obtain posterior and check that integration adds
-    # up to 1
+    # Normalize likelihood and check that integration adds up to 1
     g = lambda beta, gamma: evaluate_SIS_likelihood(beta, gamma, 101, 4, y) / norm_W
     Z = dblquad(g, 0, 2, lambda gamma: 0, lambda gamma: .06)
 

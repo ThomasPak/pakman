@@ -1,5 +1,8 @@
 # Copy Python scripts
-file (COPY sis-analytical.py
+file (COPY sis_likelihood.py
+    DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+file (COPY plot-histogram.py
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Copy C++ code

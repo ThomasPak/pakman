@@ -1,0 +1,184 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+
+from argparse import ArgumentParser
+
+from sis_likelihood import evaluate_SIS_likelihood
+
+# Process arguments
+ap = ArgumentParser(description='Plot histogram and analytical likelihood of SIS model')
+ap.add_argument('Npop', type=int, help='total population')
+ap.add_argument('dt', type=float, help='time between observations')
+ap.add_argument('beta_low', type=float, help='lower bound on beta in uniform prior')
+ap.add_argument('beta_high', type=float, help='upper bound on beta in uniform prior')
+ap.add_argument('gamma_low', type=float, help='lower bound on gamma in uniform prior')
+ap.add_argument('gamma_high', type=float, help='upper bound on gamma in uniform prior')
+ap.add_argument('-nb', '--nbeta', type=int, help=('number of beta points computed '
+    'for the analytical likelihood'), default=101)
+ap.add_argument('-ng', '--ngamma', type=int, help=('number of gamma points computed '
+    'for the analytical likelihood'), default=101)
+ap.add_argument('-e', '--epsilon', type=str, help='epsilon used to generate data',
+                default=None)
+ap.add_argument('-d', '--datafile', help='file to read data from')
+ap.add_argument('-o', '--outputfile', help='file to save figure to',
+                default = 'sis_histogram.png')
+ap.add_argument('-i', '--inputfile', help='file to read data from (default: STDIN)',
+                default = sys.stdin)
+ap.add_argument('-W', '--figwidth', type=float, help='figure width',
+        default=10)
+ap.add_argument('-H', '--figheight', type=float, help='figure height',
+        default=10)
+ap.add_argument('-b', '--bboxtight', action='store_true',
+        help='make bbox around plot tight')
+args = ap.parse_args()
+
+Npop        = args.Npop
+dt          = args.dt
+beta_low    = args.beta_low
+beta_high   = args.beta_high
+gamma_low   = args.gamma_low
+gamma_high  = args.gamma_high
+nbeta       = args.nbeta
+ngamma      = args.ngamma
+epsilon     = args.epsilon
+datafile    = args.datafile
+outputfile  = args.outputfile
+inputfile   = args.inputfile
+figwidth    = args.figwidth
+figheight   = args.figheight
+bboxtight   = args.bboxtight
+
+# Process header
+if type(inputfile) == str:
+    inputfile = open(inputfile, 'r')
+header = inputfile.readline()
+
+# Process input
+beta_array = []
+gamma_array = []
+
+for line in inputfile:
+    linesplit = line.split(',')
+    beta_array.append(float(linesplit[0]))
+    gamma_array.append(float(linesplit[1]))
+
+beta_array = np.array(beta_array)
+gamma_array = np.array(gamma_array)
+
+# Read input
+if type(datafile) == str:
+    datafile = open(datafile, 'r')
+
+y_obs = []
+
+for line in datafile:
+    y_obs.append(int(line))
+
+y_obs = np.array(y_obs)
+
+# Analytical likelihood
+#beta = np.linspace(beta_array.min(), beta_array.max(), nbeta)
+#gamma = np.linspace(gamma_array.min(), gamma_array.max(), ngamma)
+beta = np.linspace(beta_low, beta_high, nbeta)
+gamma = np.linspace(gamma_low, gamma_high, ngamma)
+
+betabeta, gammagamma = np.meshgrid(beta, gamma)
+
+pp = evaluate_SIS_likelihood(betabeta, gammagamma, Npop, dt, y_obs)
+
+# Compute integral sum
+integral_sum =  np.sum(pp[1:-1, 1:-1]) + .5 * (np.sum(pp[0, 1:-1]) +
+        np.sum(pp[-1, 1:-1]) + np.sum(pp[1:-1, 0]) + np.sum(pp[1:-1, -1])) + \
+                .25 * (pp[0, 0] + pp[0, -1] + pp[-1, 0] + pp[-1, -1])
+
+integral_sum *= (beta[1] - beta[0]) * (gamma[1] - gamma[0])
+
+print("integral_sum: {}".format(integral_sum))
+
+# Normalize
+pp = pp / integral_sum
+
+marginal_beta = (gamma[1] - gamma[0]) * (
+        np.sum(pp[1:-1, :], axis=0) + .5 * pp[0, :] + .5 * pp[-1, :])
+
+marginal_gamma = (beta[1] - beta[0]) * (
+        np.sum(pp[:, 1:-1], axis=1) + .5 * pp[:, 0] + .5 * pp[:, -1])
+
+# Plot histograms
+fig = plt.figure(figsize = (figwidth, figheight) if (figwidth != None) and
+        (figheight != None) else None)
+
+# Plot histogram for beta
+plt.subplot(2, 2, 1)
+
+bins = 35
+plt.hist(beta_array, bins=bins, normed=True, edgecolor='black')
+xlim = plt.xlim()
+
+plt.plot(beta, marginal_beta)
+plt.xlim(xlim)
+
+titlestr = "Posterior for $\\beta$ with N = {}".format(len(beta_array))
+if epsilon != None:
+    titlestr += ", $\epsilon$ = {}".format(epsilon)
+
+plt.title(titlestr)
+plt.xlabel("$\\beta$")
+plt.ylabel("Marginal posterior distribution")
+
+# Plot histogram for gamma
+plt.subplot(2, 2, 4)
+
+bins = 35
+plt.hist(gamma_array, bins=bins, normed=True, edgecolor='black')
+xlim = plt.xlim()
+
+plt.plot(gamma, marginal_gamma)
+plt.xlim(xlim)
+
+titlestr = "Posterior for $\\gamma$ with N = {}".format(len(gamma_array))
+if epsilon != None:
+    titlestr += ", $\epsilon$ = {}".format(epsilon)
+
+plt.title(titlestr)
+plt.xlabel("$\\gamma$")
+plt.ylabel("Marginal posterior distribution")
+
+# Plot two-dimensional histogram
+plt.subplot(2, 2, 3)
+
+bins = 35
+plt.hist2d(beta_array, gamma_array, bins=bins, normed=True)
+xlim = plt.xlim()
+ylim = plt.ylim()
+
+titlestr = "Posterior for $\\beta$, $\\gamma$ with N = {}".format(len(gamma_array))
+if epsilon != None:
+    titlestr += ", $\epsilon$ = {}".format(epsilon)
+
+plt.title(titlestr)
+plt.xlabel("$\\beta$")
+plt.ylabel("$\\gamma$")
+
+# Plot analytical posterior
+plt.subplot(2, 2, 2)
+
+plt.imshow(pp, origin='lower', extent=(0, 0.06, 0, 2), aspect='auto',
+        interpolation=None)
+plt.xlim(xlim)
+plt.ylim(ylim)
+
+titlestr = "Analytical posterior for $\\beta$, $\\gamma$"
+
+plt.title(titlestr)
+plt.xlabel("$\\beta$")
+plt.ylabel("$\\gamma$")
+
+# Save histogram
+plt.savefig(outputfile, bbox_inches='tight' if bboxtight else None)
+
+# Close input file
+inputfile.close()
+
+#from IPython import embed; embed()
