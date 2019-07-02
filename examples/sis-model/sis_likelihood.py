@@ -96,6 +96,14 @@ if __name__ == "__main__":
     dt = 4
     y = [100, 98, 95, 87, 74, 59, 44, 35, 39, 32, 38]
 
+    # Evaluate on grid
+    b = np.linspace(beta_lim[0], beta_lim[1], 10)
+    g = np.linspace(gamma_lim[0], gamma_lim[1], 10)
+    bb, gg = np.meshgrid(b, g)
+
+    pp = evaluate_SIS_likelihood(bb, gg, Npop, dt, y)
+    print("pp: {}".format(pp))
+
     # Integrate over prior domain
     W = integrate_SIS_likelihood(beta_lim[0], beta_lim[1], gamma_lim[0],
             gamma_lim[1], Npop, dt, y)
