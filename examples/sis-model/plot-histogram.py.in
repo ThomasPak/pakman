@@ -31,6 +31,8 @@ ap.add_argument('-H', '--figheight', type=float, help='figure height',
         default=10)
 ap.add_argument('-b', '--bboxtight', action='store_true',
         help='make bbox around plot tight')
+ap.add_argument('-a', '--analytical', action='store_true',
+        help='show analytical solution (slow)')
 args = ap.parse_args()
 
 Npop        = args.Npop
@@ -48,6 +50,7 @@ inputfile   = args.inputfile
 figwidth    = args.figwidth
 figheight   = args.figheight
 bboxtight   = args.bboxtight
+analytical  = args.analytical
 
 # Process header
 if type(inputfile) == str:
@@ -78,28 +81,29 @@ for line in datafile:
 y_obs = np.array(y_obs)
 
 # Analytical likelihood
-beta = np.linspace(beta_low, beta_high, nbeta)
-gamma = np.linspace(gamma_low, gamma_high, ngamma)
+if analytical:
+    beta = np.linspace(beta_low, beta_high, nbeta)
+    gamma = np.linspace(gamma_low, gamma_high, ngamma)
 
-betabeta, gammagamma = np.meshgrid(beta, gamma)
+    betabeta, gammagamma = np.meshgrid(beta, gamma)
 
-pp = evaluate_SIS_likelihood(betabeta, gammagamma, Npop, dt, y_obs)
+    pp = evaluate_SIS_likelihood(betabeta, gammagamma, Npop, dt, y_obs)
 
-# Compute integral sum using two-dimensional trapezoidal rule
-integral_sum =  np.sum(pp[1:-1, 1:-1]) + .5 * (np.sum(pp[0, 1:-1]) +
-        np.sum(pp[-1, 1:-1]) + np.sum(pp[1:-1, 0]) + np.sum(pp[1:-1, -1])) + \
-                .25 * (pp[0, 0] + pp[0, -1] + pp[-1, 0] + pp[-1, -1])
+    # Compute integral sum using two-dimensional trapezoidal rule
+    integral_sum =  np.sum(pp[1:-1, 1:-1]) + .5 * (np.sum(pp[0, 1:-1]) +
+            np.sum(pp[-1, 1:-1]) + np.sum(pp[1:-1, 0]) + np.sum(pp[1:-1, -1])) + \
+                    .25 * (pp[0, 0] + pp[0, -1] + pp[-1, 0] + pp[-1, -1])
 
-integral_sum *= (beta[1] - beta[0]) * (gamma[1] - gamma[0])
+    integral_sum *= (beta[1] - beta[0]) * (gamma[1] - gamma[0])
 
-# Normalize
-pp = pp / integral_sum
+    # Normalize
+    pp = pp / integral_sum
 
-marginal_beta = (gamma[1] - gamma[0]) * (
-        np.sum(pp[1:-1, :], axis=0) + .5 * pp[0, :] + .5 * pp[-1, :])
+    marginal_beta = (gamma[1] - gamma[0]) * (
+            np.sum(pp[1:-1, :], axis=0) + .5 * pp[0, :] + .5 * pp[-1, :])
 
-marginal_gamma = (beta[1] - beta[0]) * (
-        np.sum(pp[:, 1:-1], axis=1) + .5 * pp[:, 0] + .5 * pp[:, -1])
+    marginal_gamma = (beta[1] - beta[0]) * (
+            np.sum(pp[:, 1:-1], axis=1) + .5 * pp[:, 0] + .5 * pp[:, -1])
 
 # Plot histograms
 fig = plt.figure(figsize = (figwidth, figheight) if (figwidth != None) and
@@ -112,8 +116,9 @@ bins = 35
 plt.hist(beta_array, bins=bins, @NORMED_KEYWORD@=True, edgecolor='black')
 xlim = plt.xlim()
 
-plt.plot(beta, marginal_beta)
-plt.xlim(xlim)
+if analytical:
+    plt.plot(beta, marginal_beta)
+    plt.xlim(xlim)
 
 titlestr = "Posterior for $\\beta$ with N = {}".format(len(beta_array))
 if epsilon != None:
@@ -130,8 +135,9 @@ bins = 35
 plt.hist(gamma_array, bins=bins, @NORMED_KEYWORD@=True, edgecolor='black')
 xlim = plt.xlim()
 
-plt.plot(gamma, marginal_gamma)
-plt.xlim(xlim)
+if analytical:
+    plt.plot(gamma, marginal_gamma)
+    plt.xlim(xlim)
 
 titlestr = "Posterior for $\\gamma$ with N = {}".format(len(gamma_array))
 if epsilon != None:
@@ -145,7 +151,7 @@ plt.ylabel("Marginal posterior distribution")
 plt.subplot(2, 2, 3)
 
 bins = 35
-plt.hist2d(beta_array, gamma_array, bins=bins, @NORMED_KEYWORD@=True)
+plt.hist2d(beta_array, gamma_array, bins=bins)
 xlim = plt.xlim()
 ylim = plt.ylim()
 
@@ -158,23 +164,22 @@ plt.xlabel("$\\beta$")
 plt.ylabel("$\\gamma$")
 
 # Plot analytical posterior
-plt.subplot(2, 2, 2)
+if analytical:
+    plt.subplot(2, 2, 2)
 
-plt.imshow(pp, origin='lower', extent=(0, 0.06, 0, 2), aspect='auto',
-        interpolation=None)
-plt.xlim(xlim)
-plt.ylim(ylim)
+    plt.imshow(pp, origin='lower', extent=(0, 0.06, 0, 2), aspect='auto',
+            interpolation=None)
+    plt.xlim(xlim)
+    plt.ylim(ylim)
 
-titlestr = "Analytical posterior for $\\beta$, $\\gamma$"
+    titlestr = "Analytical posterior for $\\beta$, $\\gamma$"
 
-plt.title(titlestr)
-plt.xlabel("$\\beta$")
-plt.ylabel("$\\gamma$")
+    plt.title(titlestr)
+    plt.xlabel("$\\beta$")
+    plt.ylabel("$\\gamma$")
 
 # Save histogram
 plt.savefig(outputfile, bbox_inches='tight' if bboxtight else None)
 
 # Close input file
 inputfile.close()
-
-#from IPython import embed; embed()
