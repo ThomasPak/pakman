@@ -78,8 +78,6 @@ for line in datafile:
 y_obs = np.array(y_obs)
 
 # Analytical likelihood
-#beta = np.linspace(beta_array.min(), beta_array.max(), nbeta)
-#gamma = np.linspace(gamma_array.min(), gamma_array.max(), ngamma)
 beta = np.linspace(beta_low, beta_high, nbeta)
 gamma = np.linspace(gamma_low, gamma_high, ngamma)
 
@@ -87,14 +85,12 @@ betabeta, gammagamma = np.meshgrid(beta, gamma)
 
 pp = evaluate_SIS_likelihood(betabeta, gammagamma, Npop, dt, y_obs)
 
-# Compute integral sum
+# Compute integral sum using two-dimensional trapezoidal rule
 integral_sum =  np.sum(pp[1:-1, 1:-1]) + .5 * (np.sum(pp[0, 1:-1]) +
         np.sum(pp[-1, 1:-1]) + np.sum(pp[1:-1, 0]) + np.sum(pp[1:-1, -1])) + \
                 .25 * (pp[0, 0] + pp[0, -1] + pp[-1, 0] + pp[-1, -1])
 
 integral_sum *= (beta[1] - beta[0]) * (gamma[1] - gamma[0])
-
-print("integral_sum: {}".format(integral_sum))
 
 # Normalize
 pp = pp / integral_sum
