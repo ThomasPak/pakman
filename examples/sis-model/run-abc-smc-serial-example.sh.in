@@ -34,3 +34,14 @@ echo "Running ABC SMC with population-size=$pop_size"
     > abc-smc-serial.out
 
 echo "Results saved in abc-smc-serial.out"
+
+# Create histogram
+if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
+then
+    @PYTHON_EXECUTABLE@ plot-histogram.py \
+        101 4 0 0.06 0 2 --datafile=S_data.txt \
+        --epsilon 0 --inputfile abc-smc-serial.out \
+        --outputfile abc-smc-serial-histogram.png
+
+    echo "Histogram saved in abc-smc-serial-histogram.png"
+fi

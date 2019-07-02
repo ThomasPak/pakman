@@ -31,3 +31,14 @@ echo "Running ABC rejection with number-accept=$number_accept"
     > abc-rejection-serial.out
 
 echo "Results saved in abc-rejection-serial.out"
+
+# Create histogram
+if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
+then
+    @PYTHON_EXECUTABLE@ plot-histogram.py \
+        101 4 0 0.06 0 2 --datafile=S_data.txt \
+        --epsilon 0 --inputfile abc-rejection-serial.out \
+        --outputfile abc-rejection-serial-histogram.png
+
+    echo "Histogram saved in abc-rejection-serial-histogram.png"
+fi
