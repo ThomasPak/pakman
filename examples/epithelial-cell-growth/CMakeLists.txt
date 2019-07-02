@@ -27,14 +27,21 @@ elseif (NOT DEFINED CHASTE_BUILD_DIR)
     set (CHASTE_BUILD_DIR "$ENV{CHASTE_BUILD_DIR}")
 endif ()
 
+# Configure Chaste build
+execute_process (COMMAND rm -rf "${CHASTE_DIR}/projects/chaste-project")
+execute_process (COMMAND ln -s "${CMAKE_CURRENT_SOURCE_DIR}/chaste-project"
+    "${CHASTE_DIR}/projects")
+execute_process (COMMAND echo "Running CMake on Chaste")
+execute_process (COMMAND echo "************************************")
+execute_process (COMMAND cmake "-B${CHASTE_BUILD_DIR}" "-H${CHASTE_DIR}")
+execute_process (COMMAND echo "************************************")
+execute_process (COMMAND echo "Done running CMake on Chaste")
+
 # Add custom target to create chaste simulator
 add_custom_target (chaste-test ALL DEPENDS cell-simulator)
 add_custom_command (OUTPUT cell-simulator
     COMMAND echo "Building Chaste simulator"
     COMMAND echo '************************************'
-    COMMAND rm -rf "${CHASTE_DIR}/projects/chaste-project"
-    COMMAND ln -s "${CMAKE_CURRENT_SOURCE_DIR}/chaste-project" "${CHASTE_DIR}/projects"
-    COMMAND cmake -B"${CHASTE_BUILD_DIR}" -H"${CHASTE_DIR}"
     COMMAND cmake --build "${CHASTE_BUILD_DIR}" --target
     VertexBasedMonolayerSimulator -- ${CHASTE_BUILD_OPTIONS}
     COMMAND cp
