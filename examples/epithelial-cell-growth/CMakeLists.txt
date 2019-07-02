@@ -94,8 +94,8 @@ configure_script (run-abc-smc-mpi-example.sh.in
     ${CMAKE_CURRENT_BINARY_DIR}/run-abc-smc-mpi-example.sh)
 
 # Configure Python script
-#configure_script (plot-histogram.py.in
-#    ${CMAKE_CURRENT_BINARY_DIR}/plot-histogram.py)
+configure_script (plot-histogram.py.in
+    ${CMAKE_CURRENT_BINARY_DIR}/plot-histogram.py)
 
 # Add executables
 add_executable (cell-prior-sampler prior-sampler.cc)

@@ -38,3 +38,13 @@ grep -v 'Chaste warning' abc-rejection-mpi.out > tmp
 mv tmp abc-rejection-mpi.out
 
 echo "Results saved in abc-rejection-mpi.out"
+
+# Create histogram
+if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
+then
+    @PYTHON_EXECUTABLE@ plot-histogram.py \
+        --epsilon 0 --inputfile abc-rejection-mpi.out \
+        --bboxtight --outputfile abc-rejection-mpi-histogram.png
+
+    echo "Histogram saved in abc-rejection-mpi-histogram.png"
+fi

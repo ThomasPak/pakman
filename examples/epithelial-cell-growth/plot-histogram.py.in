@@ -1,0 +1,63 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import sys
+
+from argparse import ArgumentParser
+
+# Process arguments
+ap = ArgumentParser(description='Plot histogram for epithelial cell growth model')
+ap.add_argument('-e', '--epsilon', type=str, help='epsilon used to generate data',
+        default=None)
+ap.add_argument('-o', '--outputfile', help='file to save figure to',
+                default = 'cell_histogram.png')
+ap.add_argument('-i', '--inputfile', help='file to read data from (default: STDIN)',
+                default = sys.stdin)
+ap.add_argument('-H', '--plotheight', type=float, help='upper bound on plotting height',
+            default=None)
+ap.add_argument('-b', '--bboxtight', action='store_true', help='make bbox around plot tight')
+args = ap.parse_args()
+
+e = args.epsilon
+plotheight = args.plotheight
+bboxtight = args.bboxtight
+outputfile = args.outputfile
+inputfile = args.inputfile
+
+# Process header
+if type(inputfile) == str:
+    inputfile = open(inputfile, 'r')
+header = inputfile.readline()
+
+# Process data
+data = []
+
+for line in inputfile:
+    data.append(float(line))
+
+data = np.array(data)
+
+# Plot histogram
+bins = 35
+fig = plt.figure()
+
+# Plot computed histogram
+plt.hist(data, bins=bins, @NORMED_KEYWORD@=True, edgecolor='black')
+
+titlestr = "Posterior for $tcycle$ with N = {}".format(len(data))
+if e != None:
+    titlestr += ", $\epsilon$ = {}".format(e)
+
+plt.title(titlestr)
+plt.xlabel("$tcycle$")
+plt.ylabel("Posterior distribution")
+
+# Set height
+if plotheight != None:
+    ylim = plt.ylim()
+    plt.ylim([ylim[0], plotheight])
+
+# Save histogram
+plt.savefig(outputfile, bbox_inches='tight' if bboxtight else None)
+
+# Close input file
+inputfile.close()

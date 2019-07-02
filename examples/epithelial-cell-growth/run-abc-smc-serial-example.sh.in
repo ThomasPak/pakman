@@ -41,3 +41,13 @@ grep -v 'Chaste warning' abc-smc-serial.out > tmp
 mv tmp abc-smc-serial.out
 
 echo "Results saved in abc-smc-serial.out"
+
+# Create histogram
+if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
+then
+    @PYTHON_EXECUTABLE@ plot-histogram.py \
+        --epsilon 0 --inputfile abc-smc-serial.out \
+        --bboxtight --outputfile abc-smc-serial-histogram.png
+
+    echo "Histogram saved in abc-smc-serial-histogram.png"
+fi
