@@ -32,6 +32,7 @@ execute_process (COMMAND rm -rf "${CHASTE_DIR}/projects/chaste-project")
 execute_process (COMMAND ln -s "${CMAKE_CURRENT_SOURCE_DIR}/chaste-project"
     "${CHASTE_DIR}/projects")
 execute_process (COMMAND echo "Running CMake on Chaste")
+execute_process (COMMAND echo "Chaste directory: ${CHASTE_DIR}")
 execute_process (COMMAND echo "************************************")
 execute_process (COMMAND cmake "-B${CHASTE_BUILD_DIR}" "-H${CHASTE_DIR}")
 execute_process (COMMAND echo "************************************")
@@ -41,6 +42,7 @@ execute_process (COMMAND echo "Done running CMake on Chaste")
 add_custom_target (chaste-test ALL DEPENDS cell-simulator)
 add_custom_command (OUTPUT cell-simulator
     COMMAND echo "Building Chaste simulator"
+    COMMAND echo "Chaste build directory: ${CHASTE_BUILD_DIR}"
     COMMAND echo '************************************'
     COMMAND cmake --build "${CHASTE_BUILD_DIR}" --target
     VertexBasedMonolayerSimulator -- ${CHASTE_BUILD_OPTIONS}
