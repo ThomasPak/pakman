@@ -45,18 +45,18 @@ logC = (  ( np.sum(np.log(np.arange(1, n + 1))) -
              np.sum(np.log(np.arange(1, k + 1))) -
              np.sum(np.log(np.arange(1, n - k + 1))) ) +
          np.log(n + 1) )
-loglikelihood = lambda p: logC + k * np.log(p) + (n - k) * np.log(1 - p)
+loglikelihood = lambda q: logC + k * np.log(q) + (n - k) * np.log(1 - q)
 
 # Plot histogram
 bins = 35
-p = np.linspace(0.001, 1 - 0.001, 1001)
+q = np.linspace(0.001, 1 - 0.001, 1001)
 fig = plt.figure()
 
 # Plot computed histogram
 plt.hist(data, bins=bins, @NORMED_KEYWORD@=True, label="Computed", edgecolor='black')
-plt.plot(p, np.exp(loglikelihood(p)), label="Analytical")
+plt.plot(q, np.exp(loglikelihood(q)), label="Analytical")
 
-titlestr = "Posterior with N = {}".format(len(data))
+titlestr = "Posterior for $q$ with N = {}".format(len(data))
 if e != None:
     titlestr += ", $\epsilon$ = {}".format(e)
 
