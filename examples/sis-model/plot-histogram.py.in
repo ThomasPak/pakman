@@ -113,7 +113,7 @@ fig = plt.figure(figsize = (figwidth, figheight) if (figwidth != None) and
 plt.subplot(2, 2, 1)
 
 bins = 35
-plt.hist(beta_array, bins=bins, normed=True, edgecolor='black')
+plt.hist(beta_array, bins=bins, @NORMED_KEYWORD@=True, edgecolor='black')
 xlim = plt.xlim()
 
 plt.plot(beta, marginal_beta)
@@ -131,7 +131,7 @@ plt.ylabel("Marginal posterior distribution")
 plt.subplot(2, 2, 4)
 
 bins = 35
-plt.hist(gamma_array, bins=bins, normed=True, edgecolor='black')
+plt.hist(gamma_array, bins=bins, @NORMED_KEYWORD@=True, edgecolor='black')
 xlim = plt.xlim()
 
 plt.plot(gamma, marginal_gamma)
@@ -149,7 +149,7 @@ plt.ylabel("Marginal posterior distribution")
 plt.subplot(2, 2, 3)
 
 bins = 35
-plt.hist2d(beta_array, gamma_array, bins=bins, normed=True)
+plt.hist2d(beta_array, gamma_array, bins=bins, @NORMED_KEYWORD@=True)
 xlim = plt.xlim()
 ylim = plt.ylim()
 
