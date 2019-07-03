@@ -48,29 +48,32 @@ if (PYTHONINTERP_FOUND)
     if (NOT MATPLOTLIB_FOUND)
         message (WARNING "Python module 'matplotlib' was not found, "
             "this may affect Python scripts")
-    endif ()
-endif ()
 
-# Set keyword for normed in matplotlib.pyplot.hist based on matplotlib version
-execute_process (COMMAND ${PYTHON_EXECUTABLE} -c
-        "import matplotlib; print(matplotlib.__version__)"
-        OUTPUT_VARIABLE MATPLOTLIB_VERSION)
-
-string (REPLACE "." ";" MATPLOTLIB_VERSION ${MATPLOTLIB_VERSION})
-
-list (GET MATPLOTLIB_VERSION 0 MATPLOTLIB_VERSION_MAJOR)
-list (GET MATPLOTLIB_VERSION 1 MATPLOTLIB_VERSION_MINOR)
-
-if (MATPLOTLIB_VERSION_MAJOR GREATER "2")
-    set (NORMED_KEYWORD "density")
-else ()
-    if (MATPLOTLIB_VERSION_MAJOR LESS "2")
+        # Dummy keyword to avoid SyntaxError
         set (NORMED_KEYWORD "normed")
     else ()
-        if (MATPLOTLIB_VERSION_MINOR LESS "1")
-            set (NORMED_KEYWORD "normed")
-        else ()
+        # Set keyword for normed in matplotlib.pyplot.hist based on matplotlib version
+        execute_process (COMMAND ${PYTHON_EXECUTABLE} -c
+                "import matplotlib; print(matplotlib.__version__)"
+                OUTPUT_VARIABLE MATPLOTLIB_VERSION)
+
+        string (REPLACE "." ";" MATPLOTLIB_VERSION ${MATPLOTLIB_VERSION})
+
+        list (GET MATPLOTLIB_VERSION 0 MATPLOTLIB_VERSION_MAJOR)
+        list (GET MATPLOTLIB_VERSION 1 MATPLOTLIB_VERSION_MINOR)
+
+        if (MATPLOTLIB_VERSION_MAJOR GREATER "2")
             set (NORMED_KEYWORD "density")
+        else ()
+            if (MATPLOTLIB_VERSION_MAJOR LESS "2")
+                set (NORMED_KEYWORD "normed")
+            else ()
+                if (MATPLOTLIB_VERSION_MINOR LESS "1")
+                    set (NORMED_KEYWORD "normed")
+                else ()
+                    set (NORMED_KEYWORD "density")
+                endif ()
+            endif ()
         endif ()
     endif ()
 endif ()
