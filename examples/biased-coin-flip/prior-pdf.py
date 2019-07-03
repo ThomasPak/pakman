@@ -17,7 +17,7 @@ stderr.write("Enter q\n")
 q = float(stdin.readline())
 
 # Check if q is within bounds
-if q_low <= q and q < q_high:
+if q_low <= q and q <= q_high:
     density = 1.0 / (q_high - q_low)
     stdout.write("{}\n".format(density))
 else:

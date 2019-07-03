@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
 
     // Check if parameters are within bounds
     std::cout.precision(17);
-    if ( (beta_low <= beta) && (beta < beta_high) &&
-         (gamma_low <= gamma) && (gamma < gamma_high) )
+    if ( (beta_low <= beta) && (beta <= beta_high) &&
+         (gamma_low <= gamma) && (gamma <= gamma_high) )
     {
         std::cout << 1.0 / (beta_high - beta_low) / (gamma_high - gamma_low) <<
             std::endl;

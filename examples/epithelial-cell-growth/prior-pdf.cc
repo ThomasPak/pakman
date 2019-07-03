@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
     // Check if tcycle is within bounds
     std::cout.precision(17);
-    if ( (tcycle_low <= tcycle) && (tcycle < tcycle_high) )
+    if ( (tcycle_low <= tcycle) && (tcycle <= tcycle_high) )
     {
         std::cout << 1.0 / (tcycle_high - tcycle_low) << std::endl;
     }

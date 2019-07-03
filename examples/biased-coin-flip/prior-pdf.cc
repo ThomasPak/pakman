@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
     // Check if q is within bounds
     std::cout.precision(17);
-    if ( (q_low <= q) && (q < q_high) )
+    if ( (q_low <= q) && (q <= q_high) )
     {
         std::cout << 1.0 / (q_high - q_low) << std::endl;
     }
