@@ -37,12 +37,14 @@ addons:
       - python3-numpy
       - python3-matplotlib
       - python3-tk
+      - python3-scipy
 
 install:
   - |
     if [ "$TRAVIS_OS_NAME" == "osx" ]
     then
       pip3 install --user matplotlib
+      pip3 install --user scipy
     fi
   - |
     pushd $HOME

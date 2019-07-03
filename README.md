@@ -11,7 +11,8 @@ Bayesian computation algorithms.
 * MPI-3.1 installation
 * [CMake](https://cmake.org/) >= version 3.10.2
 * (Optional) [Python](https://www.python.org/) >= version 3.6.7 with
-  [matplotlib](https://matplotlib.org/) and [numpy](https://www.numpy.org/)
+  [numpy](https://www.numpy.org/), [matplotlib](https://matplotlib.org/), and
+  [scipy](https://scipy.org/)
 
 Pakman has been tested with [OpenMPI](https://www.open-mpi.org/) and
 [MPICH](https://www.mpich.org/).  Python is not necessary to build Pakman, but
