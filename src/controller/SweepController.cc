@@ -66,8 +66,9 @@ void SweepController::iterate()
         // Get reference to front finished task
         AbstractMaster::TaskHandler& task = m_p_master->frontFinishedTask();
 
-        // Do not accept any errors for now
-        if (task.didErrorOccur())
+        // Throw error if task finished with error and we are not ignoring
+        // task errors
+        if (!ignore_errors && task.didErrorOccur())
         {
             std::runtime_error e("Task finished with error!");
             throw e;
