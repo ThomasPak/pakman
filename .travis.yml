@@ -115,6 +115,8 @@ install:
 
 script:
   - echo $PETSC_DIR
+  - ls $PETSC_DIR
+  - ls $PETSC_DIR/bin
   - echo $PETSC_ARCH
   - mkdir build && cd build && cmake .. && make -j6 && ctest --verbose
   - cd scaling && ./run-scaling.sh
