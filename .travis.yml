@@ -51,42 +51,33 @@ install:
     fi
   - |
     pushd $HOME
-    if [ "${MPI_LIBRARY:0:7}" == "openmpi" ]
+    if [ -f "$MPI_LIBRARY-build/bin/mpiexec" ]
     then
-      if [ -f "${MPI_LIBRARY}-build/bin/mpiexec" ]
+      echo "mpiexec found, nothing to build"
+    else
+      if [ "${MPI_LIBRARY:0:7}" == "openmpi" ]
       then
-        echo "mpiexec found, nothing to build"
-      else
-        echo "Downloading openmpi source."
-        wget "https://download.open-mpi.org/release/open-mpi/v${MPI_LIBRARY:8:3}/${MPI_LIBRARY}.tar.gz"
-        tar -xzf ${MPI_LIBRARY}.tar.gz
-        rm ${MPI_LIBRARY}.tar.gz
-        echo "Configuring and building openmpi source."
-        cd ${MPI_LIBRARY}
-        ./configure --prefix="$HOME/${MPI_LIBRARY}-build"
-        make -j6
-        make install
-        cd -
-        rm -rf ${MPI_LIBRARY}
-      fi
-    elif [ "$MPI_LIBRARY" == "mpich-3.3.1" ]
-    then
-      if [ -f "${MPI_LIBRARY}-build/bin/mpiexec" ]
+        DOWNLOAD_URL="https://download.open-mpi.org/release/open-mpi/v${MPI_LIBRARY:8:3}/$MPI_LIBRARY.tar.gz"
+        CONF_OPTIONS=
+      elif [ "${MPI_LIBRARY:0:5}" == "mpich" ]
       then
-        echo "mpiexec found, nothing to build"
+        DOWNLOAD_URL="http://www.mpich.org/static/downloads/${MPI_LIBRARY:6:5}/$MPI_LIBRARY.tar.gz"
+        CONF_OPTIONS="--disable-fortran"
       else
-        echo "Downloading mpich source."
-        wget http://www.mpich.org/static/downloads/3.3.1/mpich-3.3.1.tar.gz
-        tar -xzf ${MPI_LIBRARY}.tar.gz
-        rm ${MPI_LIBRARY}.tar.gz
-        echo "Configuring and building mpich source."
-        cd ${MPI_LIBRARY}
-        ./configure --prefix="$HOME/${MPI_LIBRARY}-build" --disable-fortran
-        make -j6
-        make install
-        cd -
-        rm -rf ${MPI_LIBRARY}
+        echo "Invalid MPI library: $MPI_LIBRARY"
+        exit 1
       fi
+      echo "Downloading $MPI_LIBRARY source."
+      wget "$DOWNLOAD_URL"
+      tar -xzf "$MPI_LIBRARY.tar.gz"
+      rm "$MPI_LIBRARY.tar.gz"
+      echo "Configuring and building $MPI_LIBRARY source."
+      cd "$MPI_LIBRARY"
+      ./configure --prefix="$HOME/$MPI_LIBRARY-build" "$CONF_OPTIONS"
+      make -j6
+      make install
+      cd -
+      rm -rf "$MPI_LIBRARY"
     fi
     export PATH="$HOME/${MPI_LIBRARY}-build/bin:$PATH"
     export LD_LIBRARY_PATH="$HOME/${MPI_LIBRARY}-build/bin:$LD_LIBRARY_PATH"
@@ -101,23 +92,13 @@ install:
       tar -xzf petsc-3.7.7.tar.gz
       rm petsc-3.7.7.tar.gz
       cd petsc-3.7.7
-      PETSC_BUILD_CMD=$(./configure \
-        --prefix=$HOME/petsc-$MPI_LIBRARY-build \
-        --with-mpi-dir=$HOME/$MPI_LIBRARY-build \
-        --download-hdf5=yes \
-        --download-metis=yes \
-        --download-parmetis=yes \
-        | tee ../petsc-configure.log \
-        | grep 'make PETSC_DIR')
-      PETSC_INSTALL_CMD=$($PETSC_BUILD_CMD \
-        | tee ../petsc-build.log \
-        | grep 'make PETSC_DIR'
+      PETSC_BUILD_CMD=$(./configure --prefix="$HOME/petsc-$MPI_LIBRARY-build" --with-mpi-dir="$HOME/$MPI_LIBRARY-build" --download-hdf5=yes --download-metis=yes --download-parmetis=yes | tee ../petsc-configure.log | grep 'make PETSC_DIR')
+      PETSC_INSTALL_CMD=$($PETSC_BUILD_CMD | tee ../petsc-build.log | grep 'make PETSC_DIR')
       $PETSC_INSTALL_CMD > ../petsc-install.log
       cd -
       rm -rf petsc-3.7.7
-      export PETSC_DIR=$HOME/petsc-$MPI_LIBRARY-build
-      PETSC_ARCH_ASS=$(echo $PETSC_INSTALL_CMD \
-        | grep -o 'PETSC_ARCH=[^ ]\+')
+      export PETSC_DIR="$HOME/petsc-$MPI_LIBRARY-build"
+      PETSC_ARCH_ASS=$(echo $PETSC_INSTALL_CMD | grep -o 'PETSC_ARCH=[^ ]\+')
       export $PETSC_ARCH_ASS
     popd
 
