@@ -56,7 +56,7 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
 			std::string error_msg;
 			error_msg += "Usage: ";
 			error_msg += argv[0];
-			error_msg += " DATAFILE";
+			error_msg += " DATAFILE [--silent]";
             ExecutableSupport::PrintError(error_msg, true);
 
             // Write result
@@ -68,6 +68,11 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
 			return ExecutableSupport::EXIT_BAD_ARGUMENTS;
         }
 
+        // Check if silent flag is set
+        bool silent = false;
+        if (argc == 3 && std::string(argv[2]).compare("--silent") == 0)
+            silent = true;
+
         // Get input
         int epsilon; double parameter;
         std::stringstream inputstrm(input_string);
@@ -75,14 +80,20 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
         inputstrm >> parameter;
 
         // Print output
-        std::cerr << "Epsilon: " << epsilon << std::endl;
-        std::cerr << "Parameter: " << parameter << std::endl;
+        if (!silent)
+        {
+            std::cerr << "Epsilon: " << epsilon << std::endl;
+            std::cerr << "Parameter: " << parameter << std::endl;
+        }
 
         // Get temporary directory
         tmp_dir = temporary_chaste_directory();
-        std::cerr << "tmp_dir: " <<
-            (OutputFileHandler::GetChasteTestOutputDirectory() + tmp_dir) <<
-            std::endl;
+        if (!silent)
+        {
+            std::cerr << "tmp_dir: " <<
+                (OutputFileHandler::GetChasteTestOutputDirectory() + tmp_dir)
+                << std::endl;
+        }
 
         // Prepare simulation
         setup_singletons();
@@ -92,12 +103,14 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
 
         destroy_singletons();
 
-        std::cerr << "sim_num_cells: " << sim_num_cells << std::endl;
+        if (!silent)
+            std::cerr << "sim_num_cells: " << sim_num_cells << std::endl;
 
         // Read data
         int data_num_cells = read_data_file(argv[1]);
 
-        std::cerr << "data_num_cells: " << data_num_cells << std::endl;
+        if (!silent)
+            std::cerr << "data_num_cells: " << data_num_cells << std::endl;
 
         // Initialize result
         std::string result;
