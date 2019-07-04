@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include <iostream>
 
 #include <math.h>
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
 
     // Return normal_pdf for every parameter
     std::cout.precision(17);
+    std::vector<double> tcycle_vec;
     double tcycle;
     for (std::cin >> tcycle; !std::cin.eof(); std::cin >> tcycle)
     {
@@ -49,6 +51,11 @@ int main(int argc, char *argv[])
             return 1;
         }
 
+        tcycle_vec.push_back(tcycle);
+    }
+
+    for (const double& tcycle : tcycle_vec)
+    {
         double pdf = normal_pdf(tcycle, stdev, tcycle_perturbed);
         std::cout << pdf << std::endl;
     }

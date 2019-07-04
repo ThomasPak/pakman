@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include <iostream>
 
 #include <math.h>
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
 
     // Return normal_pdf for every parameter
     std::cout.precision(17);
+    std::vector<double> q_vec;
     double q;
     for (std::cin >> q; !std::cin.eof(); std::cin >> q)
     {
@@ -49,6 +51,11 @@ int main(int argc, char *argv[])
             return 1;
         }
 
+        q_vec.push_back(q);
+    }
+
+    for (const double& q : q_vec)
+    {
         double pdf = normal_pdf(q, stdev, q_perturbed);
         std::cout << pdf << std::endl;
     }

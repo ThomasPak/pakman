@@ -1,4 +1,6 @@
 #include <string>
+#include <utility>
+#include <vector>
 #include <iostream>
 
 #include <math.h>
@@ -42,6 +44,7 @@ int main(int argc, char *argv[])
 
     // Return normal_pdf for every parameter
     std::cout.precision(17);
+    std::vector<std::pair<double,double>> bg_vec;
     double beta, gamma;
     for (std::cin >> beta >> gamma; !std::cin.eof(); std::cin >> beta >> gamma)
     {
@@ -50,6 +53,14 @@ int main(int argc, char *argv[])
             std::cerr << "Error: could not read parameter from stdin\n";
             return 1;
         }
+
+        bg_vec.emplace_back(beta, gamma);
+    }
+
+    for (const auto& bg : bg_vec)
+    {
+        double beta = bg.first;
+        double gamma = bg.second;
 
         double pdf1 = normal_pdf(beta, stdev1, beta_perturbed);
         double pdf2 = normal_pdf(gamma, stdev2, gamma_perturbed);
