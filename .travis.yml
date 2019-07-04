@@ -98,18 +98,19 @@ install:
         --download-hdf5=yes \
         --download-metis=yes \
         --download-parmetis=yes \
-        "|" tee ../petsc-configure.log \
-        "|" grep 'make PETSC_DIR')
+        | tee ../petsc-configure.log \
+        | grep 'make PETSC_DIR')
       PETSC_INSTALL_CMD=$($PETSC_BUILD_CMD \
-        "|" tee ../petsc-build.log \
-        "|" grep 'make PETSC_DIR')
-      $PETSC_INSTALL_CMD ">" ../petsc-install.log
+        | tee ../petsc-build.log \
+        | grep 'make PETSC_DIR')
+      $PETSC_INSTALL_CMD > ../petsc-install.log
       cd -
       rm -rf petsc-3.7.7
       export PETSC_DIR="$HOME/petsc-$MPI_LIBRARY-build"
       PETSC_ARCH_ASS=$(echo $PETSC_INSTALL_CMD \
-        "|" grep -o 'PETSC_ARCH=[^ ]\+')
+        | grep -o 'PETSC_ARCH=[^ ]\+')
       export $PETSC_ARCH_ASS
+    fi
     popd
 
 script:
