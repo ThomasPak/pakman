@@ -7,7 +7,7 @@ dist: xenial
 env:
   - MPI_LIBRARY=openmpi-4.0.1
   - MPI_LIBRARY=openmpi-3.1.4
-  - MPI_LIBRARY=mpich
+  - MPI_LIBRARY=mpich-3.3.1
 
 cache:
   directories:
@@ -66,29 +66,27 @@ install:
         cd -
         rm -rf ${MPI_LIBRARY}
       fi
-      export PATH="$HOME/${MPI_LIBRARY}-build/bin:$PATH"
-      export LD_LIBRARY_PATH="$HOME/${MPI_LIBRARY}-build/bin:$LD_LIBRARY_PATH"
-    elif [ "$MPI_LIBRARY" == "mpich" ]
+    elif [ "$MPI_LIBRARY" == "mpich-3.3.1" ]
     then
-      if [ -f "mpich-3.3.1-build/bin/mpiexec" ]
+      if [ -f "${MPI_LIBRARY}-build/bin/mpiexec" ]
       then
         echo "mpiexec found, nothing to build"
       else
         echo "Downloading mpich source."
         wget http://www.mpich.org/static/downloads/3.3.1/mpich-3.3.1.tar.gz
-        tar -xzf mpich-3.3.1.tar.gz
-        rm mpich-3.3.1.tar.gz
+        tar -xzf ${MPI_LIBRARY}.tar.gz
+        rm ${MPI_LIBRARY}.tar.gz
         echo "Configuring and building mpich source."
-        cd mpich-3.3.1
-        ./configure --prefix="$HOME/mpich-3.3.1-build" --disable-fortran
+        cd ${MPI_LIBRARY}
+        ./configure --prefix="$HOME/${MPI_LIBRARY}-build" --disable-fortran
         make -j6
         make install
         cd -
-        rm -rf mpich-3.3.1
+        rm -rf ${MPI_LIBRARY}
       fi
-      export PATH="$HOME/mpich-3.3.1-build/bin:$PATH"
-      export LD_LIBRARY_PATH="$HOME/mpich-3.3.1-build/bin:$LD_LIBRARY_PATH"
     fi
+    export PATH="$HOME/${MPI_LIBRARY}-build/bin:$PATH"
+    export LD_LIBRARY_PATH="$HOME/${MPI_LIBRARY}-build/bin:$LD_LIBRARY_PATH"
     popd
 
 script:
