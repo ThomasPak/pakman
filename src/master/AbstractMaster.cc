@@ -69,7 +69,9 @@ bool AbstractMaster::TaskHandler::didErrorOccur() const
     // This should only be called in the finished state
     assert(m_state == finished);
 
-    return m_error_code != 0;
+    return ((m_error_code != 0)
+        || (m_output_string.compare("error\n") == 0)
+        || (m_output_string.compare("errored\n") == 0));
 }
 
 // Get input string
