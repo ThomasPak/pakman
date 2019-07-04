@@ -144,7 +144,6 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
         if (tmp_dir.size() > 0)
             remove_temporary_chaste_directory(tmp_dir);
 
-        ExecutableSupport::FinalizePetsc();
         return ExecutableSupport::EXIT_ERROR;
     }
 }
