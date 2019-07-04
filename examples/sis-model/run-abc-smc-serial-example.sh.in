@@ -40,7 +40,7 @@ if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
     @PYTHON_EXECUTABLE@ plot-histogram.py \
         101 4 0 0.06 0 2 --datafile=S_data.txt \
-        --epsilon 0 --inputfile abc-smc-serial.out \
+        --epsilon 35 --inputfile abc-smc-serial.out \
         --outputfile abc-smc-serial-histogram.png
 
     echo "Histogram saved in abc-smc-serial-histogram.png"
