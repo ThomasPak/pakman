@@ -52,6 +52,23 @@ int VertexBasedMonolayerSimulation(
     CellCycleTimesGenerator::Instance()->SetRate(3.0 / (2.0*average_cell_cycle_time) );
     CellCycleTimesGenerator::Instance()->GenerateCellCycleTimeSequence();
 
+    // adjust cell cycle times
+    for (AbstractCellPopulation<2>::Iterator cell_iter =
+            cell_population.Begin();
+            cell_iter != cell_population.End();
+            ++cell_iter)
+    {
+        FixedSequenceCellCycleModel* p_cell_cycle_model =
+            static_cast<FixedSequenceCellCycleModel*>(cell_iter->GetCellCycleModel());
+        p_cell_cycle_model->SetG2Duration(1.0/3.0*average_cell_cycle_time);
+
+        // set M and S duration effectively to 0
+        p_cell_cycle_model->SetMDuration(1e-12);
+        p_cell_cycle_model->SetSDuration(1e-12);
+
+        p_cell_cycle_model->Initialise();
+    }
+
     /*
      * We now create an {{{OffLatticeSimulation}}} object and pass in the
      * {{{CellPopulation}}}. We also set some options on the simulation
