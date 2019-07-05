@@ -45,31 +45,33 @@ void ABCRejectionController::iterate()
         // Get reference to front finished task
         AbstractMaster::TaskHandler& task = m_p_master->frontFinishedTask();
 
-        // Throw error if task finished with error and we are not ignoring
-        // task errors
-        if (!ignore_errors && task.didErrorOccur())
+        // Check if error occured
+        if (!task.didErrorOccur())
+        {
+            // Check if parameter was accepted
+            if (parse_simulator_output(task.getOutputString()))
+            {
+                // Declare raw parameter
+                std::string raw_parameter;
+
+                // Get input string
+                std::stringstream input_sstrm(task.getInputString());
+
+                // Discard epsilon
+                std::getline(input_sstrm, raw_parameter);
+
+                // Read accepted parameter
+                std::getline(input_sstrm, raw_parameter);
+
+                // Push accepted parameter
+                m_prmtr_accepted.push_back(std::move(raw_parameter));
+            }
+        }
+        // If error occurred, check if ignore_errors is set
+        else if (!ignore_errors)
         {
             std::runtime_error e("Task finished with error!");
             throw e;
-        }
-
-        // Check if parameter was accepted
-        if (parse_simulator_output(task.getOutputString()))
-        {
-            // Declare raw parameter
-            std::string raw_parameter;
-
-            // Get input string
-            std::stringstream input_sstrm(task.getInputString());
-
-            // Discard epsilon
-            std::getline(input_sstrm, raw_parameter);
-
-            // Read accepted parameter
-            std::getline(input_sstrm, raw_parameter);
-
-            // Push accepted parameter
-            m_prmtr_accepted.push_back(std::move(raw_parameter));
         }
 
         // Pop finished task
