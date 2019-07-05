@@ -136,6 +136,9 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
         std::cerr << "Caught error!\n";
         ExecutableSupport::PrintError(e.GetMessage());
 
+        // Ensure singletons are destroyed
+        destroy_singletons();
+
         // Write result
         *p_output_string = static_cast<char*>(malloc(sizeof(char)));
         **p_output_string = '\0';
