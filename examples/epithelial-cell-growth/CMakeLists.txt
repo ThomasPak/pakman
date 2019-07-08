@@ -38,20 +38,38 @@ execute_process (COMMAND cmake "-B${CHASTE_BUILD_DIR}" "-H${CHASTE_DIR}")
 execute_process (COMMAND echo "************************************")
 execute_process (COMMAND echo "Done running CMake on Chaste")
 
-# Add custom target to create chaste simulator
-add_custom_target (chaste-test ALL DEPENDS cell-simulator)
-add_custom_command (OUTPUT cell-simulator
-    COMMAND echo "Building Chaste simulator"
+# Add custom target to create chaste standard simulator
+add_custom_target (chaste-standard-test ALL DEPENDS cell-standard-simulator)
+add_custom_command (OUTPUT cell-standard-simulator
+    COMMAND echo "Building Chaste standard simulator"
     COMMAND echo "Chaste build directory: ${CHASTE_BUILD_DIR}"
     COMMAND echo '************************************'
     COMMAND cmake --build "${CHASTE_BUILD_DIR}" --target
-    VertexBasedMonolayerSimulator -- ${CHASTE_BUILD_OPTIONS}
+    VertexBasedMonolayerStandardSimulator -- ${CHASTE_BUILD_OPTIONS}
     COMMAND cp
-    "${CHASTE_BUILD_DIR}/projects/chaste-project/apps/VertexBasedMonolayerSimulator"
-    cell-simulator
+    "${CHASTE_BUILD_DIR}/projects/chaste-project/apps/VertexBasedMonolayerStandardSimulator"
+    cell-standard-simulator
     COMMAND echo '************************************'
-    COMMAND echo "Done building Chaste simulator"
-    MAIN_DEPENDENCY chaste-project/apps/src/VertexBasedMonolayerSimulator.cpp
+    COMMAND echo "Done building Chaste standard simulator"
+    MAIN_DEPENDENCY chaste-project/apps/src/VertexBasedMonolayerStandardSimulator.cpp
+    DEPENDS chaste-project/src/VertexBasedMonolayerSimulation.cpp
+    chaste-project/src/VertexBasedMonolayerSimulation.hpp
+    )
+
+# Add custom target to create chaste mpi simulator
+add_custom_target (chaste-mpi-test ALL DEPENDS cell-mpi-simulator)
+add_custom_command (OUTPUT cell-mpi-simulator
+    COMMAND echo "Building Chaste MPI simulator"
+    COMMAND echo "Chaste build directory: ${CHASTE_BUILD_DIR}"
+    COMMAND echo '************************************'
+    COMMAND cmake --build "${CHASTE_BUILD_DIR}" --target
+    VertexBasedMonolayerMPISimulator -- ${CHASTE_BUILD_OPTIONS}
+    COMMAND cp
+    "${CHASTE_BUILD_DIR}/projects/chaste-project/apps/VertexBasedMonolayerMPISimulator"
+    cell-mpi-simulator
+    COMMAND echo '************************************'
+    COMMAND echo "Done building Chaste MPI simulator"
+    MAIN_DEPENDENCY chaste-project/apps/src/VertexBasedMonolayerMPISimulator.cpp
     DEPENDS chaste-project/src/VertexBasedMonolayerSimulation.cpp
     chaste-project/src/VertexBasedMonolayerSimulation.hpp
     "${PROJECT_SOURCE_DIR}/include/pakman_mpi_worker.h"
@@ -81,6 +99,9 @@ file (COPY cell_count.txt
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Configure shell scripts
+configure_script (run-chaste-standard-simulator.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-chaste-standard-simulator.sh)
+
 configure_script (run-abc-rejection-serial-example.sh.in
     ${CMAKE_CURRENT_BINARY_DIR}/run-abc-rejection-serial-example.sh)
 

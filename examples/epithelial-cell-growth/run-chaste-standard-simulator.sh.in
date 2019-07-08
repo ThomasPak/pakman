@@ -1,0 +1,15 @@
+#!/bin/bash
+set -euo pipefail
+
+tmpfile=$(mktemp)
+
+@CMAKE_CURRENT_BINARY_DIR@/cell-standard-simulator "$@" > $tmpfile
+
+EXIT_CODE=$?
+
+cat $tmpfile | grep 'Chaste warning' 1>&2
+cat $tmpfile | grep -v 'Chaste warning'
+
+rm -f $tmpfile
+
+exit $EXIT_CODE

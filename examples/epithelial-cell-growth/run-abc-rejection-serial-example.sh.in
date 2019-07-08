@@ -22,14 +22,11 @@ fi
 
 # Run ABC rejection
 echo "Running ABC rejection with number-accept=$number_accept"
-@MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ 1 \
-    @MPIEXEC_PREFLAGS@ "@PROJECT_BINARY_DIR@/src/pakman" @MPIEXEC_POSTFLAGS@ \
-    mpi rejection \
-    --mpi-simulator \
+"@PROJECT_BINARY_DIR@/src/pakman" serial rejection \
     --number-accept=$number_accept \
     --epsilon=0 \
     --parameter-names=tcycle \
-    --simulator="./cell-simulator cell_count.txt" \
+    --simulator="./run-chaste-standard-simulator.sh cell_count.txt" \
     --prior-sampler="./cell-prior-sampler 0 30" \
     > abc-rejection-serial.out
 

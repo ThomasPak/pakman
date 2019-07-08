@@ -22,14 +22,11 @@ fi
 
 # Run ABC smc
 echo "Running ABC SMC with population-size=$pop_size"
-@MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ 1 \
-    @MPIEXEC_PREFLAGS@ "@PROJECT_BINARY_DIR@/src/pakman" @MPIEXEC_POSTFLAGS@ \
-    mpi smc \
-    --mpi-simulator \
+"@PROJECT_BINARY_DIR@/src/pakman" serial smc \
     --population-size=$pop_size \
     --epsilons=2,1,0 \
     --parameter-names=tcycle \
-    --simulator="./cell-simulator cell_count.txt" \
+    --simulator="./run-chaste-standard-simulator.sh cell_count.txt" \
     --prior-sampler="./cell-prior-sampler 0 30" \
     --prior-pdf="./cell-prior-pdf 0 30" \
     --perturber="./cell-perturber 2" \
