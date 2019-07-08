@@ -8,7 +8,7 @@ Bayesian computation algorithms.
 # Requirements
 
 * C++11 compiler
-* MPI-3.1 installation
+* MPI-3.1 library
 * [CMake](https://cmake.org/) >= version 3.10.2
 * (Optional) [Python](https://www.python.org/) >= version 3.6.7 with
   [numpy](https://www.numpy.org/), [matplotlib](https://matplotlib.org/), and
