@@ -29,7 +29,8 @@ void setup_singletons();
 void destroy_singletons();
 int simulator(int argc, char *argv[], const char *input_string, char **p_output_string);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     // This sets up PETSc and prints out copyright information, etc.
 	ExecutableSupport::StartupWithoutShowingCopyright(&argc, &argv);
 
@@ -49,10 +50,11 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
 
     // You should put all the main code within a try-catch, to ensure that
     // you clean up PETSc before quitting.
-    try {
-
+    try
+    {
 		// Check arguments
-        if (argc < 2) {
+        if (argc < 2)
+        {
 			std::string error_msg;
 			error_msg += "Usage: ";
 			error_msg += argv[0];
@@ -151,7 +153,8 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
     }
 }
 
-std::string temporary_chaste_directory() {
+std::string temporary_chaste_directory()
+{
 
     std::string testoutput_dir =
         OutputFileHandler::GetChasteTestOutputDirectory();
@@ -167,7 +170,8 @@ std::string temporary_chaste_directory() {
 
     //std::cerr << "buffer: " << buffer << std::endl;
 
-    if (mkdtemp(tmp_dir_path) == NULL) {
+    if (mkdtemp(tmp_dir_path) == NULL)
+    {
         perror("temporary_chaste_directory");
         exit(2);
     }
@@ -179,7 +183,8 @@ std::string temporary_chaste_directory() {
     return tmp_dir;
 }
 
-void remove_temporary_chaste_directory(const std::string& tmp_dir) {
+void remove_temporary_chaste_directory(const std::string& tmp_dir)
+{
 
         std::string testoutput_dir =
             OutputFileHandler::GetChasteTestOutputDirectory();
@@ -192,14 +197,16 @@ void remove_temporary_chaste_directory(const std::string& tmp_dir) {
         system(remove_cmd.c_str());
 }
 
-int read_data_file(const std::string& data_file) {
+int read_data_file(const std::string& data_file)
+{
 
     std::fstream data_stream(data_file, std::fstream::in);
 
     int num_cells;
     data_stream >> num_cells;
 
-    if (!data_stream.good()) {
+    if (!data_stream.good())
+    {
         std::string error_msg("could not read ");
         error_msg += data_file;
         std::runtime_error e(error_msg);
@@ -209,7 +216,8 @@ int read_data_file(const std::string& data_file) {
     return num_cells;
 }
 
-void setup_singletons() {
+void setup_singletons()
+{
 
     // Set up what the test suite would do
     SimulationTime::Instance()->SetStartTime(0.0);
@@ -222,7 +230,8 @@ void setup_singletons() {
 	CellId::ResetMaxCellId();
 }
 
-void destroy_singletons() {
+void destroy_singletons()
+{
     SimulationTime::Destroy();
     CellCycleTimesGenerator::Destroy();
     RandomNumberGenerator::Destroy();

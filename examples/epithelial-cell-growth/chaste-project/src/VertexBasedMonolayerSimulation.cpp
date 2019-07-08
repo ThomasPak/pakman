@@ -20,7 +20,8 @@
 int VertexBasedMonolayerSimulation(
         const std::string& output_directory,
         double average_cell_cycle_time,
-        double dt) {
+        double dt)
+{
 
     /* The first thing we define is a 2D (specified by the <2,2>) mesh
      * which holds the spatial information of the simulation. To do this we
