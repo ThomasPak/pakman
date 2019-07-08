@@ -47,6 +47,7 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
 {
     // Temporary directory
     std::string tmp_dir;
+    bool keep_testoutput = false;
 
     // You should put all the main code within a try-catch, to ensure that
     // you clean up PETSc before quitting.
@@ -58,7 +59,7 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
             std::string error_msg;
             error_msg += "Usage: ";
             error_msg += argv[0];
-            error_msg += " DATAFILE [--silent]";
+            error_msg += " DATAFILE [--silent] [--keep-testoutput]";
             ExecutableSupport::PrintError(error_msg, true);
 
             // Write result
@@ -72,8 +73,16 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
 
         // Check if silent flag is set
         bool silent = false;
-        if (argc == 3 && std::string(argv[2]).compare("--silent") == 0)
+        if ((argc == 3 && std::string(argv[2]).compare("--silent") == 0)
+                || (argc == 4 && std::string(argv[2]).compare("--silent") == 0)
+                || (argc == 4 && std::string(argv[3]).compare("--silent") == 0))
             silent = true;
+
+        // Check if keep_testoutput flag is set
+        if ((argc == 3 && std::string(argv[2]).compare("--keep-testoutput") == 0)
+                || (argc == 4 && std::string(argv[2]).compare("--keep-testoutput") == 0)
+                || (argc == 4 && std::string(argv[3]).compare("--keep-testoutput") == 0))
+            keep_testoutput = true;
 
         // Get input
         int epsilon; double parameter;
@@ -130,7 +139,8 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
         strcpy(*p_output_string, result.c_str());
 
         // Remove temporary directory
-        remove_temporary_chaste_directory(tmp_dir);
+        if (!keep_testoutput)
+            remove_temporary_chaste_directory(tmp_dir);
         return ExecutableSupport::EXIT_OK;
     }
     catch (const Exception& e)
@@ -146,7 +156,7 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
         **p_output_string = '\0';
 
         // Remove temporary directory
-        if (tmp_dir.size() > 0)
+        if (!keep_testoutput && tmp_dir.size() > 0)
             remove_temporary_chaste_directory(tmp_dir);
 
         return ExecutableSupport::EXIT_ERROR;

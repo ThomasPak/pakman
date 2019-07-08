@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
 
     // Temporary directory
     std::string tmp_dir;
+    bool keep_testoutput = false;
 
     // You should put all the main code within a try-catch, to ensure that
     // you clean up PETSc before quitting.
@@ -45,7 +46,7 @@ int main(int argc, char *argv[])
             std::string error_msg;
             error_msg += "Usage: ";
             error_msg += argv[0];
-            error_msg += " DATAFILE [--silent]";
+            error_msg += " DATAFILE [--silent] [--keep-testoutput]";
             ExecutableSupport::PrintError(error_msg, true);
 
             // End by finalizing PETSc, and returning a suitable exit code.
@@ -56,8 +57,16 @@ int main(int argc, char *argv[])
 
         // Check if silent flag is set
         bool silent = false;
-        if (argc == 3 && std::string(argv[2]).compare("--silent") == 0)
+        if ((argc == 3 && std::string(argv[2]).compare("--silent") == 0)
+                || (argc == 4 && std::string(argv[2]).compare("--silent") == 0)
+                || (argc == 4 && std::string(argv[3]).compare("--silent") == 0))
             silent = true;
+
+        // Check if keep_testoutput flag is set
+        if ((argc == 3 && std::string(argv[2]).compare("--keep-testoutput") == 0)
+                || (argc == 4 && std::string(argv[2]).compare("--keep-testoutput") == 0)
+                || (argc == 4 && std::string(argv[3]).compare("--keep-testoutput") == 0))
+            keep_testoutput = true;
 
         // Get input
         int epsilon; double parameter;
@@ -109,7 +118,8 @@ int main(int argc, char *argv[])
             std::cout << "reject\n";
 
         // Remove temporary directory
-        remove_temporary_chaste_directory(tmp_dir);
+        if (!keep_testoutput)
+            remove_temporary_chaste_directory(tmp_dir);
     }
     catch (const Exception& e)
     {
@@ -120,7 +130,7 @@ int main(int argc, char *argv[])
         destroy_singletons();
 
         // Remove temporary directory
-        if (tmp_dir.size() > 0)
+        if (!keep_testoutput && tmp_dir.size() > 0)
             remove_temporary_chaste_directory(tmp_dir);
 
         ExecutableSupport::FinalizePetsc();
