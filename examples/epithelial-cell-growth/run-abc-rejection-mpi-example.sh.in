@@ -28,9 +28,10 @@ echo "Running ABC rejection with number-accept=$number_accept"
     --mpi-simulator \
     --number-accept=$number_accept \
     --epsilon=0 \
+    --ignore-errors \
     --parameter-names=tcycle \
-    --simulator="./cell-mpi-simulator cell_count.txt" \
-    --prior-sampler="./cell-prior-sampler 0 30" \
+    --simulator="./cell-mpi-simulator cell_count.txt --silent" \
+    --prior-sampler="./cell-prior-sampler 5 25" \
     > abc-rejection-mpi.out
 
 # Remove Chaste warnings

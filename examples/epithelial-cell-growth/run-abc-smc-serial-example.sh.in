@@ -24,13 +24,14 @@ fi
 echo "Running ABC SMC with population-size=$pop_size"
 "@PROJECT_BINARY_DIR@/src/pakman" serial smc \
     --population-size=$pop_size \
-    --epsilons=2,1,0 \
+    --epsilons=4,3,2,1,0 \
+    --ignore-errors \
     --parameter-names=tcycle \
-    --simulator="./run-chaste-standard-simulator.sh cell_count.txt" \
-    --prior-sampler="./cell-prior-sampler 0 30" \
-    --prior-pdf="./cell-prior-pdf 0 30" \
-    --perturber="./cell-perturber 2" \
-    --perturbation-pdf="./cell-perturbation-pdf 2" \
+    --simulator="./run-chaste-standard-simulator.sh cell_count.txt --silent" \
+    --prior-sampler="./cell-prior-sampler 5 25" \
+    --prior-pdf="./cell-prior-pdf 5 25" \
+    --perturber="./cell-perturber 1" \
+    --perturbation-pdf="./cell-perturbation-pdf 1" \
     > abc-smc-serial.out
 
 # Remove Chaste warnings
