@@ -23,17 +23,14 @@ fi
 # Run ABC rejection
 echo "Running ABC rejection with number-accept=$number_accept"
 "@PROJECT_BINARY_DIR@/src/pakman" serial rejection \
+    --discard-child-stderr \
     --number-accept=$number_accept \
     --epsilon=0 \
     --ignore-errors \
     --parameter-names=tcycle \
-    --simulator="./run-chaste-standard-simulator.sh cell_count.txt --silent" \
+    --simulator="./run-chaste-standard-simulator.sh cell_count.txt" \
     --prior-sampler="./cell-prior-sampler 5 25" \
     > abc-rejection-serial.out
-
-# Remove Chaste warnings
-grep -v 'Chaste warning' abc-rejection-serial.out > tmp
-mv tmp abc-rejection-serial.out
 
 echo "Results saved in abc-rejection-serial.out"
 

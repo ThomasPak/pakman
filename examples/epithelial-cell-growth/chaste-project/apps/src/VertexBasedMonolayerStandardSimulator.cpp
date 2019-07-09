@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
             std::string error_msg;
             error_msg += "Usage: ";
             error_msg += argv[0];
-            error_msg += " DATAFILE [--silent] [--keep-testoutput]";
+            error_msg += " DATAFILE [--keep-testoutput]";
             ExecutableSupport::PrintError(error_msg, true);
 
             // End by finalizing PETSc, and returning a suitable exit code.
@@ -55,56 +55,37 @@ int main(int argc, char *argv[])
             return ExecutableSupport::EXIT_BAD_ARGUMENTS;
         }
 
-        // Check if silent flag is set
-        bool silent = false;
-        if ((argc == 3 && std::string(argv[2]).compare("--silent") == 0)
-                || (argc == 4 && std::string(argv[2]).compare("--silent") == 0)
-                || (argc == 4 && std::string(argv[3]).compare("--silent") == 0))
-            silent = true;
-
         // Check if keep_testoutput flag is set
-        if ((argc == 3 && std::string(argv[2]).compare("--keep-testoutput") == 0)
-                || (argc == 4 && std::string(argv[2]).compare("--keep-testoutput") == 0)
-                || (argc == 4 && std::string(argv[3]).compare("--keep-testoutput") == 0))
-            keep_testoutput = true;
+        for (int argi = 2; argi < argc; argi++)
+            if (std::string(argv[argi]).compare("--keep-testoutput") == 0)
+                keep_testoutput = true;
 
         // Get input
-        int epsilon; double parameter;
+        int epsilon; double tcycle;
+        std::cerr << "Enter epsilon\n";
         std::cin >> epsilon;
-        std::cin >> parameter;
-
-        // Print output
-        if (!silent)
-        {
-            std::cerr << "Epsilon: " << epsilon << std::endl;
-            std::cerr << "Parameter: " << parameter << std::endl;
-        }
+        std::cerr << "Enter tcycle\n";
+        std::cin >> tcycle;
 
         // Get temporary directory
         tmp_dir = temporary_chaste_directory();
-        if (!silent)
-        {
-            std::cerr << "tmp_dir: " <<
-                (OutputFileHandler::GetChasteTestOutputDirectory() + tmp_dir)
-                << std::endl;
-        }
+        std::cerr << "Temporary directory: " <<
+            (OutputFileHandler::GetChasteTestOutputDirectory() + tmp_dir) <<
+            std::endl;
 
         // Prepare simulation
         setup_singletons();
 
         // Run simulation
-        int sim_num_cells = VertexBasedMonolayerSimulation(tmp_dir, parameter);
+        int sim_num_cells = VertexBasedMonolayerSimulation(tmp_dir, tcycle);
 
         destroy_singletons();
-
-        if (!silent)
-            std::cerr << "sim_num_cells: " << sim_num_cells << std::endl;
 
         // Read data
         int data_num_cells = read_data_file(argv[1]);
 
-        if (!silent)
-            std::cerr << "data_num_cells: " << data_num_cells << std::endl;
+        std::cerr << "Observed cell count: " << data_num_cells << std::endl;
+        std::cerr << "Simulated cell count: " << sim_num_cells << std::endl;
 
         // Initialize result
         std::string result;

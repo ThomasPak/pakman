@@ -48,6 +48,7 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
     // Temporary directory
     std::string tmp_dir;
     bool keep_testoutput = false;
+    bool silent = false;
 
     // You should put all the main code within a try-catch, to ensure that
     // you clean up PETSc before quitting.
@@ -71,37 +72,33 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
             return ExecutableSupport::EXIT_BAD_ARGUMENTS;
         }
 
-        // Check if silent flag is set
-        bool silent = false;
-        if ((argc == 3 && std::string(argv[2]).compare("--silent") == 0)
-                || (argc == 4 && std::string(argv[2]).compare("--silent") == 0)
-                || (argc == 4 && std::string(argv[3]).compare("--silent") == 0))
-            silent = true;
-
-        // Check if keep_testoutput flag is set
-        if ((argc == 3 && std::string(argv[2]).compare("--keep-testoutput") == 0)
-                || (argc == 4 && std::string(argv[2]).compare("--keep-testoutput") == 0)
-                || (argc == 4 && std::string(argv[3]).compare("--keep-testoutput") == 0))
-            keep_testoutput = true;
+        // Check if silent or keep_testoutput flags are set
+        for (int argi = 2; argi < argc; argi++)
+        {
+            if (std::string(argv[argi]).compare("--silent") == 0)
+                silent = true;
+            else if (std::string(argv[argi]).compare("--keep-testoutput") == 0)
+                keep_testoutput = true;
+        }
 
         // Get input
-        int epsilon; double parameter;
+        int epsilon; double tcycle;
         std::stringstream inputstrm(input_string);
         inputstrm >> epsilon;
-        inputstrm >> parameter;
+        inputstrm >> tcycle;
 
         // Print output
         if (!silent)
         {
             std::cerr << "Epsilon: " << epsilon << std::endl;
-            std::cerr << "Parameter: " << parameter << std::endl;
+            std::cerr << "Tcycle: " << tcycle << std::endl;
         }
 
         // Get temporary directory
         tmp_dir = temporary_chaste_directory();
         if (!silent)
         {
-            std::cerr << "tmp_dir: " <<
+            std::cerr << "Temporary directory: " <<
                 (OutputFileHandler::GetChasteTestOutputDirectory() + tmp_dir)
                 << std::endl;
         }
@@ -110,18 +107,18 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
         setup_singletons();
 
         // Run simulation
-        int sim_num_cells = VertexBasedMonolayerSimulation(tmp_dir, parameter);
+        int sim_num_cells = VertexBasedMonolayerSimulation(tmp_dir, tcycle);
 
         destroy_singletons();
-
-        if (!silent)
-            std::cerr << "sim_num_cells: " << sim_num_cells << std::endl;
 
         // Read data
         int data_num_cells = read_data_file(argv[1]);
 
         if (!silent)
-            std::cerr << "data_num_cells: " << data_num_cells << std::endl;
+        {
+            std::cerr << "Observed cell count: " << data_num_cells << std::endl;
+            std::cerr << "Simulated cell count: " << sim_num_cells << std::endl;
+        }
 
         // Initialize result
         std::string result;
@@ -141,6 +138,7 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
         // Remove temporary directory
         if (!keep_testoutput)
             remove_temporary_chaste_directory(tmp_dir);
+
         return ExecutableSupport::EXIT_OK;
     }
     catch (const Exception& e)
