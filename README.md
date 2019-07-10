@@ -29,6 +29,9 @@ $ cmake ..
 $ make
 ```
 
+This will create a `pakman` binary under the `src` subfolder of the build
+directory.
+
 # Testing
 
 To test Pakman, run (in the build folder):
