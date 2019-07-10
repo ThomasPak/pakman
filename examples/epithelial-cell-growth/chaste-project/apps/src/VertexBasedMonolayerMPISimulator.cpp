@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <string>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +20,7 @@
 #include "CellPropertyRegistry.hpp"
 #include "CellId.hpp"
 
-#include "pakman_mpi_worker.h"
+#include "PakmanMPIWorker.hpp"
 #include "VertexBasedMonolayerSimulation.hpp"
 
 std::string temporary_chaste_directory();
@@ -27,15 +28,19 @@ void remove_temporary_chaste_directory(const std::string& tmp_dir);
 int read_data_file(const std::string& data_file);
 void setup_singletons();
 void destroy_singletons();
-int simulator(int argc, char *argv[], const char *input_string, char **p_output_string);
+int simulator(int argc, char *argv[], const std::string& input_string,
+        std::string& output_string);
 
 int main(int argc, char *argv[])
 {
     // This sets up PETSc and prints out copyright information, etc.
     ExecutableSupport::StartupWithoutShowingCopyright(&argc, &argv);
 
-    // Run mpi_worker
-    pakman_run_mpi_worker(argc, argv, &simulator, PAKMAN_DEFAULT);
+    // Create MPI Worker
+    PakmanMPIWorker worker(&simulator);
+
+    // Run MPI Worker
+    worker.run(argc, argv);
 
     // End by finalizing PETSc, and returning a suitable exit code.
     // 0 means 'no error'
@@ -43,7 +48,8 @@ int main(int argc, char *argv[])
     return ExecutableSupport::EXIT_OK;
 }
 
-int simulator(int argc, char *argv[], const char *input_string, char **p_output_string)
+int simulator(int argc, char *argv[], const std::string& input_string,
+        std::string& output_string)
 {
     // Temporary directory
     std::string tmp_dir;
@@ -64,8 +70,7 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
             ExecutableSupport::PrintError(error_msg, true);
 
             // Write result
-            *p_output_string = static_cast<char*>(malloc(sizeof(char)));
-            **p_output_string = '\0';
+            output_string.assign("");
 
             // End by finalizing PETSc, and returning a suitable exit code.
             // 0 means 'no error'
@@ -132,8 +137,7 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
             result.assign("reject\n");
 
         // Write result
-        *p_output_string = static_cast<char*>(malloc((result.length() + 1) * sizeof(char)));
-        strcpy(*p_output_string, result.c_str());
+        output_string.assign(result);
 
         // Remove temporary directory
         if (!keep_testoutput)
@@ -150,8 +154,7 @@ int simulator(int argc, char *argv[], const char *input_string, char **p_output_
         destroy_singletons();
 
         // Write result
-        *p_output_string = static_cast<char*>(malloc(sizeof(char)));
-        **p_output_string = '\0';
+        output_string.assign("");
 
         // Remove temporary directory
         if (!keep_testoutput && tmp_dir.size() > 0)
