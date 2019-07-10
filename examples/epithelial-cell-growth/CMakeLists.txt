@@ -1,13 +1,8 @@
 # Check for CHASTE_DIR
-if (NOT DEFINED CHASTE_DIR AND NOT DEFINED ENV{CHASTE_DIR})
-    message (WARNING "CHASTE_DIR was not defined as environment or CMake variable, "
+if (NOT IS_DIRECTORY ${CHASTE_DIR})
+    message (WARNING "CHASTE_DIR (\"${CHASTE_DIR}\") is not a valid directory, "
         "cannot build epithelial cell growth example.")
     return ()
-endif ()
-
-# If CMake variable CHASTE_DIR is defined, set it to environment variable
-if (NOT DEFINED CHASTE_DIR)
-    set (CHASTE_DIR "$ENV{CHASTE_DIR}")
 endif ()
 
 # Check if $CHASTE_DIR/projects/chaste-project already exists
@@ -20,11 +15,11 @@ else ()
 endif ()
 
 # Check for CHASTE_BUILD_DIR
-if (NOT DEFINED CHASTE_BUILD_DIR AND NOT DEFINED ENV{CHASTE_BUILD_DIR})
+if (NOT IS_DIRECTORY ${CHASTE_BUILD_DIR})
+    message (WARNING "CHASTE_BUILD_DIR (\"${CHASTE_BUILD_DIR}\") is not a valid directory, "
+        "building Chaste in the build directory ${CMAKE_CURRENT_BINARY_DIR}/chaste-build.")
     file (MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/chaste-build")
     set (CHASTE_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/chaste-build")
-elseif (NOT DEFINED CHASTE_BUILD_DIR)
-    set (CHASTE_BUILD_DIR "$ENV{CHASTE_BUILD_DIR}")
 endif ()
 
 # Configure Chaste build

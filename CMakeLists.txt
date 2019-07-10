@@ -100,6 +100,11 @@ if (CMAKE_BUILD_TYPE MATCHES "|Debug|RelWithDebInfo")
     set (CMAKE_ENABLE_EXPORTS TRUE)
 endif()
 
+# Set CHASTE_DIR and CHASTE_BUILD_DIR as CACHE variables
+set (CHASTE_DIR "$ENV{CHASTE_DIR}" CACHE PATH "Path to Chaste source directory")
+set (CHASTE_BUILD_DIR "$ENV{CHASTE_BUILD_DIR}" CACHE PATH "Path to Chaste build directory")
+set (CHASTE_BUILD_OPTIONS "" CACHE STRING "Options to pass to Chaste build command")
+
 # Include CTest
 include (CTest)
 
