@@ -28,7 +28,7 @@ echo "Running ABC rejection with number-accept=$number_accept"
     --epsilon=0 \
     --ignore-errors \
     --parameter-names=tcycle \
-    --simulator="./run-chaste-standard-simulator.sh cell_count.txt" \
+    --simulator="./run-cell-standard-simulator.sh cell_count.txt" \
     --prior-sampler="./cell-prior-sampler 5 25" \
     > abc-rejection-serial.out
 

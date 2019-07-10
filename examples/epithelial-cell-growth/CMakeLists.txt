@@ -99,8 +99,8 @@ file (COPY cell_count.txt
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Configure shell scripts
-configure_script (run-chaste-standard-simulator.sh.in
-    ${CMAKE_CURRENT_BINARY_DIR}/run-chaste-standard-simulator.sh)
+configure_script (run-cell-standard-simulator.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/run-cell-standard-simulator.sh)
 
 configure_script (run-abc-rejection-serial-example.sh.in
     ${CMAKE_CURRENT_BINARY_DIR}/run-abc-rejection-serial-example.sh)
