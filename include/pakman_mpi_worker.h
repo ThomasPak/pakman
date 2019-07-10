@@ -10,10 +10,6 @@
 #define PAKMAN_EXIT_SUCCESS 0
 #define PAKMAN_EXIT_FAILURE 1
 
-#define PAKMAN_DEFAULT          0b00
-#define PAKMAN_O_INITIALIZE_MPI 0b01
-#define PAKMAN_O_FINALIZE_MPI   0b10
-
 #define PAKMAN_ROOT                     0
 #define PAKMAN_MANAGER_MSG_TAG          2
 #define PAKMAN_MANAGER_SIGNAL_TAG       3
@@ -33,8 +29,7 @@ void pakman_send_error_code(MPI_Comm comm, int error_code);
 int pakman_run_mpi_worker(
         int argc, char *argv[],
         int (*simulator)(int argc, char *argv[],
-            const char *input_string, char **p_output_string),
-        int flags);
+            const char *input_string, char **p_output_string));
 
 MPI_Comm pakman_get_parent_comm()
 {
@@ -93,13 +88,8 @@ void pakman_send_error_code(MPI_Comm comm, int error_code)
 int pakman_run_mpi_worker(
         int argc, char *argv[],
         int (*simulator)(int argc, char *argv[],
-            const char *input_string, char **p_output_string),
-        int flags)
+            const char *input_string, char **p_output_string))
 {
-    /* Initialize MPI if flag is set */
-    if (flags & PAKMAN_O_INITIALIZE_MPI)
-        MPI_Init(NULL, NULL);
-
     /* Get parent communicator */
     MPI_Comm parent_comm = pakman_get_parent_comm();
 
@@ -177,10 +167,6 @@ int pakman_run_mpi_worker(
 
     /* Disconnect parent communicator */
     MPI_Comm_disconnect(&parent_comm);
-
-    /* Finalize MPI if flag is set */
-    if (flags & PAKMAN_O_FINALIZE_MPI)
-        MPI_Finalize();
 
     /* Return successful error code */
     return PAKMAN_EXIT_SUCCESS;

@@ -12,18 +12,13 @@ class PakmanMPIWorker
 
         // Constructor
         PakmanMPIWorker(std::function<int(int, char**, const std::string&,
-                    std::string&)> simulator, int flags = PAKMAN_DEFAULT);
+                    std::string&)> simulator);
 
         // Destructor
         ~PakmanMPIWorker() = default;
 
         // Run
         int run(int argc, char*argv[]);
-
-        // Options
-        static constexpr int PAKMAN_DEFAULT          = 0b00;
-        static constexpr int PAKMAN_O_INITIALIZE_MPI = 0b01;
-        static constexpr int PAKMAN_O_FINALIZE_MPI   = 0b10;
 
         // Exit status of run()
         static constexpr int PAKMAN_EXIT_SUCCESS = 0;
@@ -53,9 +48,6 @@ class PakmanMPIWorker
         std::function<int(int, char**, const std::string&, std::string&)>
                 m_simulator;
 
-        // Flags
-        int m_flags = 0;
-
         // Parent communication constants
         static constexpr int PAKMAN_ROOT                    = 0;
         static constexpr int PAKMAN_MANAGER_MSG_TAG         = 2;
@@ -68,18 +60,13 @@ class PakmanMPIWorker
 
 // Constructor
 PakmanMPIWorker::PakmanMPIWorker(
-    std::function<int(int, char**, const std::string&, std::string&)> simulator,
-        int flags)
-: m_simulator(simulator), m_flags(flags)
+    std::function<int(int, char**, const std::string&, std::string&)> simulator)
+: m_simulator(simulator)
 {
 }
 
 int PakmanMPIWorker::run(int argc, char*argv[])
 {
-    // Initialize MPI if flag is set
-    if (m_flags & PAKMAN_O_INITIALIZE_MPI)
-        MPI_Init(nullptr, nullptr);
-
     // Get parent communicator
     m_parent_comm = getParentComm();
 
@@ -154,10 +141,6 @@ int PakmanMPIWorker::run(int argc, char*argv[])
 
     // Disconnect parent communicator
     MPI_Comm_disconnect(&m_parent_comm);
-
-    // Finalize MPI if flag is set
-    if (m_flags & PAKMAN_O_FINALIZE_MPI)
-        MPI_Finalize();
 
     // Return successful error code
     return PAKMAN_EXIT_SUCCESS;
