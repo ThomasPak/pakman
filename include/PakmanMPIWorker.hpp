@@ -11,8 +11,9 @@ class PakmanMPIWorker
     public:
 
         // Constructor
-        PakmanMPIWorker(std::function<int(int, char**, const std::string&,
-                    std::string&)> simulator);
+        PakmanMPIWorker(std::function<int(int argc, char** argv, const
+                    std::string& input_string, std::string& output_string)>
+                simulator);
 
         // Destructor
         ~PakmanMPIWorker() = default;
@@ -45,8 +46,8 @@ class PakmanMPIWorker
         MPI_Comm m_parent_comm = MPI_COMM_NULL;
 
         // Simulator function
-        std::function<int(int, char**, const std::string&, std::string&)>
-                m_simulator;
+        std::function<int(int argc, char** argv, const std::string&
+                input_string, std::string& output_string)> m_simulator;
 
         // Parent communication constants
         static constexpr int PAKMAN_ROOT                    = 0;
@@ -60,7 +61,8 @@ class PakmanMPIWorker
 
 // Constructor
 PakmanMPIWorker::PakmanMPIWorker(
-    std::function<int(int, char**, const std::string&, std::string&)> simulator)
+    std::function<int(int argc, char** argv, const std::string& input_string,
+        std::string& output_string)> simulator)
 : m_simulator(simulator)
 {
 }
