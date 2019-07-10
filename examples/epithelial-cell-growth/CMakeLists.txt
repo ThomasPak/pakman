@@ -34,40 +34,27 @@ execute_process (COMMAND echo "************************************")
 execute_process (COMMAND echo "Done running CMake on Chaste")
 
 # Add custom target to create chaste standard simulator
-add_custom_target (chaste-standard-test ALL DEPENDS cell-standard-simulator)
-add_custom_command (OUTPUT cell-standard-simulator
-    COMMAND echo "Building Chaste standard simulator"
+add_custom_target (chaste-test ALL DEPENDS cell-standard-simulator cell-mpi-simulator)
+add_custom_command (OUTPUT cell-standard-simulator cell-mpi-simulator
+    COMMAND echo "Building Chaste simulators"
     COMMAND echo "Chaste build directory: ${CHASTE_BUILD_DIR}"
     COMMAND echo '************************************'
     COMMAND cmake --build "${CHASTE_BUILD_DIR}" --target
     VertexBasedMonolayerStandardSimulator -- ${CHASTE_BUILD_OPTIONS}
+    COMMAND cmake --build "${CHASTE_BUILD_DIR}" --target
+    VertexBasedMonolayerMPISimulator -- ${CHASTE_BUILD_OPTIONS}
     COMMAND cp
     "${CHASTE_BUILD_DIR}/projects/chaste-project/apps/VertexBasedMonolayerStandardSimulator"
     cell-standard-simulator
-    COMMAND echo '************************************'
-    COMMAND echo "Done building Chaste standard simulator"
-    MAIN_DEPENDENCY chaste-project/apps/src/VertexBasedMonolayerStandardSimulator.cpp
-    DEPENDS chaste-project/src/VertexBasedMonolayerSimulation.cpp
-    chaste-project/src/VertexBasedMonolayerSimulation.hpp
-    )
-
-# Add custom target to create chaste mpi simulator
-add_custom_target (chaste-mpi-test ALL DEPENDS cell-mpi-simulator)
-add_custom_command (OUTPUT cell-mpi-simulator
-    COMMAND echo "Building Chaste MPI simulator"
-    COMMAND echo "Chaste build directory: ${CHASTE_BUILD_DIR}"
-    COMMAND echo '************************************'
-    COMMAND cmake --build "${CHASTE_BUILD_DIR}" --target
-    VertexBasedMonolayerMPISimulator -- ${CHASTE_BUILD_OPTIONS}
     COMMAND cp
     "${CHASTE_BUILD_DIR}/projects/chaste-project/apps/VertexBasedMonolayerMPISimulator"
     cell-mpi-simulator
     COMMAND echo '************************************'
-    COMMAND echo "Done building Chaste MPI simulator"
-    MAIN_DEPENDENCY chaste-project/apps/src/VertexBasedMonolayerMPISimulator.cpp
-    DEPENDS chaste-project/src/VertexBasedMonolayerSimulation.cpp
+    COMMAND echo "Done building Chaste simulators"
+    MAIN_DEPENDENCY chaste-project/apps/src/VertexBasedMonolayerStandardSimulator.cpp
+    DEPENDS chaste-project/apps/src/VertexBasedMonolayerMPISimulator.cpp
+    chaste-project/src/VertexBasedMonolayerSimulation.cpp
     chaste-project/src/VertexBasedMonolayerSimulation.hpp
-    "${PROJECT_SOURCE_DIR}/include/pakman_mpi_worker.h"
     )
 
 # Copy project
