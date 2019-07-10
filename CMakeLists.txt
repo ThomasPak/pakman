@@ -9,7 +9,8 @@ if (NOT MPI_C_FOUND)
 endif (NOT MPI_C_FOUND)
 
 # If hosts flags are given, add them to MPIEXEC_PREFLAGS
-if (MPIEXEC_HOSTS_FLAGS)
+set (MPIEXEC_HOSTS_FLAGS "" CACHE STRING "Flags for specifying hosts to mpiexec")
+if (NOT ${MPIEXEC_HOSTS_FLAGS} STREQUAL "")
     set (MPIEXEC_PREFLAGS "${MPIEXEC_PREFLAGS} ${MPIEXEC_HOSTS_FLAGS}")
     message ("Host flags are: ${MPIEXEC_HOSTS_FLAGS}")
 endif ()
