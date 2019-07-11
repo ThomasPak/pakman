@@ -13,8 +13,6 @@
 #include "interface/write_parameters.h"
 #include "master/AbstractMaster.h"
 
-#include "Sampler.h"
-
 #include "ABCRejectionController.h"
 
 // Constructor
@@ -100,7 +98,7 @@ void ABCRejectionController::iterate()
     // queued as there are Managers
     while (m_p_master->needMorePendingTasks())
         m_p_master->pushPendingTask(format_simulator_input(m_epsilon.str(),
-                    m_prior_sampler.sampleParameter()));
+                    sample_from_prior(m_prior_sampler)));
 
     entered = false;
 }

@@ -15,6 +15,7 @@
 #include "interface/write_parameters.h"
 
 #include "smc_weight.h"
+#include "sample_population.h"
 
 #include "ABCSMCController.h"
 
@@ -23,14 +24,17 @@ ABCSMCController::ABCSMCController(const Input &input_obj,
         std::shared_ptr<std::default_random_engine> p_generator) :
     m_epsilons(input_obj.epsilons),
     m_parameter_names(input_obj.parameter_names),
-    m_smc_sampler(std::vector<double>(input_obj.population_size),
-            std::vector<Parameter>(input_obj.population_size), p_generator, input_obj.perturber,
-            input_obj.prior_sampler, input_obj.prior_pdf),
-    m_perturbation_pdf(input_obj.perturbation_pdf),
     m_population_size(input_obj.population_size),
-    m_simulator(input_obj.simulator)
+    m_simulator(input_obj.simulator),
+    m_prior_sampler(input_obj.prior_sampler),
+    m_prior_pdf(input_obj.prior_pdf),
+    m_perturber(input_obj.perturber),
+    m_perturbation_pdf(input_obj.perturbation_pdf),
+    m_p_generator(p_generator),
+    m_distribution(0.0, 1.0),
+    m_prmtr_accepted_old(input_obj.population_size),
+    m_weights_old(input_obj.population_size)
 {
-    m_smc_sampler.setT(m_t);
 }
 
 // Iterate function
@@ -58,6 +62,9 @@ void ABCSMCController::iterate()
     while (!m_p_master->finishedTasksEmpty()
             && m_prmtr_accepted_new.size() < m_population_size)
     {
+        // m_prior_pdf_pending should not be empty
+        assert(!m_prior_pdf_pending.empty());
+
         // Increment counter
         m_number_simulated++;
 
@@ -84,6 +91,9 @@ void ABCSMCController::iterate()
 
                 // Push accepted parameter
                 m_prmtr_accepted_new.push_back(std::move(raw_parameter));
+
+                // Push prior_pdf of accepted parameter
+                m_prior_pdf_accepted.push_back(m_prior_pdf_pending.front());
             }
         }
         // If error occurred, check if ignore_errors is set
@@ -95,16 +105,19 @@ void ABCSMCController::iterate()
 
         // Pop finished task
         m_p_master->popFinishedTask();
+
+        // Pop prior_pdf of finished task
+        m_prior_pdf_pending.pop();
     }
 
     // Iterate over parameters whose weights have not yet been computed
     for (int i = m_weights_new.size(); i < m_prmtr_accepted_new.size(); i++)
         m_weights_new.push_back(smc_weight(
                 m_perturbation_pdf,
-                m_smc_sampler.getPriorPdf(),
+                m_prior_pdf_accepted[i],
                 m_t,
-                m_smc_sampler.getParameterPopulation(),
-                m_smc_sampler.getWeights(),
+                m_prmtr_accepted_old,
+                m_weights_old,
                 m_prmtr_accepted_new[i]));
 
     // If enough parameters have been accepted for this generation, check if we
@@ -121,7 +134,6 @@ void ABCSMCController::iterate()
 
         // Increment generation counter
         m_t++;
-        m_smc_sampler.setT(m_t);
 
         // Check if we are in the last generation
         if (m_t == m_epsilons.size())
@@ -136,15 +148,26 @@ void ABCSMCController::iterate()
         }
 
         // Swap population and weights
-        m_smc_sampler.swap_population(m_weights_new, m_prmtr_accepted_new);
+        std::swap(m_weights_old, m_weights_new);
+        std::swap(m_prmtr_accepted_old, m_prmtr_accepted_new);
 
-        // Clear m_weights_new and m_prmtr_accepted_new
+        // Normalize and compute cumulative sum
+        m_weights_cumsum.resize(m_weights_old.size());
+        normalize(m_weights_old);
+        cumsum(m_weights_old, m_weights_cumsum);
+
+        // Clear m_weights_new, m_prmtr_accepted_new and m_prior_pdf_accepted
         m_weights_new.clear();
         m_prmtr_accepted_new.clear();
+        m_prior_pdf_accepted.clear();
 
         // Flush Master
         m_p_master->flush();
         entered = false;
+
+        // Clear m_prior_pdf_pending
+        while (!m_prior_pdf_pending.empty())
+            m_prior_pdf_pending.pop();
 
         // Print message
         spdlog::info("Computing generation {}, epsilon = {}", m_t,
@@ -156,8 +179,8 @@ void ABCSMCController::iterate()
     // queued as there are Managers
     while (m_p_master->needMorePendingTasks())
         m_p_master->pushPendingTask(
-                format_simulator_input(m_epsilons[m_t].str(),
-                    m_smc_sampler.sampleParameter()));
+                format_simulator_input(
+                    m_epsilons[m_t].str(), sampleParameter()));
 
     entered = false;
 }
@@ -165,4 +188,40 @@ void ABCSMCController::iterate()
 Command ABCSMCController::getSimulator() const
 {
     return m_simulator;
+}
+
+Parameter ABCSMCController::sampleParameter()
+{
+    // If in generation 0
+    if (m_t == 0)
+    {
+        // Push dummy prior_pdf to m_prior_pdf_pending
+        m_prior_pdf_pending.push(0.0);
+
+        // Sample from prior
+        return sample_from_prior(m_prior_sampler);
+    }
+
+    // Else, sample from previous population and perturb until the prior pdf is
+    // nonzero
+    Parameter sampled_parameter;
+    double sampled_prior_pdf = 0.0;
+    do
+    {
+        // Sample parameter population
+        int idx = sample_population(m_weights_cumsum, m_distribution, *m_p_generator);
+        Parameter source_parameter = m_prmtr_accepted_old[idx];
+
+        // Perturb parameter
+        sampled_parameter = perturb_parameter(m_perturber, m_t,
+                source_parameter);
+
+        // Calculate prior_pdf
+        sampled_prior_pdf = get_prior_pdf(m_prior_pdf, sampled_parameter);
+    } while (sampled_prior_pdf == 0.0);
+
+    // Push sampled_prior_pdf to m_prior_pdf_pending
+    m_prior_pdf_pending.push(sampled_prior_pdf);
+
+    return sampled_parameter;
 }

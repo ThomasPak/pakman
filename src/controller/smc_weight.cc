@@ -26,17 +26,12 @@ double smc_weight(const Command& perturbation_pdf,
     if (t == 0)
         return 1.0 / ((double) prmtr_accepted_old.size());
 
-    // Prepare input to perturbation_pdf
-    std::string perturbation_pdf_input =
-        format_perturbation_pdf_input(t, prmtr_perturbed, prmtr_accepted_old);
-
-    // Call perturbation_pdf
-    std::string perturbation_pdf_output =
-        system_call(perturbation_pdf, perturbation_pdf_input);
+    // Get perturbation pdf
+    std::vector<double> perturbation_pdf_old =
+        get_perturbation_pdf(perturbation_pdf, t, prmtr_perturbed,
+                prmtr_accepted_old);
 
     // Compute denominator
-    std::vector<double> perturbation_pdf_old =
-        parse_perturbation_pdf_output(perturbation_pdf_output);
     double denominator = 0.0;
 
     try

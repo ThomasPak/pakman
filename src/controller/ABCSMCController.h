@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <queue>
 #include <memory>
 #include <random>
 
@@ -10,8 +11,6 @@
 #include "core/Arguments.h"
 #include "core/Command.h"
 #include "interface/types.h"
-
-#include "Sampler.h"
 
 #include "AbstractController.h"
 
@@ -63,15 +62,16 @@ class ABCSMCController : public AbstractController
 
     private:
 
+        /**** Member functions ****/
+        // Sample parameter
+        Parameter sampleParameter();
+
         /**** Member variables ****/
         // Epsilons
         std::vector<Epsilon> m_epsilons;
 
         // Iteration counter
         int m_t = 0;
-
-        // SMC sampler
-        SMCSampler m_smc_sampler;
 
         // Perturbation pdf for weights calculation
         Command m_perturbation_pdf;
@@ -93,6 +93,36 @@ class ABCSMCController : public AbstractController
 
         // Simulator command
         Command m_simulator;
+
+        // Prior pdf values for accepted parameters
+        std::vector<double> m_prior_pdf_accepted;
+
+        // Uniform distribution for sampling from population
+        std::uniform_real_distribution<double> m_distribution;
+
+        // Random number generator
+        std::shared_ptr<std::default_random_engine> m_p_generator;
+
+        // Prior pdf values of pending parameters
+        std::queue<double> m_prior_pdf_pending;
+
+        // Parameters accepted in previous generation
+        std::vector<Parameter> m_prmtr_accepted_old;
+
+        // Weights of parameters accepted in previous generation
+        std::vector<double> m_weights_old;
+
+        // Cumulative sum of weights
+        std::vector<double> m_weights_cumsum;
+
+        // Prior sampler command
+        Command m_prior_sampler;
+
+        // Perturber command
+        Command m_perturber;
+
+        // Prior_pdf command
+        Command m_prior_pdf;
 };
 
 #endif // ABCSMCCONTROLLER_H

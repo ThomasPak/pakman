@@ -10,8 +10,6 @@
 #include "core/Command.h"
 #include "interface/types.h"
 
-#include "Sampler.h"
-
 #include "AbstractController.h"
 
 class ABCRejectionController : public AbstractController
@@ -62,9 +60,6 @@ class ABCRejectionController : public AbstractController
         // Epsilon
         Epsilon m_epsilon;
 
-        // Prior sampler
-        PriorSampler m_prior_sampler;
-
         // Parameter names
         std::vector<ParameterName> m_parameter_names;
 
@@ -79,6 +74,9 @@ class ABCRejectionController : public AbstractController
 
         // Simulator command
         Command m_simulator;
+
+        // Prior_sampler command
+        Command m_prior_sampler;
 };
 
 #endif // ABCREJECTIONCONTROLLER_H

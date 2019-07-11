@@ -7,7 +7,6 @@ add_library (controller
     ABCRejectionControllerStatic.cc
     ABCSMCController.cc
     ABCSMCControllerStatic.cc
-    Sampler.cc
     smc_weight.cc
     sample_population.cc
     )

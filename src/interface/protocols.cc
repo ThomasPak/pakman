@@ -3,6 +3,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "core/Command.h"
+#include "system/system_call.h"
 #include "interface/types.h"
 
 #include "protocols.h"
@@ -287,4 +289,42 @@ std::vector<Parameter> parse_generator_output(
 
     // Return vector
     return generator_vector;
+}
+
+
+// Call prior_sampler to sample from prior
+Parameter sample_from_prior(const Command& prior_sampler)
+{
+    std::string prior_sampler_output = system_call(prior_sampler);
+    return parse_prior_sampler_output(prior_sampler_output);
+}
+
+// Call perturber to perturb parameter
+Parameter perturb_parameter(const Command& perturber, int t, Parameter
+        source_parameter)
+{
+        std::string perturber_input = format_perturber_input(t,
+                source_parameter);
+        std::string perturber_output = system_call(perturber, perturber_input);
+        return parse_perturber_output(perturber_output);
+}
+
+// Call prior_pdf to get prior pdf of parameter
+double get_prior_pdf(const Command& prior_pdf, Parameter parameter)
+{
+    std::string prior_pdf_input = format_prior_pdf_input(parameter);
+    std::string prior_pdf_output = system_call(prior_pdf, prior_pdf_input);
+    return parse_prior_pdf_output(prior_pdf_output);
+}
+
+// Call perturbation_pdf to get perturbation pdf of parameters
+std::vector<double> get_perturbation_pdf(const Command& perturbation_pdf,
+        int t, const Parameter& perturbed_parameter,
+        const std::vector<Parameter>& parameter_population)
+{
+    std::string perturbation_pdf_input = format_perturbation_pdf_input(t,
+            perturbed_parameter, parameter_population);
+    std::string perturbation_pdf_output = system_call(perturbation_pdf,
+            perturbation_pdf_input);
+    return parse_perturbation_pdf_output(perturbation_pdf_output);
 }
