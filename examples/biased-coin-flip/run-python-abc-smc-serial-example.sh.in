@@ -37,9 +37,9 @@ echo "Running ABC smc with population-size=$pop_size"
     --parameter-names=p \
     --simulator="$python simulator.py heads.txt" \
     --prior-sampler="$python prior-sampler.py 0 1" \
-    --perturber="$python perturber.py 0.1" \
+    --perturber="$python perturber.py 0.3" \
     --prior-pdf="$python prior-pdf.py 0 1" \
-    --perturbation-pdf="$python perturbation-pdf.py 0.1" \
+    --perturbation-pdf="$python perturbation-pdf.py 0.3" \
     > python-abc-smc-serial.out
 
 echo "Results saved in python-abc-smc-serial.out"

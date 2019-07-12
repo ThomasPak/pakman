@@ -32,9 +32,9 @@ echo "Running ABC SMC with population-size=$pop_size"
     --parameter-names=p \
     --simulator="./coin-simulator heads.txt" \
     --prior-sampler="./coin-prior-sampler 0 1" \
-    --perturber="./coin-perturber 0.1" \
+    --perturber="./coin-perturber 0.3" \
     --prior-pdf="./coin-prior-pdf 0 1" \
-    --perturbation-pdf="./coin-perturbation-pdf 0.1" \
+    --perturbation-pdf="./coin-perturbation-pdf 0.3" \
     > cpp-abc-smc-mpi.out
 
 echo "Results saved in cpp-abc-smc-mpi.out"
