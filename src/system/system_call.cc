@@ -168,14 +168,6 @@ std::string system_call(const Command& cmd)
     else // I am the child
     {
 
-        // Suppress stderr of child process
-        if (discard_child_stderr)
-        {
-            int devnull = open("/dev/null", O_WRONLY);
-            dup2_check(devnull, STDERR_FILENO);
-            close_check(devnull);
-        }
-
         // Supress stdin of child process
         int devnull = open("/dev/null", O_RDONLY);
         dup2_check(devnull, STDIN_FILENO);
@@ -185,6 +177,14 @@ std::string system_call(const Command& cmd)
         close_check(pipefd[READ_END]);
         dup2_check(pipefd[WRITE_END], 1);
         close_check(pipefd[WRITE_END]);
+
+        // Suppress stderr of child process
+        if (discard_child_stderr)
+        {
+            int devnull = open("/dev/null", O_WRONLY);
+            dup2_check(devnull, STDERR_FILENO);
+            close_check(devnull);
+        }
 
         // Get argv from command
         char **argv = cmd.argv();
@@ -253,14 +253,6 @@ std::string system_call(const Command& cmd, const std::string& input)
     else // I am the child
     {
 
-        // Suppress stderr of child process
-        if (discard_child_stderr)
-        {
-            int devnull = open("/dev/null", O_WRONLY);
-            dup2_check(devnull, STDERR_FILENO);
-            close_check(devnull);
-        }
-
         // Close write end of send pipe and redirect stdin to read end
         // of send pipe
         close_check(send_pipefd[WRITE_END]);
@@ -272,6 +264,14 @@ std::string system_call(const Command& cmd, const std::string& input)
         close_check(recv_pipefd[READ_END]);
         dup2_check(recv_pipefd[WRITE_END], 1);
         close_check(recv_pipefd[WRITE_END]);
+
+        // Suppress stderr of child process
+        if (discard_child_stderr)
+        {
+            int devnull = open("/dev/null", O_WRONLY);
+            dup2_check(devnull, STDERR_FILENO);
+            close_check(devnull);
+        }
 
         // Get argv from command
         char **argv = cmd.argv();
@@ -342,14 +342,6 @@ std::pair<std::string, int> system_call_error_code(const Command& cmd,
     else // I am the child
     {
 
-        // Suppress stderr of child process
-        if (discard_child_stderr)
-        {
-            int devnull = open("/dev/null", O_WRONLY);
-            dup2_check(devnull, STDERR_FILENO);
-            close_check(devnull);
-        }
-
         // Close write end of send pipe and redirect stdin to read end
         // of send pipe
         close_check(send_pipefd[WRITE_END]);
@@ -361,6 +353,14 @@ std::pair<std::string, int> system_call_error_code(const Command& cmd,
         close_check(recv_pipefd[READ_END]);
         dup2_check(recv_pipefd[WRITE_END], 1);
         close_check(recv_pipefd[WRITE_END]);
+
+        // Suppress stderr of child process
+        if (discard_child_stderr)
+        {
+            int devnull = open("/dev/null", O_WRONLY);
+            dup2_check(devnull, STDERR_FILENO);
+            close_check(devnull);
+        }
 
         // Get argv from command
         char **argv = cmd.argv();
@@ -425,14 +425,6 @@ std::tuple<pid_t, int, int> system_call_non_blocking_read_write(
     else // I am the child
     {
 
-        // Suppress stderr of child process
-        if (discard_child_stderr)
-        {
-            int devnull = open("/dev/null", O_WRONLY);
-            dup2_check(devnull, STDERR_FILENO);
-            close_check(devnull);
-        }
-
         // Close write end of send pipe and redirect stdin to read end
         // of send pipe
         close_check(send_pipefd[WRITE_END]);
@@ -444,6 +436,14 @@ std::tuple<pid_t, int, int> system_call_non_blocking_read_write(
         close_check(recv_pipefd[READ_END]);
         dup2_check(recv_pipefd[WRITE_END], 1);
         close_check(recv_pipefd[WRITE_END]);
+
+        // Suppress stderr of child process
+        if (discard_child_stderr)
+        {
+            int devnull = open("/dev/null", O_WRONLY);
+            dup2_check(devnull, STDERR_FILENO);
+            close_check(devnull);
+        }
 
         // Get argv from command
         char **argv = cmd.argv();
