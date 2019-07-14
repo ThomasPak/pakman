@@ -10,7 +10,7 @@ fi
 python=@PYTHON_EXECUTABLE@
 
 # Process arguments
-usage="Usage: $0 [population_size (default 10)]"
+usage="Usage: $0 [population_size (default 10)] [stdev (default 0.3)]"
 
 if [ $# -ge 1 ]
 then
@@ -21,11 +21,18 @@ then
     fi
 fi
 
-if [ $# == 1 ]
+if [ $# -ge 1 ]
 then
     pop_size=$1
 else
     pop_size=10
+fi
+
+if [ $# -ge 2 ]
+then
+    stdev=$2
+else
+    stdev=0.3
 fi
 
 # Run ABC smc
@@ -37,16 +44,16 @@ echo "Running ABC smc with population-size=$pop_size"
     --parameter-names=p \
     --simulator="$python simulator.py heads.txt" \
     --prior-sampler="$python prior-sampler.py 0 1" \
-    --perturber="$python perturber.py 0.3" \
+    --perturber="$python perturber.py $stdev" \
     --prior-pdf="$python prior-pdf.py 0 1" \
-    --perturbation-pdf="$python perturbation-pdf.py 0.3" \
+    --perturbation-pdf="$python perturbation-pdf.py $stdev" \
     > python-abc-smc-serial.out
 
 echo "Results saved in python-abc-smc-serial.out"
 
 # Create histogram
 $python plot-histogram.py \
-    5 20 --epsilon 0 --inputfile python-abc-smc-serial.out \
+    5 20 --epsilon 0 --stdev $stdev --inputfile python-abc-smc-serial.out \
     --bboxtight --outputfile python-abc-smc-serial-histogram.png
 
 echo "Histogram saved in python-abc-smc-serial-histogram.png"

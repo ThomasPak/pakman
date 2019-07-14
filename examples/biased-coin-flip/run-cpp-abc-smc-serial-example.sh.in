@@ -4,7 +4,7 @@ set -euo pipefail
 python=@PYTHON_EXECUTABLE@
 
 # Process arguments
-usage="Usage: $0 [population_size (default 10)]"
+usage="Usage: $0 [population_size (default 10)] [stdev (default 0.3)]"
 
 if [ $# -ge 1 ]
 then
@@ -15,11 +15,18 @@ then
     fi
 fi
 
-if [ $# == 1 ]
+if [ $# -ge 1 ]
 then
     pop_size=$1
 else
     pop_size=10
+fi
+
+if [ $# -ge 2 ]
+then
+    stdev=$2
+else
+    stdev=0.3
 fi
 
 # Run ABC smc
@@ -30,9 +37,9 @@ echo "Running ABC SMC with population-size=$pop_size"
     --parameter-names=p \
     --simulator="./coin-simulator heads.txt" \
     --prior-sampler="./coin-prior-sampler 0 1" \
-    --perturber="./coin-perturber 0.3" \
+    --perturber="./coin-perturber $stdev" \
     --prior-pdf="./coin-prior-pdf 0 1" \
-    --perturbation-pdf="./coin-perturbation-pdf 0.3" \
+    --perturbation-pdf="./coin-perturbation-pdf $stdev" \
     > cpp-abc-smc-serial.out
 
 echo "Results saved in cpp-abc-smc-serial.out"
@@ -41,7 +48,7 @@ echo "Results saved in cpp-abc-smc-serial.out"
 if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
     $python plot-histogram.py \
-        5 20 --epsilon 0 --inputfile cpp-abc-smc-serial.out \
+        5 20 --epsilon 0 --stdev $stdev --inputfile cpp-abc-smc-serial.out \
         --bboxtight --outputfile cpp-abc-smc-serial-histogram.png
 
     echo "Histogram saved in cpp-abc-smc-serial-histogram.png"

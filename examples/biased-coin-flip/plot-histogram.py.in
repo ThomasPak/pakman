@@ -10,6 +10,8 @@ ap.add_argument('k', type=int, help='number of successes')
 ap.add_argument('n', type=int, help='number of trials')
 ap.add_argument('-e', '--epsilon', type=str, help='epsilon used to generate data',
                 default=None)
+ap.add_argument('-s', '--stdev', type=str, help='standard deviation of perturbation kernel used',
+                default=None)
 ap.add_argument('-o', '--outputfile', help='file to save figure to',
                 default = 'binomial_histogram.png')
 ap.add_argument('-i', '--inputfile', help='file to read data from (default: STDIN)',
@@ -22,6 +24,7 @@ args = ap.parse_args()
 k = args.k
 n = args.n
 e = args.epsilon
+s = args.stdev
 plotheight = args.plotheight
 bboxtight = args.bboxtight
 outputfile = args.outputfile
@@ -59,9 +62,11 @@ plt.plot(q, np.exp(loglikelihood(q)), label="Analytical")
 titlestr = "Posterior for $q$ with N = {}".format(len(data))
 if e != None:
     titlestr += ", $\epsilon$ = {}".format(e)
+if s != None:
+    titlestr += ", $s$ = {}".format(s)
 
 plt.title(titlestr)
-plt.xlabel("q")
+plt.xlabel("$q$")
 plt.ylabel("Posterior distribution")
 plt.legend()
 
