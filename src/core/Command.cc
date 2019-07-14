@@ -1,6 +1,9 @@
 #include <string>
 
 #include <string.h>
+#include <stdlib.h>
+
+#include <unistd.h>
 
 #include "utils.h"
 
@@ -146,3 +149,62 @@ void Command::freeArgv()
     m_argv = nullptr;
 }
 
+
+bool Command::isExecutable() const
+{
+    // Copy executable into file
+    std::string file = m_argv[0];
+
+    // If file has forward slash, check if file exists and is executable with
+    // access
+    size_t found = file.find('/');
+    if (found != std::string::npos)
+        return (access(file.c_str(), F_OK | X_OK) == 0);
+
+    // Else, we need to check PATH
+    char *path = getenv("PATH");
+    std::string path_str;
+
+    // If PATH does not exist, assign confstr(_CS_PATH)
+    if (path == nullptr)
+    {
+        size_t pathlen = confstr(_CS_PATH, nullptr, 0);
+        path = (char *) malloc(pathlen * sizeof(char));
+        confstr(_CS_PATH, path, pathlen);
+        path_str.assign(":");
+        path_str += path;
+        free(path);
+    }
+    else
+        path_str.assign(path);
+
+    // Iterate over element in PATH
+    size_t left = 0, right = 0;
+    do
+    {
+        left = right;
+
+        // Find next occurrence of ':'
+        right = path_str.find(':', left);
+
+        // From glibc/execvp.c: Two adjacent colons, or a colon at the
+        // beginning or the end of `PATH' means to search the current
+        // directory.
+        std::string cmd;
+        if (left == right)
+            cmd += file;
+        else
+        {
+            cmd += path_str.substr(left, right - left);
+            cmd += '/';
+            cmd += file;
+        }
+
+        if (access(cmd.c_str(), F_OK | X_OK) == 0)
+            return true;
+
+    } while (++right != 0);
+
+    // Executable was not found
+    return false;
+}

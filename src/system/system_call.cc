@@ -126,6 +126,17 @@ void close_check(int fd)
 
 std::string system_call(const Command& cmd)
 {
+    // Check if cmd is executable
+    if (!cmd.isExecutable())
+    {
+        std::string error_msg;
+        error_msg += "cannot access '";
+        error_msg += cmd.argv()[0];
+        error_msg += "'";
+        perror(error_msg.c_str());
+        throw;
+    }
+
     spdlog::debug("cmd: {}", cmd.str());
 
     // Initialize output
@@ -207,6 +218,17 @@ std::string system_call(const Command& cmd)
 
 std::string system_call(const Command& cmd, const std::string& input)
 {
+    // Check if cmd is executable
+    if (!cmd.isExecutable())
+    {
+        std::string error_msg;
+        error_msg += "cannot access '";
+        error_msg += cmd.argv()[0];
+        error_msg += "'";
+        perror(error_msg.c_str());
+        throw;
+    }
+
     spdlog::debug("cmd: {}", cmd.str());
     spdlog::debug("input: {}", input);
 
@@ -295,6 +317,17 @@ std::string system_call(const Command& cmd, const std::string& input)
 std::pair<std::string, int> system_call_error_code(const Command& cmd,
                  const std::string& input)
 {
+    // Check if cmd is executable
+    if (!cmd.isExecutable())
+    {
+        std::string error_msg;
+        error_msg += "cannot access '";
+        error_msg += cmd.argv()[0];
+        error_msg += "'";
+        perror(error_msg.c_str());
+        throw;
+    }
+
     spdlog::debug("cmd: {}", cmd.str());
     spdlog::debug("input: {}", input);
 
@@ -384,6 +417,17 @@ std::pair<std::string, int> system_call_error_code(const Command& cmd,
 std::tuple<pid_t, int, int> system_call_non_blocking_read_write(
         const Command& cmd)
 {
+    // Check if cmd is executable
+    if (!cmd.isExecutable())
+    {
+        std::string error_msg;
+        error_msg += "cannot access '";
+        error_msg += cmd.argv()[0];
+        error_msg += "'";
+        perror(error_msg.c_str());
+        throw;
+    }
+
     spdlog::debug("cmd: {}", cmd.str());
 
     // Initialize child_pid, pipe_read_fd, pipe_write_fd

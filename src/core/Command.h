@@ -40,6 +40,9 @@ class Command
         // points to.  Else, there WILL be pain.
         char** argv() const;
 
+        // Checks argv[0] to see if it is executable
+        bool isExecutable() const;
+
     private:
 
         // Copy command tokens to argv
