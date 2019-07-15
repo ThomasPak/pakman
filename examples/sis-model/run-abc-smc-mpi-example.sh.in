@@ -42,7 +42,7 @@ if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
     @PYTHON_EXECUTABLE@ plot-histogram.py \
         101 4 0 0.06 0 2 --datafile=S_data.txt \
-        --epsilon 35 --inputfile abc-smc-mpi.out \
+        --epsilon '{75,70,...,35}' --inputfile abc-smc-mpi.out \
         --outputfile abc-smc-mpi-histogram.png
 
     echo "Histogram saved in abc-smc-mpi-histogram.png"

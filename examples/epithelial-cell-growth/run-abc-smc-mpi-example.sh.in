@@ -47,7 +47,7 @@ echo "Results saved in abc-smc-mpi.out"
 if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
     @PYTHON_EXECUTABLE@ plot-histogram.py \
-        --epsilon 0 --inputfile abc-smc-mpi.out \
+        --epsilon '{4,3,...,0}' --inputfile abc-smc-mpi.out \
         --bboxtight --outputfile abc-smc-mpi-histogram.png
 
     echo "Histogram saved in abc-smc-mpi-histogram.png"

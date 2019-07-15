@@ -48,7 +48,7 @@ echo "Results saved in cpp-abc-smc-serial.out"
 if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
     $python plot-histogram.py \
-        5 20 --epsilon 0 --stdev $stdev --inputfile cpp-abc-smc-serial.out \
+        5 20 --epsilon '{2,1,0}' --stdev $stdev --inputfile cpp-abc-smc-serial.out \
         --bboxtight --outputfile cpp-abc-smc-serial-histogram.png
 
     echo "Histogram saved in cpp-abc-smc-serial-histogram.png"

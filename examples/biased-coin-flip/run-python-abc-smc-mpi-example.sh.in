@@ -55,7 +55,7 @@ echo "Results saved in python-abc-smc-mpi.out"
 
 # Create histogram
 $python plot-histogram.py \
-    5 20 --epsilon 0 --stdev $stdev --inputfile python-abc-smc-mpi.out \
+    5 20 --epsilon '{2,1,0}' --stdev $stdev --inputfile python-abc-smc-mpi.out \
     --bboxtight --outputfile python-abc-smc-mpi-histogram.png
 
 echo "Histogram saved in python-abc-smc-mpi-histogram.png"

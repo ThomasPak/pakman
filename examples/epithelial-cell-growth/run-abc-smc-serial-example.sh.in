@@ -41,7 +41,7 @@ echo "Results saved in abc-smc-serial.out"
 if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
     @PYTHON_EXECUTABLE@ plot-histogram.py \
-        --epsilon 0 --inputfile abc-smc-serial.out \
+        --epsilon '{4,3,...,0}' --inputfile abc-smc-serial.out \
         --bboxtight --outputfile abc-smc-serial-histogram.png
 
     echo "Histogram saved in abc-smc-serial-histogram.png"
