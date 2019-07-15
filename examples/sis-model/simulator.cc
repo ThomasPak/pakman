@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
     }
 
     // Read epsilon, beta and gamma from stdin
-    int epsilon;
+    double epsilon;
     double beta, gamma;
 
     std::cin >> epsilon;
