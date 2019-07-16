@@ -1,0 +1,52 @@
+#!/bin/bash
+set -euo pipefail
+
+if [ "@PYTHONINTERP_FOUND@" != "TRUE" ]
+then
+    echo "Cannot run Python example because Python interpreter was not found"
+    exit 1
+fi
+
+python=@PYTHON_EXECUTABLE@
+
+# Process arguments
+usage="Usage: $0 [num_accepted_parameters (default 10)]"
+
+if [ $# -ge 1 ]
+then
+    if [ $1 == "--help" ] || [ $1 == "-h" ]
+    then
+        echo $usage 1>&2
+        exit 0
+    fi
+fi
+
+if [ $# == 1 ]
+then
+    number_accept=$1
+else
+    number_accept=10
+fi
+
+# Run ABC rejection
+echo "Running ABC rejection with number-accept=$number_accept"
+@MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ @MPIEXEC_MAX_NUMPROCS@ \
+    @MPIEXEC_PREFLAGS@ \
+    "@PROJECT_BINARY_DIR@/src/pakman" @MPIEXEC_POSTFLAGS@ mpi rejection \
+    --discard-child-stderr \
+    --number-accept=$number_accept \
+    --epsilon=75 \
+    --parameter-names=beta,gamma \
+    --simulator="$python simulator.py 100 1 40 10 S_data.txt" \
+    --prior-sampler="$python prior-sampler.py 0 0.06 0 2" \
+    > python-abc-rejection-mpi.out
+
+echo "Results saved in python-abc-rejection-mpi.out"
+
+# Create histogram
+$python plot-histogram.py \
+    101 4 0 0.06 0 2 --datafile=S_data.txt \
+    --epsilon 75 --inputfile python-abc-rejection-mpi.out \
+    --outputfile python-abc-rejection-mpi-histogram.png
+
+echo "Histogram saved in python-abc-rejection-mpi-histogram.png"

@@ -31,17 +31,17 @@ echo "Running ABC SMC with population-size=$pop_size"
     --perturber="./sis-perturber 0.006 0.2" \
     --prior-pdf="./sis-prior-pdf 0 0.06 0 2" \
     --perturbation-pdf="./sis-perturbation-pdf 0.006 0.2" \
-    > abc-smc-serial.out
+    > cpp-abc-smc-serial.out
 
-echo "Results saved in abc-smc-serial.out"
+echo "Results saved in cpp-abc-smc-serial.out"
 
 # Create histogram
 if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
     @PYTHON_EXECUTABLE@ plot-histogram.py \
         101 4 0 0.06 0 2 --datafile=S_data.txt \
-        --epsilon '{75,70,...,35}' --inputfile abc-smc-serial.out \
-        --outputfile abc-smc-serial-histogram.png
+        --epsilon '{75,70,...,35}' --inputfile cpp-abc-smc-serial.out \
+        --outputfile cpp-abc-smc-serial-histogram.png
 
-    echo "Histogram saved in abc-smc-serial-histogram.png"
+    echo "Histogram saved in cpp-abc-smc-serial-histogram.png"
 fi

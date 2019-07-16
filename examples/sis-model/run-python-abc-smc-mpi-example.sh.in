@@ -1,6 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
+if [ "@PYTHONINTERP_FOUND@" != "TRUE" ]
+then
+    echo "Cannot run Python example because Python interpreter was not found"
+    exit 1
+fi
+
+python=@PYTHON_EXECUTABLE@
+
 # Process arguments
 usage="Usage: $0 [population_size (default 10)]"
 
@@ -25,25 +33,23 @@ echo "Running ABC SMC with population-size=$pop_size"
 @MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ @MPIEXEC_MAX_NUMPROCS@ \
     @MPIEXEC_PREFLAGS@ \
     "@PROJECT_BINARY_DIR@/src/pakman" mpi smc \
+    --discard-child-stderr \
     --population-size=$pop_size \
     --epsilon=75,70,65,60,55,50,45,40,35 \
     --parameter-names=beta,gamma \
-    --simulator="./sis-simulator 100 1 40 10 S_data.txt" \
-    --prior-sampler="./sis-prior-sampler 0 0.06 0 2" \
+    --simulator="$python simulator.py 100 1 40 10 S_data.txt" \
+    --prior-sampler="$python prior-sampler.py 0 0.06 0 2" \
     --perturber="./sis-perturber 0.006 0.2" \
     --prior-pdf="./sis-prior-pdf 0 0.06 0 2" \
     --perturbation-pdf="./sis-perturbation-pdf 0.006 0.2" \
-    > abc-smc-mpi.out
+    > python-abc-smc-mpi.out
 
-echo "Results saved in abc-smc-mpi.out"
+echo "Results saved in python-abc-smc-mpi.out"
 
 # Create histogram
-if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
-then
-    @PYTHON_EXECUTABLE@ plot-histogram.py \
-        101 4 0 0.06 0 2 --datafile=S_data.txt \
-        --epsilon '{75,70,...,35}' --inputfile abc-smc-mpi.out \
-        --outputfile abc-smc-mpi-histogram.png
+$python plot-histogram.py \
+    101 4 0 0.06 0 2 --datafile=S_data.txt \
+    --epsilon '{75,70,...,35}' --inputfile python-abc-smc-mpi.out \
+    --outputfile python-abc-smc-mpi-histogram.png
 
-    echo "Histogram saved in abc-smc-mpi-histogram.png"
-fi
+echo "Histogram saved in python-abc-smc-mpi-histogram.png"

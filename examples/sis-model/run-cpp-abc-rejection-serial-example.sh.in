@@ -22,25 +22,23 @@ fi
 
 # Run ABC rejection
 echo "Running ABC rejection with number-accept=$number_accept"
-@MPIEXEC_EXECUTABLE@ @MPIEXEC_NUMPROC_FLAG@ @MPIEXEC_MAX_NUMPROCS@ \
-    @MPIEXEC_PREFLAGS@ \
-    "@PROJECT_BINARY_DIR@/src/pakman" @MPIEXEC_POSTFLAGS@ mpi rejection \
+"@PROJECT_BINARY_DIR@/src/pakman" serial rejection \
     --number-accept=$number_accept \
     --epsilon=75 \
     --parameter-names=beta,gamma \
     --simulator="./sis-simulator 100 1 40 10 S_data.txt" \
     --prior-sampler="./sis-prior-sampler 0 0.06 0 2" \
-    > abc-rejection-mpi.out
+    > cpp-abc-rejection-serial.out
 
-echo "Results saved in abc-rejection-mpi.out"
+echo "Results saved in cpp-abc-rejection-serial.out"
 
 # Create histogram
 if [ "@PYTHONINTERP_FOUND@" == "TRUE" ]
 then
     @PYTHON_EXECUTABLE@ plot-histogram.py \
         101 4 0 0.06 0 2 --datafile=S_data.txt \
-        --epsilon 75 --inputfile abc-rejection-mpi.out \
-        --outputfile abc-rejection-mpi-histogram.png
+        --epsilon 75 --inputfile cpp-abc-rejection-serial.out \
+        --outputfile cpp-abc-rejection-serial-histogram.png
 
-    echo "Histogram saved in abc-rejection-mpi-histogram.png"
+    echo "Histogram saved in cpp-abc-rejection-serial-histogram.png"
 fi
