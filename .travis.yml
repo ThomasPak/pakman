@@ -100,3 +100,4 @@ script:
   - ./run-python-abc-rejection-mpi-example.sh
   - ./run-python-abc-smc-serial-example.sh
   - ./run-python-abc-smc-mpi-example.sh
+  - ./make-sis-trace.sh

@@ -1,0 +1,25 @@
+#!/bin/bash
+set -euo pipefail
+
+if [ "@PYTHONINTERP_FOUND@" != "TRUE" ]
+then
+    echo "Cannot run Python example because Python interpreter was not found"
+    exit 1
+fi
+
+python=@PYTHON_EXECUTABLE@
+
+# Create input file for simulator.py
+echo 0 > tmp
+echo 0.003 0.1 >> tmp
+
+# Create trace
+$python simulator.py 100 1 40 10 S_data.txt S_trace.txt < tmp &> /dev/null
+rm tmp
+
+echo "Trace saved in S_trace.txt"
+
+# Plot trace
+$python plot-sis-trace.py 101 -o SIS_trace.png -t S_trace.txt -W 40 -H 101
+
+echo "Trace plot saved in SIS_trace.png"

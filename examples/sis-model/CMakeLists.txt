@@ -62,9 +62,15 @@ configure_script (run-cpp-abc-rejection-mpi-example.sh.in
 configure_script (run-cpp-abc-smc-mpi-example.sh.in
     ${CMAKE_CURRENT_BINARY_DIR}/run-cpp-abc-smc-mpi-example.sh)
 
+configure_script (make-sis-trace.sh.in
+    ${CMAKE_CURRENT_BINARY_DIR}/make-sis-trace.sh)
+
 # Configure Python script
 configure_script (plot-histogram.py.in
     ${CMAKE_CURRENT_BINARY_DIR}/plot-histogram.py)
+
+configure_script (plot-sis-trace.py.in
+    ${CMAKE_CURRENT_BINARY_DIR}/plot-sis-trace.py)
 
 # Add executables
 add_executable (sis-prior-sampler prior-sampler.cc)

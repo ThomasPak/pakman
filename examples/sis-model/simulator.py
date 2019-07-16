@@ -3,12 +3,13 @@ from numpy import log, sqrt
 from sys import argv, stdin, stdout, stderr
 
 # Process arguments
-if len(argv) != 6:
-    stderr.write("Usage: {} S0 I0 TEND NOBS DATAFILE\n"
+if len(argv) < 6:
+    stderr.write("Usage: {} S0 I0 TEND NOBS DATAFILE [TRACEFILE]\n"
             "Read S and I counts from DATAFILE, "
             "epsilon and parameters beta and gamma from stdin,\n"
             "run simulation and output whether "
-            "parameter is accepted or rejected\n".format(argv[0]))
+            "parameter is accepted or rejected\n"
+            "If TRACEFILE is given, save the t and S series to TRACEFILE\n".format(argv[0]))
 
     exit(1)
 
@@ -18,6 +19,10 @@ tend = float(argv[3])
 Nobs = int(argv[4])
 
 datafile = argv[5]
+if len(argv) >= 7:
+    tracefile = argv[6]
+else:
+    tracefile = None
 
 # Read epsilon and q from stdin
 stderr.write("Enter epsilon\n");
@@ -32,7 +37,7 @@ with open(datafile, 'r') as dfile:
     for line in dfile:
         S_obs.append(int(line))
 
-def run_SIS_simulation(beta, gamma, S0, I0, tend, Nobs):
+def run_SIS_simulation(beta, gamma, S0, I0, tend, Nobs, tracefile):
 
     # Initialize arrays
     t = [0.0]
@@ -92,13 +97,19 @@ def run_SIS_simulation(beta, gamma, S0, I0, tend, Nobs):
     # Fill in remaining entries
     S_sim += [ S[-1] for i in range(Nobs - len(S_sim)) ]
 
+    # If tracefile is not None, save t and S to tracefile
+    if not tracefile is None:
+        with open(tracefile, 'w') as tfile:
+            for t_, S_ in zip(t, S):
+                tfile.write("{} {}\n".format(t_, S_))
+
     return S_sim
 
 def distance(S_obs, S_sim):
     return sqrt(sum((obs - sim)**2 for obs, sim in zip(S_obs, S_sim)))
 
 # Run simulation
-S_sim = run_SIS_simulation(beta, gamma, S0, I0, tend, Nobs)
+S_sim = run_SIS_simulation(beta, gamma, S0, I0, tend, Nobs, tracefile)
 
 # Compute distance
 dist = distance(S_obs, S_sim)
