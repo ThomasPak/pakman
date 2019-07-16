@@ -181,6 +181,7 @@ if analytical:
 
 # Save histogram
 plt.savefig(outputfile, bbox_inches='tight' if bboxtight else None)
+plt.close()
 
 # Close input file
 inputfile.close()
