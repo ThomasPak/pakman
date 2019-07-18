@@ -108,18 +108,6 @@ void MPIMaster::doNormalStuff()
         m_state = terminated;
         return;
     }
-
-    // Check for termination of Master and Managers
-    if (m_master_manager_terminated)
-    {
-        // Send TERMINATE_MANAGER_SIGNAL to all Managers
-        sendSignalToAllManagers(TERMINATE_MANAGER_SIGNAL);
-
-        // Terminate Master
-        m_state = terminated;
-        return;
-    }
-
     // Check for flushing of Workers
     if (m_worker_flushed)
     {
@@ -148,6 +136,17 @@ void MPIMaster::doNormalStuff()
     // Call controller
     if (auto p_controller = m_p_controller.lock())
         p_controller->iterate();
+
+    // Check for termination of Master and Managers
+    if (m_master_manager_terminated)
+    {
+        // Send TERMINATE_MANAGER_SIGNAL to all Managers
+        sendSignalToAllManagers(TERMINATE_MANAGER_SIGNAL);
+
+        // Terminate Master
+        m_state = terminated;
+        return;
+    }
 
     // Delegate tasks to Managers
     delegateToManagers();
