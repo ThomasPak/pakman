@@ -1,6 +1,5 @@
-# Add cpu-stress
-add_executable (cpu-stress cpu-stress.c)
-target_link_libraries (cpu-stress m)
+# Add heat-equation
+add_executable (heat-equation heat-equation.cc)
 
 # Get processor count
 include (ProcessorCount)

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Process arguments
-usage="Usage: $0 [num_procs] [num_sqrt_computations] [num_simulations]"
+usage="Usage: $0 [num_procs] [num_simulations]"
 
 if [ $# -ge 1 ]
 then
@@ -37,16 +37,9 @@ fi
 
 if [ $# -ge 2 ]
 then
-    num_sqrt_computations=$2
+    num_simulations=$2
 else
-    num_sqrt_computations=100000000
-fi
-
-if [ $# -ge 3 ]
-then
-    num_simulations=$3
-else
-    num_simulations=32
+    num_simulations=128
 fi
 
 # Initialize timeformat so that time only outputs elapsed time in seconds
@@ -75,7 +68,7 @@ do
         --epsilon=0 \
         --parameter-names=p \
         --prior-sampler="echo 1" \
-        --simulator="'@CMAKE_CURRENT_BINARY_DIR@/scaling-simulator.sh' $num_sqrt_computations" \
+        --simulator="'@CMAKE_CURRENT_BINARY_DIR@/scaling-simulator.sh'" \
         > /dev/null 2>/dev/null; } 2>> scaling.csv
 
     # Show elapsed time
