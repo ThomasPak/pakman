@@ -64,6 +64,9 @@ build folder.  See the [wiki](https://github.com/ThomasPak/pakman/wiki) for
 further documentation.
 
 * [Biased coin and ABC rejection](https://github.com/ThomasPak/pakman/wiki/Example:-biased-coin-flip-and-ABC-rejection)
+* [Biased coin and ABC SMC](https://github.com/ThomasPak/pakman/wiki/Example:-biased-coin-flip-and-ABC-SMC)
+* [SIS model](https://github.com/ThomasPak/pakman/wiki/Example:-SIS-model)
+* [Epithelial cell growth](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth)
 
 # Testing on multiple nodes (advanced)
 
