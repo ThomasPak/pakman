@@ -39,11 +39,6 @@ AbstractMaster::TaskHandler::TaskHandler(TaskHandler &&t) :
 {
 }
 
-// Destructor
-AbstractMaster::TaskHandler::~TaskHandler()
-{
-}
-
 // Get state
 AbstractMaster::TaskHandler::state_t
 AbstractMaster::TaskHandler::getState() const
