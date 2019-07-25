@@ -4,43 +4,76 @@
 #include <string>
 #include <vector>
 
+/** A class for representing shell commands.
+ *
+ * Commands take a raw command string and convert it to an array of command
+ * tokens using the function parse_command_tokens().
+ *
+ * The array of command tokens, to be used in system functions such as exec(),
+ * can be accessed with the function argv().
+ */
+
 class Command
 {
     public:
 
-        // Default constructor
+        /** Default constructor. */
         Command();
 
-        // Construct from string
+        /** Construct from raw command string.
+         *
+         * @param raw_command  C++-style string containing raw command.
+         */
         Command(const std::string& raw_command);
 
-        // Construct from c-style string
+        /** Construct from raw command string.
+         *
+         * @param raw_command  C-style string containing raw command.
+         */
         Command(const char raw_command[]);
 
-        // Copy constructor
+        /** Copy constructor.
+         *
+         * @param command  source Command object
+         */
         Command(const Command& command);
 
-        // Move constructor
+        /** Move constructor.
+         *
+         * @param command  source Command object
+         */
         Command(Command&& command);
 
-        // Copy-assignment constructor
+        /** Copy-assignment constructor.
+         *
+         * @param command  source Command object
+         *
+         * @return reference to copy-assigned Command object
+         */
         Command& operator=(const Command& command);
 
-        // Move-assignment constructor
+        /** Move-assignment constructor.
+         *
+         * @param command  source Command object
+         *
+         * @return reference to move-assigned Command object
+         */
         Command& operator=(Command&& command);
 
-        // Destructor
+        /** Destructor. */
         ~Command();
 
-        // Return command as string
+        /** @return raw command string. */
         const std::string& str() const;
 
-        // Return argv
-        // Do NOT call free on the returned pointer or any of the pointers it
-        // points to.  Else, there WILL be pain.
+        /** @return argv.
+         *
+         * @warning Do NOT call free on the returned pointer or any of the
+         * pointers it points to.  Else, there WILL be pain.
+         */
         char** argv() const;
 
-        // Checks argv[0] to see if it is executable
+        /** @return whether argv[0] is a valid executable. */
         bool isExecutable() const;
 
     private:
