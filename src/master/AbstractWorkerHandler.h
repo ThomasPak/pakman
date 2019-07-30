@@ -16,9 +16,8 @@
  * only functions to check whether the simulation has finished (isDone()) and
  * to obtain the results (getOutput() and getErrorCode()).
  *
- * The destructor of a WorkerHandler can be called when the simulation is still
- * ongoing.  The terminate() function, on the other hand, should only be called
- * when Pakman has terminated.
+ * The destructor of a WorkerHandler ensures that the simulation is terminated,
+ * but the Worker process may persist, as in the case of MPIWorkerHandler.
  */
 
 class AbstractWorkerHandler
@@ -35,9 +34,6 @@ class AbstractWorkerHandler
 
         /** Default destructor does nothing. */
         virtual ~AbstractWorkerHandler() = default;
-
-        /** Terminate Worker when Pakman terminates. */
-        virtual void terminate() = 0;
 
         /** @return whether Worker has finished. */
         virtual bool isDone() = 0;

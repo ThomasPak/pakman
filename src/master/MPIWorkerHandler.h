@@ -16,12 +16,8 @@
  * As opposed to the ForkedWorkerHandler, the MPI child process is not
  * terminated after each simulation.  Rather, the MPI Worker stays alive to
  * accept more simulation tasks.  Each simulation task is represented by a new
- * instance of MPIWorkerHandler.
- *
- * Only when terminate() is called will the MPI Worker process be terminated.
- * Moreover, when a Manager is terminated when it does not have an active MPI
- * Worker, the MPI Worker process is left idling.  Calling terminateStatic()
- * ensures that the remaining MPI Worker processes are also terminated.
+ * instance of MPIWorkerHandler.  Only when terminateStatic() is called will
+ * the MPI Worker process be terminated.
  */
 
 class MPIWorkerHandler : public AbstractWorkerHandler
@@ -59,17 +55,6 @@ class MPIWorkerHandler : public AbstractWorkerHandler
          * results, but rather stays alive to accept further simulation tasks.
          */
         virtual ~MPIWorkerHandler() override;
-
-        /** Terminate MPI Worker when Pakman terminates.
-         *
-         * Terminate simulation by waiting for the MPI child process to finish
-         * and send its output string and error code if it has not yet done so,
-         * and subsequently sending a TERMINATE_WORKER_SIGNAL to the MPI child
-         * process.
-         *
-         * We assume that the MPI child process will then exit.
-         */
-        virtual void terminate() override;
 
         /** @return whether Worker has finished.
          *

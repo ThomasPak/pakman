@@ -272,9 +272,6 @@ void Manager::terminateWorker()
     // m_p_worker_handler is the null pointer
     assert(m_p_worker_handler);
 
-    // Call terminate on Worker handler
-    m_p_worker_handler->terminate();
-
     // Reset m_p_worker_handler to null pointer
     m_p_worker_handler.reset();
 }

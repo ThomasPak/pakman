@@ -32,19 +32,6 @@ MPIWorkerHandler::~MPIWorkerHandler()
     discardResults();
 }
 
-void MPIWorkerHandler::terminate()
-{
-    // Discard results from MPI child process
-    discardResults();
-
-    // Send termination signal
-    int signal = TERMINATE_WORKER_SIGNAL;
-    MPI_Send(&signal, 1, MPI_INT, WORKER_RANK, MANAGER_SIGNAL_TAG, m_child_comm);
-
-    // Free communicator
-    MPI_Comm_disconnect(&m_child_comm);
-}
-
 bool MPIWorkerHandler::isDone()
 {
     // Probe for result if result has not yet been received

@@ -39,13 +39,6 @@ ForkedWorkerHandler::~ForkedWorkerHandler()
 
 void ForkedWorkerHandler::terminate()
 {
-    // Close pipe if not already closed
-    if (!m_read_done)
-    {
-        close_check(m_pipe_read_fd);
-        m_read_done = true;
-    }
-
     // If already terminated, return immediately
     if (!m_child_pid) return;
 

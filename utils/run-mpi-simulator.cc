@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     int error_code = mpi_worker_handler.getErrorCode();
 
     // Terminate MPI Worker
-    mpi_worker_handler.terminate();
+    MPIWorkerHandler::terminateStatic();
 
     // Finalize
     MPI_Finalize();

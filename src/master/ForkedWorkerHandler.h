@@ -36,13 +36,6 @@ class ForkedWorkerHandler : public AbstractWorkerHandler
          */
         virtual ~ForkedWorkerHandler() override;
 
-        /** Terminate Worker when Pakman terminates.
-         *
-         * Terminate simulation by sending `SIGTERM` first, followed by
-         * `SIGKILL` if process does not respond.
-         */
-        virtual void terminate() override;
-
         /** @return whether Worker has finished.
          *
          * Poll read pipe for any outstanding output and check whether forked
@@ -51,6 +44,13 @@ class ForkedWorkerHandler : public AbstractWorkerHandler
         virtual bool isDone() override;
 
     private:
+
+        /** Terminate active Worker with system signals.
+         *
+         * Terminate simulation by sending `SIGTERM` first, followed by
+         * `SIGKILL` if process does not respond.
+         */
+        void terminate();
 
         // Process id of simulator
         pid_t m_child_pid;
