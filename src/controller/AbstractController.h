@@ -75,8 +75,7 @@ class AbstractController
          */
         static controller_t getController(const std::string& arg);
 
-        /**
-         * Return help message based on Controller type.
+        /** Return help message based on Controller type.
          *
          * When subclassing AbstractController, be sure to include a static method
          * with the signature

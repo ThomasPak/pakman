@@ -110,8 +110,7 @@ class AbstractMaster
          */
         static master_t getMaster(const std::string& arg);
 
-        /**
-         * Return help message based on Master type.
+        /** Return help message based on Master type.
          *
          * When subclassing AbstractMaster, be sure to include a static method
          * with the signature
