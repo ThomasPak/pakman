@@ -15,56 +15,100 @@
 
 #include "AbstractMaster.h"
 
+/** A Master class for performing simulation tasks in parallel using MPI.
+ *
+ * The MPIMaster class performs simulation tasks in parallel using MPI by
+ * delegating simulation tasks to a pool of Managers (as implemented by the
+ * Manager class).  These Managers then perform simulation tasks by spawning
+ * child processes with fork()--exec() to run simulation.
+ *
+ * \warning If your simulator uses MPI internally, this will likely clash with
+ * Pakman when using MPIMaster.  In that case, you will need to build an MPI
+ * simulator.  An example of an MPI simulator can be found [on our
+ * wiki](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth).
+ */
+
 class MPIMaster : public AbstractMaster
 {
     public:
 
-        // Enumerate type for Master states
+        /** Enumerate type for MPIMaster states.
+         *
+         * The MPIMaster can either in a `normal` state, `flushing` state or in
+         * a `terminated` state.  When the MPIMaster is in a flushing state, it
+         * has flushed the task queues and is waiting for all Managers to
+         * finish ongoing simulations before accepting new tasks.  When the
+         * MPIMaster is in a `terminated` state, the member function isActive()
+         * will return false and the event loop should terminate.
+         */
         enum state_t { normal, flushing, terminated };
 
-        // Construct from pointer to program terminated flag
+        /** Constructor saves program termination flag.
+         *
+         * @param p_program_terminated  pointer to boolean flag that is set
+         * when the execution of Pakman is terminated by the user.
+         */
         MPIMaster(bool *p_program_terminated);
 
-        // Destructor
+        /** Default destructor does nothing. */
         virtual ~MPIMaster() override;
 
-        // Probe whether Master is active
+        /** @return whether the MPIMaster is active. */
         virtual bool isActive() const override;
 
-        // Iterate
+        /** Iterates the MPIMaster in an event loop. */
         virtual void iterate() override;
 
-        // Returns true if more pending tasks are needed
+        /** @return whether more pending tasks are needed. */
         virtual bool needMorePendingTasks() const override;
 
-        // Push pending task
+        /** Push a new pending task.
+         *
+         * @param input_string  input string to simulation job.
+         */
         virtual void pushPendingTask(const std::string& input_string) override;
 
-        // Returns whether finished tasks queue is empty
+        /** @return whether finished tasks queue is empty. */
         virtual bool finishedTasksEmpty() const override;
 
-        // Returns reference to front finished task
+        /** @return reference to front finished task. */
         virtual TaskHandler& frontFinishedTask() override;
 
-        // Pop finished task
+        /** Pop front finished task. */
         virtual void popFinishedTask() override;
 
-        // Flush finished, busy and pending tasks
+        /** Flush all finished, busy and pending tasks. */
         virtual void flush() override;
 
-        // Terminate Master
+        /** Terminate MPIMaster. */
         virtual void terminate() override;
 
-        // Static help function
+        /** @return help message string. */
         static std::string help();
 
-        // Static addLongOptions function
+        /** Add long command-line options.
+         *
+         * @param lopts  long command-line options that the MPIMaster needs.
+         */
         static void addLongOptions(LongOptions& lopts);
 
-        // Static run function
+        /** Run MPIMaster in an event loop.
+         *
+         * This function creates the MPIMaster and Controller objects, and
+         * runs them in an event loop.
+         *
+         * @param controller  controller type.
+         * @param args  command-line arguments.
+         */
         static void run(controller_t controller, const Arguments& args);
 
-        // Static cleanup function
+        /** Terminate all Managers, as well as the MPIWorker associated with
+         * rank 0, and terminate MPI.
+         *
+         * This function is used when an exception occurs in run() and MPI
+         * processes need to be cleaned up appropriately so that the program
+         * does not hang after an exception.
+         */
         static void cleanup();
 
     private:
