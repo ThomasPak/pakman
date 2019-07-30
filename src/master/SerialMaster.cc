@@ -11,8 +11,9 @@
 #include "SerialMaster.h"
 
 // Construct from pointer to program terminated flag
-SerialMaster::SerialMaster(const Command& command, bool *p_program_terminated) :
-    AbstractMaster(p_program_terminated), m_command(command)
+SerialMaster::SerialMaster(const Command& simulator,
+        bool *p_program_terminated) : AbstractMaster(p_program_terminated),
+    m_simulator(simulator)
 {
 }
 
@@ -111,7 +112,7 @@ void SerialMaster::processTask()
     std::string output_string;
     int error_code;
     std::tie(output_string, error_code) =
-        system_call_error_code(m_command, current_task.getInputString());
+        system_call_error_code(m_simulator, current_task.getInputString());
 
     // Record output string and error code
     current_task.recordOutputAndErrorCode(output_string, error_code);
