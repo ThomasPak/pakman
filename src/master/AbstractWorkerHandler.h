@@ -5,45 +5,69 @@
 
 #include "core/Command.h"
 
+/** An abstract class for representing Workers.
+ *
+ * Workers are instantiations of the simulator user executable.  Since they can
+ * be implemented as forked processes or MPI processes, this abstract class was
+ * made to provide an interface to both types.
+ *
+ * When an AbstractWorkerHandler is constructed, the simulation is initiated
+ * immediately.  Hence, there are no member functions to start the simulation,
+ * only functions to check whether the simulation has finished (isDone()) and
+ * to obtain the results (getOutput() and getErrorCode()).
+ *
+ * The destructor of a WorkerHandler can be called when the simulation is still
+ * ongoing.  The terminate() function, on the other hand, should only be called
+ * when Pakman has terminated.
+ */
+
 class AbstractWorkerHandler
 {
 
     public:
 
-        // Construct from command string and input string
-        AbstractWorkerHandler(const Command& command, const std::string& input_string);
+        /** Construct from simulator string and input string.
+         *
+         * @param simulator  command to run simulation.
+         * @param input_string  input string to simulator.
+         */
+        AbstractWorkerHandler(const Command& simulator, const std::string& input_string);
 
-        // Virtual destructor
+        /** Default destructor does nothing. */
         virtual ~AbstractWorkerHandler() = default;
 
-        // Virtual function terminate() to prematurely terminate Worker
+        /** Terminate Worker when Pakman terminates. */
         virtual void terminate() = 0;
 
-        // Virtual function isDone() to check whether Worker has finished
+        /** @return whether Worker has finished. */
         virtual bool isDone() = 0;
 
-        // Function getOutput() to get output of finished Worker
-        // Running this command before Worker is finished will result in
-        // an error, so always check with isDone() first.
+        /** @return output of finished Worker.
+         *
+         * \warning Calling this function before Worker is finished will result in an error,
+         * so always check with isDone() first.
+         */
         std::string getOutput();
 
-        // Function getErrorCode() to get error code of finished Worker
-        // Running this command before Worker is finished will result in
-        // an error, so always check with isDone() first.
+        /** @return error code of finished Worker.
+         *
+         * \warning Calling this function before Worker is finished will result in an error,
+         * so always check with isDone() first.
+         */
         int getErrorCode();
 
     protected:
 
-        // Command string
-        const Command m_command;
+        /** Command to run simulation. */
+        const Command m_simulator;
 
-        // Input string
+        /** Input string to simulator. */
         const std::string m_input_string;
 
-        // Output buffer
+        /** Buffer to contain simulator output. */
         std::string m_output_buffer;
 
-        // Error code
+        /** Error code received from simulator. */
         int m_error_code = -1;
 };
 

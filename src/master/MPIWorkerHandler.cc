@@ -13,13 +13,13 @@
 // null communicators (MPI_COMM_NULL)
 MPI_Comm MPIWorkerHandler::m_child_comm = MPI_COMM_NULL;
 
-MPIWorkerHandler::MPIWorkerHandler(const Command& command,
+MPIWorkerHandler::MPIWorkerHandler(const Command& simulator,
         const std::string& input_string) :
-    AbstractWorkerHandler(command, input_string)
+    AbstractWorkerHandler(simulator, input_string)
 {
     // Spawn  MPI child process if it has not yet been spawned
     if (m_child_comm == MPI_COMM_NULL)
-        m_child_comm = spawn_worker(m_command);
+        m_child_comm = spawn_worker(m_simulator);
 
     // Write input string to spawned MPI process
     MPI_Send(input_string.c_str(), input_string.size() + 1, MPI_CHAR,

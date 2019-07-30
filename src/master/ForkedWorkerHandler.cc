@@ -14,14 +14,14 @@
 #include "ForkedWorkerHandler.h"
 
 ForkedWorkerHandler::ForkedWorkerHandler(
-        const Command& command,
+        const Command& simulator,
         const std::string& input_string) :
-    AbstractWorkerHandler(command, input_string)
+    AbstractWorkerHandler(simulator, input_string)
 {
 
     // Start process
     std::tie(m_child_pid, m_pipe_write_fd, m_pipe_read_fd) =
-        system_call_non_blocking_read_write(m_command);
+        system_call_non_blocking_read_write(m_simulator);
 
     // Write input string to stdin of process
     write_to_pipe(m_pipe_write_fd, input_string);
@@ -39,11 +39,18 @@ ForkedWorkerHandler::~ForkedWorkerHandler()
 
 void ForkedWorkerHandler::terminate()
 {
+    // Close pipe if not already closed
+    if (!m_read_done)
+    {
+        close_check(m_pipe_read_fd);
+        m_read_done = true;
+    }
+
     // If already terminated, return immediately
     if (!m_child_pid) return;
 
     // If simulation has finished, mark by setting m_child_pid to zero
-    if ( waitpid_success(m_child_pid, WNOHANG, m_command) )
+    if ( waitpid_success(m_child_pid, WNOHANG, m_simulator) )
     {
         m_child_pid = 0;
         return;
@@ -61,7 +68,7 @@ void ForkedWorkerHandler::terminate()
     std::this_thread::sleep_for(KILL_TIMEOUT);
 
     // If simulation has finished, mark by setting m_child_pid to zero
-    if ( waitpid_success(m_child_pid, WNOHANG, m_command, ignore_error) )
+    if ( waitpid_success(m_child_pid, WNOHANG, m_simulator, ignore_error) )
     {
         m_child_pid = 0;
         return;
@@ -75,7 +82,7 @@ void ForkedWorkerHandler::terminate()
         throw e;
     }
 
-     waitpid_success(m_child_pid, 0, m_command, ignore_error);
+     waitpid_success(m_child_pid, 0, m_simulator, ignore_error);
      m_child_pid = 0;
 }
 

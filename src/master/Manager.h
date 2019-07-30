@@ -37,7 +37,7 @@ class Manager
             mpi_worker
         };
 
-        /** Default constructor.
+        /** Constructor.
          *
          * @param simulator  command to run simulation.
          * @param worker_type  type of Worker
@@ -47,7 +47,7 @@ class Manager
         Manager(const Command &simulator, worker_t worker_type,
                 bool *p_program_terminated);
 
-        /** Default destructor does nothing. */
+        /** Default destructor destroys MPI_Request objects. */
         ~Manager();
 
         /** @return whether the Manager is active. */

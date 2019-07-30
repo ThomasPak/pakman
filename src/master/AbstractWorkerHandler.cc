@@ -5,9 +5,9 @@
 #include "AbstractWorkerHandler.h"
 
 AbstractWorkerHandler::AbstractWorkerHandler(
-        const Command& command,
+        const Command& simulator,
         const std::string& input_string) :
-    m_command(command),
+    m_simulator(simulator),
     m_input_string(input_string)
 {
 }

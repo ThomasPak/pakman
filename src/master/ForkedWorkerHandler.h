@@ -5,26 +5,49 @@
 
 #include "AbstractWorkerHandler.h"
 
+/** A class for representing forked Workers.
+ *
+ * Forked Workers are spawned using a fork()--exec() pattern.  This is the
+ * default choice for instantiating simulators and is analogous to how
+ * SerialMaster launches simulations.
+ */
+
 class ForkedWorkerHandler : public AbstractWorkerHandler
 {
 
     public:
 
-        // Construct from command string and input string
-        // This will fork a process whose standard input and output is
-        // redirected to pipes. The input string is immediately written to the
-        // write pipe.
-        ForkedWorkerHandler(const Command& command, const std::string& input_string);
+        /** Construct from simulator string and input string.
+         *
+         * The constructor will fork a process whose standard input and output
+         * is redirected to a write and a read pipe, respectively..  The input
+         * string is immediately written to the write pipe.
+         *
+         * @param simulator  command to run simulation.
+         * @param input_string  input string to simulator.
+         */
+        ForkedWorkerHandler(const Command& simulator, const std::string&
+                input_string);
 
-        // Destructor will wait on forked process and close read pipe
+        /** Destructor.
+         *
+         * The destructor waits on the forked process and closes the read
+         * pipe.
+         */
         virtual ~ForkedWorkerHandler() override;
 
-        // Terminate simulation prematurely by sending SIGTERM first and
-        // SIGKILL if process does not respond.
+        /** Terminate Worker when Pakman terminates.
+         *
+         * Terminate simulation by sending `SIGTERM` first, followed by
+         * `SIGKILL` if process does not respond.
+         */
         virtual void terminate() override;
 
-        // Poll read pipe for any outstanding data and check whether forked
-        // process has finished
+        /** @return whether Worker has finished.
+         *
+         * Poll read pipe for any outstanding output and check whether forked
+         * process has finished.
+         */
         virtual bool isDone() override;
 
     private:
