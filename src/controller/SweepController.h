@@ -27,7 +27,7 @@ class SweepController : public AbstractController
 
         /** Construct from Input object.
          *
-         * @param input_obj  Input object
+         * @param input_obj  Input object.
          */
         SweepController(const Input &input_obj);
 
@@ -59,12 +59,13 @@ class SweepController : public AbstractController
         static SweepController* makeController(const Arguments& args);
 
         /** Input struct thats contains input to SweepController
-         * constructor. */
+         * constructor.
+         */
         struct Input
         {
             /** Static function to make Input from command-line arguments.
              *
-             * @param args  command-line arguments
+             * @param args  command-line arguments.
              *
              * @return Input struct made from command-line arguments.
              */

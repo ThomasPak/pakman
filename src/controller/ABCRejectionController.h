@@ -41,7 +41,7 @@ class ABCRejectionController : public AbstractController
 
         /** Construct from Input object.
          *
-         * @param input_obj  Input object
+         * @param input_obj  Input object.
          */
         ABCRejectionController(const Input& input_obj);
 
@@ -79,7 +79,7 @@ class ABCRejectionController : public AbstractController
         {
             /** Static function to make Input from command-line arguments.
              *
-             * @param args  command-line arguments
+             * @param args  command-line arguments.
              *
              * @return Input struct made from command-line arguments.
              */

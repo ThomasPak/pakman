@@ -66,7 +66,8 @@ class AbstractMaster
         /** Assign pointer to AbstractController.
          *
          * @param p_controller  pointer to AbstractController object to be
-         * assigned to AbstractMaster. */
+         * assigned to AbstractMaster.
+         */
         void assignController(
                 std::shared_ptr<AbstractController> p_controller);
 

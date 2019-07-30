@@ -37,8 +37,8 @@ class ABCSMCController : public AbstractController
          * The random number engine is used to choose a parameter from the
          * parameter population.
          *
-         * @param input_obj  Input object
-         * @param p_generator  pointer to random number engine
+         * @param input_obj  Input object.
+         * @param p_generator  pointer to random number engine.
          */
         ABCSMCController(const Input &input_obj,
                 std::shared_ptr<std::default_random_engine> p_generator);
@@ -76,7 +76,7 @@ class ABCSMCController : public AbstractController
         {
             /** Static function to make Input from command-line arguments.
              *
-             * @param args  command-line arguments
+             * @param args  command-line arguments.
              *
              * @return Input struct made from command-line arguments.
              */

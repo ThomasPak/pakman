@@ -34,19 +34,19 @@ class Command
 
         /** Copy constructor.
          *
-         * @param command  source Command object
+         * @param command  source Command object.
          */
         Command(const Command& command);
 
         /** Move constructor.
          *
-         * @param command  source Command object
+         * @param command  source Command object.
          */
         Command(Command&& command);
 
         /** Copy-assignment constructor.
          *
-         * @param command  source Command object
+         * @param command  source Command object.
          *
          * @return reference to copy-assigned Command object
          */
@@ -54,7 +54,7 @@ class Command
 
         /** Move-assignment constructor.
          *
-         * @param command  source Command object
+         * @param command  source Command object.
          *
          * @return reference to move-assigned Command object
          */
