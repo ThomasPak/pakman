@@ -10,38 +10,62 @@
 
 #include "AbstractWorkerHandler.h"
 
+/** A helper class for performing simulation tasks in parallel using MPI.
+ *
+ * The role of Managers is to accept simulation tasks from the MPIMaster, spawn
+ * child processes (also called Workers) to perform the simulation, and report
+ * the results back to MPIMaster.
+ *
+ * The Workers can be either a forked Worker or an MPI Worker.  These are
+ * represented by the ForkedWorkerHandler and MPIWorkerHandler classes,
+ * respectively (both are derived form the AbstractWorkerHandler class).  The
+ * MPI Worker is necessary when the simulator uses MPI.  See MPIMaster for more
+ * details.
+ *
+ * As with the MPIMaster, Managers are meant to be run in an event loop.
+ * Therefore, the event loop in MPIMaster::run() will call Manager::iterate().
+ */
+
 class Manager
 {
     public:
 
-        // Enumerate type for Worker types
+        /** Enumerate type for Worker types. */
         enum worker_t
         {
             forked_worker,
             mpi_worker
         };
 
-        // Enumerate type for Manager states
-        enum state_t { idle, busy, terminated };
-
-        // Construct from command, pointer to program terminated flag, and
-        // Worker type (forked vs MPI)
-        Manager(const Command &command, worker_t worker_type,
+        /** Default constructor.
+         *
+         * @param simulator  command to run simulation.
+         * @param worker_type  type of Worker
+         * @param p_program_terminated  pointer to boolean flag that is set
+         * when the execution of Pakman is terminated by the user.
+         */
+        Manager(const Command &simulator, worker_t worker_type,
                 bool *p_program_terminated);
 
-        // Destructor
+        /** Default destructor does nothing. */
         ~Manager();
 
-        // Get state of Manager
-        state_t getState() const;
-
-        // Probe whether Manager is active
+        /** @return whether the Manager is active. */
         bool isActive() const;
 
-        // Iterate
+        /** Iterates the Manager in an event loop. */
         void iterate();
 
     private:
+
+        /** Enumerate type for Manager states.
+         *
+         * The Manager can either in a `idle` state, a `busy` state, or in a
+         * `terminated` state.  When the Manager is in a `terminated` state,
+         * the member function isActive() will return false and the event loop
+         * should terminate.
+         */
+        enum state_t { idle, busy, terminated };
 
         /**** Member functions ****/
         // Do idle stuff
@@ -85,7 +109,7 @@ class Manager
         state_t m_state = idle;
 
         // Command for Worker
-        const Command m_command;
+        const Command m_simulator;
 
         // Worker type (forked Worker vs MPI Worker)
         const worker_t m_worker_type;

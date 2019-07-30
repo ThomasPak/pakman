@@ -16,11 +16,11 @@
 
 #include "Manager.h"
 
-// Construct from command, pointer to program terminated flag, and
+// Construct from simulator, pointer to program terminated flag, and
 // Worker type (forked vs MPI)
-Manager::Manager(const Command &command, worker_t worker_type,
+Manager::Manager(const Command &simulator, worker_t worker_type,
         bool *p_program_terminated) :
-    m_command(command),
+    m_simulator(simulator),
     m_worker_type(worker_type),
     m_p_program_terminated(p_program_terminated)
 {
@@ -43,12 +43,6 @@ Manager::~Manager()
         MPI_Request_free(&m_signal_request);
     if (m_error_code_request != MPI_REQUEST_NULL)
         MPI_Request_free(&m_error_code_request);
-}
-
-// Get state of Manager
-Manager::state_t Manager::getState() const
-{
-    return m_state;
 }
 
 // Probe whether Manager is active
@@ -244,14 +238,14 @@ void Manager::createWorker(const std::string& input_string)
         case forked_worker:
             m_p_worker_handler =
                 std::unique_ptr<ForkedWorkerHandler>(
-                        new ForkedWorkerHandler(m_command, input_string));
+                        new ForkedWorkerHandler(m_simulator, input_string));
             break;
 
         // Spawn MPI Worker
         case mpi_worker:
             m_p_worker_handler =
                 std::unique_ptr<MPIWorkerHandler>(
-                        new MPIWorkerHandler(m_command, input_string));
+                        new MPIWorkerHandler(m_simulator, input_string));
             break;
 
         default:
