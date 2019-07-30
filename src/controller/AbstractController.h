@@ -94,7 +94,8 @@ class AbstractController
          */
         static std::string help(controller_t controller);
 
-        /** Add Controller-specific long options to the given LongOptions object.
+        /** Add Controller-specific long command-line options to the given
+         * LongOptions object.
          *
          * When subclassing AbstractController, be sure to include a static
          * method with the signature
@@ -107,7 +108,7 @@ class AbstractController
          * AbstractController::addLongOptions().
          *
          * @param controller  Controller type.
-         * @param lopts  long options that the Controller needs.
+         * @param lopts  long command-line options that the Controller needs.
          */
         static void addLongOptions(controller_t controller,
                 LongOptions& lopts);

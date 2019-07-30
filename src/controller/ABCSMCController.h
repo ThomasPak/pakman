@@ -14,6 +14,17 @@
 
 #include "AbstractController.h"
 
+/** A Controller class implementing the ABC SMC algorithm.
+ *
+ * The ABCSMCController class implements the ABC SMC algorithm, which is detailed
+ * in the following paper:
+ *
+ * > Toni, Tina, David Welch, Natalja Strelkowa, Andreas Ipsen, and Michael P.H.
+ * > Stumpf. 2009.  “Approximate Bayesian computation scheme for parameter
+ * > inference and model selection in dynamical systems.” J. R. Soc. Interface 6
+ * > (31): 187–202. doi:10.1098/rsif.2008.0172.
+ */
+
 class ABCSMCController : public AbstractController
 {
     public:
@@ -21,42 +32,80 @@ class ABCSMCController : public AbstractController
         // Forward declaration of Input
         struct Input;
 
-        // Constructor
+        /** Construct from Input object and pointer to random number engine.
+         *
+         * The random number engine is used to choose a parameter from the
+         * parameter population.
+         *
+         * @param input_obj  Input object
+         * @param p_generator  pointer to random number engine
+         */
         ABCSMCController(const Input &input_obj,
                 std::shared_ptr<std::default_random_engine> p_generator);
 
-        // Default destructor
+        /** Default destructor does nothing. */
         virtual ~ABCSMCController() override = default;
 
-        // Iterate function
+        /** Iterates the ABCSMCController.  Should be called by a Master.  */
         virtual void iterate() override;
 
-        // Simulator getter
+        /** @return simulator command. */
         virtual Command getSimulator() const override;
 
-        // Static help function
+        /** @return help message string. */
         static std::string help();
 
-        // Static addLongOptions function
+        /** Add long command-line options.
+         *
+         * @param lopts  long command-line options that the ABCSMCController
+         * needs.
+         */
         static void addLongOptions(LongOptions& lopts);
 
-        // Static function to make from positional arguments
+        /** Create ABCSMCController instance.
+         *
+         * @param args  command-line arguments.
+         *
+         * @return pointer to created ABCSMCController instance.
+         */
         static ABCSMCController* makeController(const Arguments& args);
 
-        // Input struct to contain input to ABCSMCController
+        /** Input struct thats contains input to ABCSMCController constructor.
+         */
         struct Input
         {
-            // Static function to make Input from optional arguments
+            /** Static function to make Input from command-line arguments.
+             *
+             * @param args  command-line arguments
+             *
+             * @return Input struct made from command-line arguments.
+             */
             static Input makeInput(const Arguments& args);
 
-            // Data
+            /** Population size. */
             int population_size;
+
+            /** Distance threshold series. */
             std::vector<Epsilon> epsilons;
+
+            /** Command to run simulation. */
             Command simulator;
+
+            /** List of parameter names. */
             std::vector<ParameterName> parameter_names;
+
+            /** Command to run sample from prior. */
             Command prior_sampler;
+
+            /** Command to perturb parameter. */
             Command perturber;
+
+            /** Command to obtain probability density of prior distribution. */
             Command prior_pdf;
+
+            /** Command to obtain probability density of perturbation kernel
+             * distribution.
+             */
             Command perturbation_pdf;
         };
 

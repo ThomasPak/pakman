@@ -10,6 +10,14 @@
 
 #include "AbstractController.h"
 
+/** A Controller class implementing a simple parameter sweep algorithm.
+ *
+ * The SweepController class implements a simple parameter sweep algorithm.
+ * The parameter sets to simulate are given by the Input::generator command.
+ * The simulator is then called for each of these parameter sets, and the
+ * output of the simulator is discarded.
+ */
+
 class SweepController : public AbstractController
 {
     public:
@@ -17,36 +25,58 @@ class SweepController : public AbstractController
         // Forward declaration of Input
         struct Input;
 
-        // Constructor
+        /** Construct from Input object.
+         *
+         * @param input_obj  Input object
+         */
         SweepController(const Input &input_obj);
 
-        // Default destructor
+        /** Default destructor does nothing. */
         virtual ~SweepController() override = default;
 
-        // Iterate function
+        /** Iterates the SweepController.  Should be called by a Master. */
         virtual void iterate() override;
 
-        // Simulator getter
+        /** @return simulator command. */
         virtual Command getSimulator() const override;
 
-        // Static help function
+        /** @return help message string. */
         static std::string help();
 
-        // Static addLongOptions function
+        /** Add long command-line options.
+         *
+         * @param lopts  long command-line options that the SweepController
+         * needs.
+         */
         static void addLongOptions(LongOptions& lopts);
 
-        // Static function to make from arguments
+        /** Create SweepController instance.
+         *
+         * @param args  command-line arguments.
+         *
+         * @return pointer to created SweepController instance.
+         */
         static SweepController* makeController(const Arguments& args);
 
-        // Input struct to contain input to SweepController
+        /** Input struct thats contains input to SweepController
+         * constructor. */
         struct Input
         {
-            // Static function to make Input from optional arguments
+            /** Static function to make Input from command-line arguments.
+             *
+             * @param args  command-line arguments
+             *
+             * @return Input struct made from command-line arguments.
+             */
             static Input makeInput(const Arguments& args);
 
-            // Data
+            /** Command to run simulation. */
             Command simulator;
+
+            /** List of parameter names. */
             std::vector<ParameterName> parameter_names;
+
+            /** Command to generate parameter sets to simulate. */
             Command generator;
         };
 

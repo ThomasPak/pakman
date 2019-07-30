@@ -12,6 +12,26 @@
 
 #include "AbstractController.h"
 
+/** A Controller class implementing the ABC rejection algorithm.
+ *
+ * The ABCRejectionController class implements the ABC rejection algorithm,
+ * which consists of the following steps:
+ *
+ * 1. Sample a candidate parameter \f$\theta^* \sim P(\theta)\f$, where
+ * \f$P(\theta)\f$ is the prior distribution.
+ *
+ * 2. Run simulation with \f$\theta^*\f$ to generate simulated data \f$D^* \sim
+ * P(D \mid \theta^*)\f$, where \f$P(D \mid \theta^*)\f$ is the likelihood
+ * function.
+ *
+ * 3. If \f$d(D^*, D_0) \leq \epsilon\f$, accept \f$\theta^*\f$, else reject.
+ * Here, \f$d(\cdot, \cdot)\f$ is the distance function, \f$D_0\f$ is the
+ * observed data, and \f$\epsilon\f$ is the tolerance.
+ *
+ * Steps 1--3 are repeated until the desired number of accepted parameters is
+ * reached.
+ */
+
 class ABCRejectionController : public AbstractController
 {
     public:
@@ -19,38 +39,65 @@ class ABCRejectionController : public AbstractController
         // Forward declaration of Input
         struct Input;
 
-        // Constructor
+        /** Construct from Input object.
+         *
+         * @param input_obj  Input object
+         */
         ABCRejectionController(const Input& input_obj);
 
-        // Default destructor
+        /** Default destructor does nothing. */
         virtual ~ABCRejectionController() override = default;
 
-        // Iterate function
+        /** Iterates the ABCRejectionController.  Should be called by a Master.
+         */
         virtual void iterate() override;
 
-        // Simulator getter
+        /** @return simulator command. */
         virtual Command getSimulator() const override;
 
-        // Static help function
+        /** @return help message string. */
         static std::string help();
 
-        // Static addLongOptions function
+        /** Add long command-line options.
+         *
+         * @param lopts  long command-line options that the
+         * ABCRejectionController needs.
+         */
         static void addLongOptions(LongOptions& lopts);
 
-        // Static function to make from positional arguments
+        /** Create ABCRejectionController instance.
+         *
+         * @param args  command-line arguments.
+         *
+         * @return pointer to created ABCRejectionController instance.
+         */
         static ABCRejectionController* makeController(const Arguments& args);
 
-        // Input struct to contain input to ABCRejectionController
+        /** Input struct thats contains input to ABCRejectionController
+         * constructor. */
         struct Input
         {
-            // Static function to make Input from optional arguments
+            /** Static function to make Input from command-line arguments.
+             *
+             * @param args  command-line arguments
+             *
+             * @return Input struct made from command-line arguments.
+             */
             static Input makeInput(const Arguments& args);
 
-            // Data
+            /** Number of parameters to accept. */
             int number_accept;
+
+            /** Distance threshold for acceptance. */
             Epsilon epsilon;
+
+            /** Command to run simulation. */
             Command simulator;
+
+            /** List of parameter names. */
             std::vector<ParameterName> parameter_names;
+
+            /** Command to run sample from prior. */
             Command prior_sampler;
         };
 
