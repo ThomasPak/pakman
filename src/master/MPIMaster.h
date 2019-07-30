@@ -38,17 +38,6 @@ class MPIMaster : public AbstractMaster
 {
     public:
 
-        /** Enumerate type for MPIMaster states.
-         *
-         * The MPIMaster can either in a `normal` state, `flushing` state or in
-         * a `terminated` state.  When the MPIMaster is in a flushing state, it
-         * has flushed the task queues and is waiting for all Managers to
-         * finish ongoing simulations before accepting new tasks.  When the
-         * MPIMaster is in a `terminated` state, the member function isActive()
-         * will return false and the event loop should terminate.
-         */
-        enum state_t { normal, flushing, terminated };
-
         /** Constructor saves program termination flag.
          *
          * @param p_program_terminated  pointer to boolean flag that is set
@@ -118,6 +107,17 @@ class MPIMaster : public AbstractMaster
         static void cleanup();
 
     private:
+
+        /** Enumerate type for MPIMaster states.
+         *
+         * The MPIMaster can either in a `normal` state, a `flushing` state or
+         * in a `terminated` state.  When the MPIMaster is in a flushing state,
+         * it has flushed the task queues and is waiting for all Managers to
+         * finish ongoing simulations before accepting new tasks.  When the
+         * MPIMaster is in a `terminated` state, the member function isActive()
+         * will return false and the event loop should terminate.
+         */
+        enum state_t { normal, flushing, terminated };
 
         /**** Member functions ****/
         // Do normal stuff

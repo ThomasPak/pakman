@@ -26,15 +26,6 @@ class SerialMaster : public AbstractMaster
 {
     public:
 
-        /** Enumerate type for SerialMaster states.
-         *
-         * The SerialMaster can either in a `normal` state, or in a
-         * `terminated` state.  When the SerialMaster is in a `terminated`
-         * state, the member function isActive() will return false and the
-         * event loop should terminate.
-         */
-        enum state_t { normal, terminated };
-
         /** Constructor saves simulator command and program termination flag.
          *
          * @param simulator  command to run simulation.
@@ -99,6 +90,15 @@ class SerialMaster : public AbstractMaster
         static void cleanup();
 
     private:
+
+        /** Enumerate type for SerialMaster states.
+         *
+         * The SerialMaster can either in a `normal` state, or in a
+         * `terminated` state.  When the SerialMaster is in a `terminated`
+         * state, the member function isActive() will return false and the
+         * event loop should terminate.
+         */
+        enum state_t { normal, terminated };
 
         /**** Member functions ****/
         // Processes a task from pending queue if there is one and places it in
