@@ -94,10 +94,10 @@ script:
   - ./run-python-abc-smc-mpi-example.sh 2
   - cd ../sis-model && ./run-cpp-abc-rejection-serial-example.sh 2
   - ./run-cpp-abc-rejection-mpi-example.sh 2
-  - ./run-cpp-abc-smc-serial-example.sh 2
-  - ./run-cpp-abc-smc-mpi-example.sh 2
+  - sed -i 's;75.*35;75,70,65;' ./run-cpp-abc-smc-serial-example.sh && ./run-cpp-abc-smc-serial-example.sh  2
+  - sed -i 's;75.*35;75,70,65;' ./run-cpp-abc-smc-mpi-example.sh && ./run-cpp-abc-smc-mpi-example.sh 2
   - ./run-python-abc-rejection-serial-example.sh 2
   - ./run-python-abc-rejection-mpi-example.sh 2
-  - ./run-python-abc-smc-serial-example.sh 2
-  - ./run-python-abc-smc-mpi-example.sh 2
+  - sed -i 's;75.*35;75,70,65;' ./run-python-abc-smc-serial-example.sh && ./run-python-abc-smc-serial-example.sh 2
+  - sed -i 's;75.*35;75,70,65;' ./run-python-abc-smc-mpi-example.sh && ./run-python-abc-smc-mpi-example.sh 2
   - ./make-sis-trace.sh
