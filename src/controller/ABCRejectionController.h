@@ -30,6 +30,12 @@
  *
  * Steps 1--3 are repeated until the desired number of accepted parameters is
  * reached.
+ *
+ * For instructions on how to use Pakman with the ABC rejection controller,
+ * execute the following command
+ * ```
+ * $ pakman rejection --help
+ * ```
  */
 
 class ABCRejectionController : public AbstractController

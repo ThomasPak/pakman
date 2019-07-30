@@ -23,6 +23,12 @@
  * > Stumpf. 2009.  “Approximate Bayesian computation scheme for parameter
  * > inference and model selection in dynamical systems.” J. R. Soc. Interface 6
  * > (31): 187–202. doi:10.1098/rsif.2008.0172.
+ *
+ * For instructions on how to use Pakman with the ABC SMC controller, execute
+ * the following command
+ * ```
+ * $ pakman smc --help
+ * ```
  */
 
 class ABCSMCController : public AbstractController

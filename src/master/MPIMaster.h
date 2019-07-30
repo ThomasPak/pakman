@@ -26,6 +26,12 @@
  * Pakman when using MPIMaster.  In that case, you will need to build an MPI
  * simulator.  An example of an MPI simulator can be found [on our
  * wiki](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth).
+ *
+ * For instructions on how to use Pakman with the MPI master, execute the
+ * following command
+ * ```
+ * $ pakman mpi --help
+ * ```
  */
 
 class MPIMaster : public AbstractMaster

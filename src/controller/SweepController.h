@@ -16,6 +16,12 @@
  * The parameter sets to simulate are given by the Input::generator command.
  * The simulator is then called for each of these parameter sets, and the
  * output of the simulator is discarded.
+ *
+ * For instructions on how to use Pakman with the sweep controller, execute the
+ * following command
+ * ```
+ * $ pakman sweep --help
+ * ```
  */
 
 class SweepController : public AbstractController

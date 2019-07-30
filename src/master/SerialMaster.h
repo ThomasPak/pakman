@@ -14,6 +14,12 @@
  *
  * The SerialMaster class performs simulation tasks serially by spawning child
  * processes with fork()--exec() to run simulations.
+ *
+ * For instructions on how to use Pakman with the serial master, execute the
+ * following command
+ * ```
+ * $ pakman serial --help
+ * ```
  */
 
 class SerialMaster : public AbstractMaster
