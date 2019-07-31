@@ -20,7 +20,7 @@
  * The MPIMaster class performs simulation tasks in parallel using MPI by
  * delegating simulation tasks to a pool of Managers (as implemented by the
  * Manager class).  These Managers then perform simulation tasks by spawning
- * child processes with fork()--exec() to run simulation.
+ * child processes with `fork()`--`exec()` to run simulation.
  *
  * \warning If your simulator uses MPI internally, this will likely clash with
  * Pakman when using MPIMaster.  In that case, you will need to build an MPI

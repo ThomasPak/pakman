@@ -7,7 +7,7 @@
 
 /** A class for representing forked Workers.
  *
- * Forked Workers are spawned using a fork()--exec() pattern.  This is the
+ * Forked Workers are spawned using a `fork()`--`exec()` pattern.  This is the
  * default choice for instantiating simulators and is analogous to how
  * SerialMaster launches simulations.
  */
