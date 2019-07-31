@@ -1,13 +1,6 @@
 #ifndef MPI_COMMON_H
 #define MPI_COMMON_H
 
-#include <chrono>
-
-extern std::chrono::milliseconds MAIN_TIMEOUT;
-extern std::chrono::milliseconds KILL_TIMEOUT;
-
-extern bool force_host_spawn;
-
 const int MASTER_RANK = 0;
 const int WORKER_RANK = 0;
 
