@@ -8,7 +8,7 @@
 #include "core/utils.h"
 #include "core/Arguments.h"
 #include "system/system_call.h"
-#include "interface/write_parameters.h"
+#include "interface/output.h"
 #include "interface/protocols.h"
 
 #include "SweepController.h"

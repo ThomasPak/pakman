@@ -10,7 +10,7 @@
 #include "core/common.h"
 #include "interface/types.h"
 #include "interface/protocols.h"
-#include "interface/write_parameters.h"
+#include "interface/output.h"
 #include "master/AbstractMaster.h"
 
 #include "ABCRejectionController.h"

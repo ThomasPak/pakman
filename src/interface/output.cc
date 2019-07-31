@@ -6,7 +6,7 @@
 #include "core/utils.h"
 #include "interface/types.h"
 
-#include "write_parameters.h"
+#include "output.h"
 
 void write_parameters(std::ostream& ostrm,
         const std::vector<ParameterName>& parameter_names,
