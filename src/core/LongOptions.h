@@ -8,25 +8,47 @@
 
 #include <getopt.h>
 
+/** A class for representing command-line options.
+ *
+ * The LongOptions class is a utility wrapper for the `struct option` array
+ * type defined in getopt.h, and used by `getopt_long()`.
+ *
+ * Long options are added with add().  The `struct option` array is accessed
+ * with getLongOpts(), while the optstring is accessed with getShortOpts().
+ */
+
 class LongOptions
 {
     public:
 
-        // Constructor
+        /** Default constructor.
+         *
+         * The constructor will push the null `struct option` to the `struct
+         * option` array so that a valid `struct option` is always maintained.
+         */
         LongOptions();
 
-        // Destructor
+        /** Default destructor does nothing. */
         ~LongOptions() = default;
 
-        // Add long option
+        /** Add a long option.
+         *
+         * @param long_opt  long option to add.
+         */
         void add(struct option long_opt);
 
-        // Return longopts
-        const struct option* getLongopts() const;
+        /** @return long option array. */
+        const struct option* getLongOpts() const;
 
-        // Return optstring
-        const char* getShortopts() const;
+        /** @return optstring. */
+        const char* getShortOpts() const;
 
+        /** Get the long option name for a short option.
+         *
+         * @param short_option short option character.
+         *
+         * @return long option name.
+         */
         std::string getLongOptionName(char short_option) const;
 
     private:

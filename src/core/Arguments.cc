@@ -13,8 +13,8 @@ Arguments::Arguments(const LongOptions& long_options, int argc, char *argv[])
     // Process optional arguments
     int c;
     while ((c = getopt_long(argc, argv,
-                    long_options.getShortopts(),
-                    long_options.getLongopts(), nullptr)) != -1)
+                    long_options.getShortOpts(),
+                    long_options.getLongOpts(), nullptr)) != -1)
     {
         // Check for error
         if (c == '?')

@@ -68,13 +68,13 @@ void LongOptions::add(struct option long_opt)
 }
 
 // Return longopts
-const struct option* LongOptions::getLongopts() const
+const struct option* LongOptions::getLongOpts() const
 {
     return m_long_opts.data();
 }
 
 // Return optstring
-const char* LongOptions::getShortopts() const
+const char* LongOptions::getShortOpts() const
 {
     return m_short_opts.data();
 }
