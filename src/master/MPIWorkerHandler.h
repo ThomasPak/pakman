@@ -25,7 +25,7 @@ class MPIWorkerHandler : public AbstractWorkerHandler
 
     public:
 
-        /** Construct from simulator string and input string
+        /** Construct from simulator string and input string.
          *
          * If MPIWorkerHandler has not been constructed before, the constructor
          * will spawn an MPI process that communicates with MPIWorkerHandler
