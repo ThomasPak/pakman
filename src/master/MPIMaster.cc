@@ -9,9 +9,9 @@
 
 #include "spdlog/spdlog.h"
 
-#include "core/common.h"
 #include "mpi/mpi_utils.h"
 #include "mpi/mpi_common.h"
+#include "controller/AbstractController.h"
 
 #include "MPIMaster.h"
 
@@ -62,9 +62,8 @@ bool MPIMaster::isActive() const
 void MPIMaster::iterate()
 {
     // This function should never be called recursively
-    static bool entered = false;
-    if (entered) throw;
-    entered = true;
+    if (m_entered) throw;
+    m_entered = true;
 
     // This function should never be called if the Master has
     // terminated
@@ -85,7 +84,7 @@ void MPIMaster::iterate()
             throw;
     }
 
-    entered = false;
+    m_entered = false;
 }
 
 // Returns true if more pending tasks are needed

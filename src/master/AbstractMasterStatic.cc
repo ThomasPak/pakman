@@ -3,6 +3,7 @@
 #include "core/common.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
+#include "core/Command.h"
 
 #include "SerialMaster.h"
 #include "MPIMaster.h"

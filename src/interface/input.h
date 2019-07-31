@@ -4,8 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "core/Command.h"
 #include "types.h"
+
+class Command;
 
 /** @file input.h
  *

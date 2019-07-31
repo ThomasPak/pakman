@@ -6,8 +6,10 @@
 #include "core/common.h"
 #include "core/Arguments.h"
 #include "core/LongOptions.h"
+#include "core/Command.h"
 #include "system/signal_handler.h"
 #include "system/debug.h"
+#include "controller/AbstractController.h"
 
 #include "SerialMaster.h"
 

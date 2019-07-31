@@ -7,12 +7,12 @@
 #include <memory>
 #include <random>
 
-#include "core/LongOptions.h"
-#include "core/Arguments.h"
 #include "core/Command.h"
-#include "interface/types.h"
 
 #include "AbstractController.h"
+
+class LongOptions;
+class Arguments;
 
 /** A Controller class implementing the ABC SMC algorithm.
  *
@@ -178,6 +178,12 @@ class ABCSMCController : public AbstractController
 
         // Prior_pdf command
         Command m_prior_pdf;
+
+        // First iteration
+        bool m_first = true;
+
+        // Entered iterate()
+        bool m_entered = false;
 };
 
 #endif // ABCSMCCONTROLLER_H

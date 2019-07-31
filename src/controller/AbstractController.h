@@ -6,13 +6,11 @@
 #include <string>
 
 #include "core/common.h"
-#include "core/LongOptions.h"
-#include "core/Arguments.h"
-#include "core/Command.h"
-
-#include "master/AbstractMaster.h"
 
 class AbstractMaster;
+class LongOptions;
+class Arguments;
+class Command;
 
 /** An abstract class for submitting simulation tasks.
  *

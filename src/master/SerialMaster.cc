@@ -4,10 +4,9 @@
 
 #include <assert.h>
 
-#include "core/common.h"
 #include "system/system_call.h"
+#include "controller/AbstractController.h"
 
-#include "AbstractMaster.h"
 #include "SerialMaster.h"
 
 // Construct from pointer to program terminated flag
@@ -27,9 +26,8 @@ bool SerialMaster::isActive() const
 void SerialMaster::iterate()
 {
     // This function should never be called recursively
-    static bool entered = false;
-    if (entered) throw;
-    entered = true;
+    if (m_entered) throw;
+    m_entered = true;
 
     // This function should never be called if the Master has
     // terminated
@@ -50,7 +48,7 @@ void SerialMaster::iterate()
     if (auto p_controller = m_p_controller.lock())
         p_controller->iterate();
 
-    entered = false;
+    m_entered = false;
 }
 
 // Returns true if more pending tasks are needed

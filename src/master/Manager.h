@@ -8,7 +8,9 @@
 
 #include <mpi.h>
 
-#include "AbstractWorkerHandler.h"
+#include "core/Command.h"
+
+class AbstractWorkerHandler;
 
 /** A helper class for performing simulation tasks in parallel using MPI.
  *

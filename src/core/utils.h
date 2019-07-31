@@ -1,13 +1,21 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <string>
+#include <vector>
+
 /** @file utils.h
  *
  * Utility functions.
  */
 
-#include <string>
-#include <vector>
+/** Check if letter is a space, tab or newline.
+ *
+ * @param letter  letter to check.
+ *
+ * @return whether letter is space, tab or newline.
+ */
+bool is_whitespace(const char letter);
 
 /** Parses raw command string.
  *

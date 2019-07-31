@@ -5,12 +5,12 @@
 #include <vector>
 #include <istream>
 
-#include "core/LongOptions.h"
-#include "core/Arguments.h"
 #include "core/Command.h"
-#include "interface/types.h"
 
 #include "AbstractController.h"
+
+class LongOptions;
+class Arguments;
 
 /** A Controller class implementing the ABC rejection algorithm.
  *
@@ -130,6 +130,9 @@ class ABCRejectionController : public AbstractController
 
         // Prior_sampler command
         Command m_prior_sampler;
+
+        // Entered iterate()
+        bool m_entered = false;
 };
 
 #endif // ABCREJECTIONCONTROLLER_H

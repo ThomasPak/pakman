@@ -5,10 +5,11 @@
 #include <queue>
 
 #include "core/common.h"
-#include "core/LongOptions.h"
-#include "core/Arguments.h"
 
 #include "AbstractMaster.h"
+
+class LongOptions;
+class Arguments;
 
 /** A Master class for performing simulation tasks serially.
  *
@@ -118,6 +119,8 @@ class SerialMaster : public AbstractMaster
         // Pending tasks
         std::queue<TaskHandler> m_pending_tasks;
 
+        // Entered iterate()
+        bool m_entered = false;
 };
 
 #endif // SERIALMASTER_H

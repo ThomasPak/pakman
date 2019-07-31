@@ -5,12 +5,10 @@
 #include <string>
 
 #include "core/common.h"
-#include "core/LongOptions.h"
-#include "core/Arguments.h"
-
-#include "controller/AbstractController.h"
 
 class AbstractController;
+class LongOptions;
+class Arguments;
 
 /** An abstract class for performing simulation tasks.
  *

@@ -6,10 +6,10 @@
 #include <assert.h>
 
 #include "core/utils.h"
-#include "core/Arguments.h"
 #include "system/system_call.h"
 #include "interface/output.h"
 #include "interface/protocols.h"
+#include "master/AbstractMaster.h"
 
 #include "SweepController.h"
 
@@ -34,9 +34,8 @@ SweepController::SweepController(const Input &input_obj) :
 void SweepController::iterate()
 {
     // This function should never be called recursively
-    static bool entered = false;
-    if (entered) throw;
-    entered = true;
+    if (m_entered) throw;
+    m_entered = true;
 
     // If in the first iteration
     if (m_first_iteration)
@@ -53,7 +52,7 @@ void SweepController::iterate()
         }
 
         // Return
-        entered = false;
+        m_entered = false;
         return;
     }
 
@@ -87,11 +86,11 @@ void SweepController::iterate()
 
         // Terminate Master
         m_p_master->terminate();
-        entered = false;
+        m_entered = false;
         return;
     }
 
-    entered = false;
+    m_entered = false;
 }
 
 Command SweepController::getSimulator() const

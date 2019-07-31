@@ -1,7 +1,5 @@
 #include <memory>
 
-#include "master/AbstractMaster.h"
-
 #include "AbstractController.h"
 
 // Assign Master

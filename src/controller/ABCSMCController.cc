@@ -10,9 +10,9 @@
 #include "spdlog/spdlog.h"
 
 #include "core/common.h"
-#include "interface/types.h"
 #include "interface/protocols.h"
 #include "interface/output.h"
+#include "master/AbstractMaster.h"
 
 #include "smc_weight.h"
 #include "sample_population.h"
@@ -41,17 +41,15 @@ ABCSMCController::ABCSMCController(const Input &input_obj,
 void ABCSMCController::iterate()
 {
     // This function should never be called recursively
-    static bool entered = false;
-    if (entered) throw;
-    entered = true;
+    if (m_entered) throw;
+    m_entered = true;
 
     // Display message if first iteration
-    static bool first = true;
-    if (first)
+    if (m_first)
     {
         spdlog::info("Computing generation {}, epsilon = {}", m_t,
                 m_epsilons[m_t].str());
-        first = false;
+        m_first = false;
     }
 
     // If m_t is equal to the number of epsilons, something went wrong because
@@ -143,7 +141,7 @@ void ABCSMCController::iterate()
 
             // Terminate Master
             m_p_master->terminate();
-            entered = false;
+            m_entered = false;
             return;
         }
 
@@ -163,7 +161,7 @@ void ABCSMCController::iterate()
 
         // Flush Master
         m_p_master->flush();
-        entered = false;
+        m_entered = false;
 
         // Clear m_prior_pdf_pending
         while (!m_prior_pdf_pending.empty())
@@ -182,7 +180,7 @@ void ABCSMCController::iterate()
                 format_simulator_input(
                     m_epsilons[m_t].str(), sampleParameter()));
 
-    entered = false;
+    m_entered = false;
 }
 
 Command ABCSMCController::getSimulator() const

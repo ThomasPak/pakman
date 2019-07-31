@@ -4,6 +4,7 @@
 #include "core/common.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
+#include "core/Command.h"
 
 #include "SweepController.h"
 #include "ABCRejectionController.h"

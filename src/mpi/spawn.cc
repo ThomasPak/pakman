@@ -8,9 +8,9 @@
 
 #include "core/common.h"
 #include "core/utils.h"
+#include "core/Command.h"
 #include "mpi_common.h"
 #include "spawn.h"
-
 
 MPI_Comm spawn(const Command& cmd, MPI_Info info)
 {

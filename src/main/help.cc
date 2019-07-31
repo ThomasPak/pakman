@@ -1,8 +1,6 @@
 #include <string>
 #include <iostream>
 
-#include "core/common.h"
-
 #include "master/AbstractMaster.h"
 #include "controller/AbstractController.h"
 

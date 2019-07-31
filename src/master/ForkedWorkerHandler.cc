@@ -10,8 +10,6 @@
 #include "system/pipe_io.h"
 #include "mpi/mpi_common.h"
 
-#include "AbstractWorkerHandler.h"
-
 #include "ForkedWorkerHandler.h"
 
 ForkedWorkerHandler::ForkedWorkerHandler(

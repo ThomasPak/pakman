@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "core/LongOptions.h"
-#include "core/Arguments.h"
 #include "interface/types.h"
 
 #include "AbstractController.h"
@@ -106,6 +104,9 @@ class SweepController : public AbstractController
 
         // Simulator command
         Command m_simulator;
+
+        // Entered iterate()
+        bool m_entered = false;
 };
 
 #endif // SWEEPCONTROLLER_H

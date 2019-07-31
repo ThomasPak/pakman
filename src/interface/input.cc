@@ -1,9 +1,8 @@
 #include <string>
 #include <vector>
 
-#include "core/Command.h"
 #include "core/utils.h"
-#include "types.h"
+#include "core/Command.h"
 
 #include "input.h"
 

@@ -2,9 +2,10 @@
 #define ARGUMENTS_H
 
 #include <string>
+#include <vector>
 #include <unordered_map>
 
-#include "LongOptions.h"
+class LongOptions;
 
 /** A class for representing command-line arguments.
  *

@@ -3,7 +3,7 @@
 
 #include <mpi.h>
 
-#include "core/Command.h"
+class Command;
 
 MPI_Comm spawn(const Command& cmd, MPI_Info info = MPI_INFO_NULL);
 MPI_Comm spawn_worker(const Command& cmd);

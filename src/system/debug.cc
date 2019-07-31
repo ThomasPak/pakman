@@ -4,6 +4,8 @@
 #include <signal.h>
 #include <execinfo.h>
 
+#include "debug.h"
+
 const int NUM_LEVELS = 20;
 const int STDERR_FILENO = 2;
 

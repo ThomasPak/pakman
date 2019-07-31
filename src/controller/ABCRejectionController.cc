@@ -8,7 +8,6 @@
 #include "spdlog/spdlog.h"
 
 #include "core/common.h"
-#include "interface/types.h"
 #include "interface/protocols.h"
 #include "interface/output.h"
 #include "master/AbstractMaster.h"
@@ -29,9 +28,8 @@ ABCRejectionController::ABCRejectionController(const Input& input_obj) :
 void ABCRejectionController::iterate()
 {
     // This function should never be called recursively
-    static bool entered = false;
-    if (entered) throw;
-    entered = true;
+    if (m_entered) throw;
+    m_entered = true;
 
     // Check if there are any new accepted parameters
     while (!m_p_master->finishedTasksEmpty()
@@ -90,7 +88,7 @@ void ABCRejectionController::iterate()
 
         // Terminate Master
         m_p_master->terminate();
-        entered = false;
+        m_entered = false;
         return;
     }
 
@@ -100,7 +98,7 @@ void ABCRejectionController::iterate()
         m_p_master->pushPendingTask(format_simulator_input(m_epsilon.str(),
                     sample_from_prior(m_prior_sampler)));
 
-    entered = false;
+    m_entered = false;
 }
 
 Command ABCRejectionController::getSimulator() const

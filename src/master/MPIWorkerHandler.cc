@@ -6,8 +6,6 @@
 #include "mpi/mpi_common.h"
 #include "mpi/spawn.h"
 
-#include "AbstractWorkerHandler.h"
-
 #include "MPIWorkerHandler.h"
 
 // Initialize static child communicator of MPIWorkerHandler to the

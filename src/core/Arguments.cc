@@ -4,9 +4,7 @@
 #include <getopt.h>
 
 #include "LongOptions.h"
-
 #include "Arguments.h"
-
 
 Arguments::Arguments(const LongOptions& long_options, int argc, char *argv[])
 {

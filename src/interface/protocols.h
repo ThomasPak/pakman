@@ -4,8 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "core/Command.h"
 #include "interface/types.h"
+
+class Command;
 
 /** @file protocols.h
  *

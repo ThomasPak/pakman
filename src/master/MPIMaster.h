@@ -9,11 +9,11 @@
 #include <mpi.h>
 
 #include "core/common.h"
-#include "mpi/mpi_common.h"
-#include "core/LongOptions.h"
-#include "core/Arguments.h"
 
 #include "AbstractMaster.h"
+
+class LongOptions;
+class Arguments;
 
 /** A Master class for performing simulation tasks in parallel using MPI.
  *
@@ -210,6 +210,9 @@ class MPIMaster : public AbstractMaster
 
         // Signal requests
         std::vector<MPI_Request> m_signal_requests;
+
+        // Entered iterate()
+        bool m_entered = false;
 };
 
 #endif // MPIMASTER_H

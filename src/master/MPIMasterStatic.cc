@@ -12,7 +12,9 @@
 #include "core/Arguments.h"
 #include "system/signal_handler.h"
 #include "mpi/mpi_utils.h"
+#include "mpi/mpi_common.h"
 #include "main/help.h"
+#include "controller/AbstractController.h"
 
 #include "Manager.h"
 #include "MPIWorkerHandler.h"
