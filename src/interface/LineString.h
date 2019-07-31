@@ -3,33 +3,77 @@
 
 #include <string>
 
+/** A class for representing single line strings.
+ *
+ * LineString is a class that takes a string with any number of trailing
+ * newlines, and removes them.  If there are any newlines left in the string
+ * after this operation, an exception is thrown.  Therefore, the only valid
+ * strings to construct from are those that have no newlines or newlines only
+ * at the end of the string.
+ *
+ * The resulting string is accessed by the function str().
+ */
+
 class LineString
 {
     public:
 
-        // Default constructor
+        /** Default constructor does nothing. */
         LineString() = default;
 
-        // Construct from lvalue string
+        /** Construct from lvalue string.
+         *
+         * @param raw_string  raw lvalue string.
+         */
         LineString(const std::string& raw_string);
 
-        // Construct from rvalue string
+        /** Construct from rvalue string.
+         *
+         * @param raw_string  raw rvalue string.
+         */
         LineString(std::string&& raw_string);
 
-        // Construct from c-style string
+        /** Construct from C-style string.
+         *
+         * @param raw_string  C-style string.
+         */
         LineString(const char raw_string[]);
 
-        // Default copy, move, copy-assignment, move-assignment and destructor
-        LineString(const LineString&)               = default;
-        LineString(LineString&&)                    = default;
-        LineString& operator=(const LineString&)    = default;
-        LineString& operator=(LineString&&)         = default;
-        ~LineString()                               = default;
+        /** Default copy constructor.
+         *
+         * @param linestring  source LineString object.
+         */
+        LineString(const LineString& linestring) = default;
 
-        // Return string
+        /** Default move constructor.
+         *
+         * @param linestring  source LineString object.
+         */
+        LineString(LineString&& linestring) = default;
+
+        /** Default copy-assignment constructor.
+         *
+         * @param linestring  source LineString object.
+         *
+         * @return reference to copy-assigned LineString object.
+         */
+        LineString& operator=(const LineString& linestring) = default;
+
+        /** Default move-assignment constructor.
+         *
+         * @param linestring  source LineString object.
+         *
+         * @return reference to move-assigned LineString object.
+         */
+        LineString& operator=(LineString&& linestring) = default;
+
+        /** Default destructor does nothing. */
+        ~LineString() = default;
+
+        /** @return string without newlines. */
         const std::string& str() const;
 
-        // Return size
+        /** @return size of string without newlines. */
         size_t size() const;
 
     private:
