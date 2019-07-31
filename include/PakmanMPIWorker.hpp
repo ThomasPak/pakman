@@ -6,23 +6,61 @@
 #include <functional>
 #include <mpi.h>
 
+/** A class for implementing Pakman MPI Workers.
+ *
+ * Since MPI simulators cannot be forked directly when using MPIMaster, the MPI
+ * function `MPI_Comm_spawn` is used instead to spawn MPI Workers.  As a
+ * consequence, the communication between Pakman and MPI Workers does not
+ * happen through system pipes, but through the MPI intercommunicator
+ * obtained with `MPI_Comm_get_parent`.
+ *
+ * Most importantly, the MPI simulator can no longer be considered a black box
+ * at the systems-level.  Instead, the simulator must be implemented as a
+ * function or function object in C++ (see pakman_mpi_worker.h for C), and
+ * passed to the constructor of this class.  The run() method will then
+ * communicate with Pakman and execute the simulator function to perform the
+ * received simulation tasks.
+ *
+ * Note that `MPI_Init()` should be called before calling run().  Also, after
+ * run() returns, `MPI_Finalize()` should be called.
+ */
+
 class PakmanMPIWorker
 {
     public:
 
-        // Constructor
+        /** Constructor from simulator function.
+         *
+         * The simulator function must accept four arguments;
+         * - **argc**  number of command-line arguments.
+         * - **argv**  array of command-line arguments.
+         * - **input_string**  input to simulator.
+         * - **output_string**  output from simulator.
+         *
+         * In addition, the simulator function must return an error code.
+         *
+         * @param simulator  simulator function
+         */
         PakmanMPIWorker(std::function<int(int argc, char** argv, const
                     std::string& input_string, std::string& output_string)>
                 simulator);
 
-        // Destructor
+        /** Default destructor does nothing. */
         ~PakmanMPIWorker() = default;
 
-        // Run
+        /** Run the Pakman MPI Worker with the given simulator function.
+         *
+         * @param argc  number of command-line arguments.
+         * @param argv  array of command-line arguments.
+         *
+         * @return exit code.
+         */
         int run(int argc, char*argv[]);
 
-        // Exit status of run()
+        /** Exit code indicating Worker ran successfully. */
         static constexpr int PAKMAN_EXIT_SUCCESS = 0;
+
+        /** Exit code indicating Worker encountered an error. */
         static constexpr int PAKMAN_EXIT_FAILURE = 1;
 
     private:

@@ -7,8 +7,33 @@
 #include <assert.h>
 #include <mpi.h>
 
+/** @file pakman_mpi_worker.h
+ *
+ * Since MPI simulators cannot be forked directly when using MPIMaster, the MPI
+ * function `MPI_Comm_spawn` is used instead to spawn MPI Workers.  As a
+ * consequence, the communication between Pakman and MPI Workers does not
+ * happen through system pipes, but through the MPI intercommunicator
+ * obtained with `MPI_Comm_get_parent`.
+ *
+ * Most importantly, the MPI simulator can no longer be considered a black box
+ * at the systems-level.  Instead, the simulator must be implemented as a
+ * function in C (see PakmanMPIWorker.hpp for C++).  Its function pointer is
+ * then passed to the pakman_run_mpi_worker(), which will then communicate with
+ * Pakman and execute the given simulator function to perform the received
+ * simulation tasks.
+ *
+ * Note that `MPI_Init()` should be called before calling
+ * pakman_run_mpi_worker().  Also, after pakman_run_mpi_worker() returns,
+ * `MPI_Finalize()` should be called.
+ */
+
+/** Exit code indicating Worker ran successfully. */
 #define PAKMAN_EXIT_SUCCESS 0
+
+/** Exit code indicating Worker encountered an error. */
 #define PAKMAN_EXIT_FAILURE 1
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 #define PAKMAN_ROOT                     0
 #define PAKMAN_MANAGER_MSG_TAG          2
@@ -26,10 +51,34 @@ int pakman_receive_signal(MPI_Comm comm);
 void pakman_send_message(MPI_Comm comm, const char *message);
 void pakman_send_error_code(MPI_Comm comm, int error_code);
 
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
+/** Run the Pakman MPI Worker with the given simulator function.
+ *
+ * The simulator function must accept four arguments;
+ * - **argc**  number of command-line arguments.
+ * - **argv**  array of command-line arguments.
+ * - **input_string**  input to simulator.
+ * - **p_output_string**  pointer to output from simulator.
+ *
+ * The returned *p_output_string must have been allocated using `malloc()`.
+ * After sending the contents of *p_output_string to Pakman, the MPI Worker
+ * will call `free()` on *p_output_string.
+ *
+ * In addition, the simulator function must return an error code.
+ *
+ * @param argc  number of command-line arguments.
+ * @param argv  array of command-line arguments.
+ * @param simulator  function pointer to simulator function.
+ *
+ * @return exit code.
+ */
 int pakman_run_mpi_worker(
         int argc, char *argv[],
         int (*simulator)(int argc, char *argv[],
             const char *input_string, char **p_output_string));
+
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 MPI_Comm pakman_get_parent_comm()
 {
@@ -84,6 +133,8 @@ void pakman_send_error_code(MPI_Comm comm, int error_code)
     /* Send error_code */
     MPI_Send(&error_code, 1, MPI_INT, PAKMAN_ROOT, PAKMAN_WORKER_ERROR_CODE_TAG, comm);
 }
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
 int pakman_run_mpi_worker(
         int argc, char *argv[],
