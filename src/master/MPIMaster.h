@@ -22,7 +22,7 @@ class Arguments;
  * Manager class).  These Managers then perform simulation tasks by spawning
  * child processes with `fork()`--`exec()` to run simulation.
  *
- * \warning If your simulator uses MPI internally, this will likely clash with
+ * @warning If your simulator uses MPI internally, this will likely clash with
  * Pakman when using MPIMaster.  In that case, you will need to build an MPI
  * simulator.  An example of an MPI simulator can be found [on our
  * wiki](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth).

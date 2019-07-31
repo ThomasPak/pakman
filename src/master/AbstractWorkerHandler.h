@@ -40,14 +40,14 @@ class AbstractWorkerHandler
 
         /** @return output of finished Worker.
          *
-         * \warning Calling this function before Worker is finished will result in an error,
+         * @warning Calling this function before Worker is finished will result in an error,
          * so always check with isDone() first.
          */
         std::string getOutput();
 
         /** @return error code of finished Worker.
          *
-         * \warning Calling this function before Worker is finished will result in an error,
+         * @warning Calling this function before Worker is finished will result in an error,
          * so always check with isDone() first.
          */
         int getErrorCode();
