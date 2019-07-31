@@ -48,7 +48,7 @@ class Command
          *
          * @param command  source Command object.
          *
-         * @return reference to copy-assigned Command object
+         * @return reference to copy-assigned Command object.
          */
         Command& operator=(const Command& command);
 
@@ -56,7 +56,7 @@ class Command
          *
          * @param command  source Command object.
          *
-         * @return reference to move-assigned Command object
+         * @return reference to move-assigned Command object.
          */
         Command& operator=(Command&& command);
 
