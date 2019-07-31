@@ -28,8 +28,8 @@ class Arguments;
  * isActive() returns false.  The terminate() method should be called by
  * AbstractController when it is no longer needed.
  *
- * The task processing machinery of AbstractMaster is abstracted using a task
- * queue; AbstractControllers push tasks that need to be completed with
+ * The task processing machinery of AbstractMaster is abstracted using task
+ * queues; AbstractControllers push tasks that need to be completed with
  * pushPendingTask() and access finished tasks using frontFinishedTask().  The
  * AbstractMaster is responsible for popping tasks from the pending tasks
  * queue, running the corresponding simulation and pushing finished tasks to
