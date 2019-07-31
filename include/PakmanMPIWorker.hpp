@@ -23,6 +23,9 @@
  *
  * Note that `MPI_Init()` should be called before calling run().  Also, after
  * run() returns, `MPI_Finalize()` should be called.
+ *
+ * For more information, see
+ * @ref mpi-simulator "Implementing an MPI simulator".
  */
 
 class PakmanMPIWorker

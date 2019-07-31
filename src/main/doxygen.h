@@ -1,5 +1,4 @@
-#ifndef DOXYGEN_H
-#define DOXYGEN_H
+#ifdef DOXYGEN_ONLY
 
 // This header contains no code.  It only exists to contain stand-alone Doxygen
 // documentation pages.
@@ -9,18 +8,19 @@
  * # Introduction           {#introduction}
  *
  * Welcome to the code documentation of Pakman!  If you stumbled here without
- * any context whatsoever, you should have a look at the Pakman repository
- * [here](https://github.com/ThomasPak/pakman) first.  There, you can find
+ * any context whatsoever, you should have a look at the [Pakman
+ * repository](https://github.com/ThomasPak/pakman) first.  There, you can find
  * high-level instructions for installing and using Pakman.
  *
  * These pages contain documentation generated from the source files of the
  * Pakman project, as well as some advanced instructions that are not found in
- * the Wiki (e.g. how to extend Pakman).  For an overview of the classes and
- * files defined in the Pakman project, see the sidebar on the left.
+ * the [Pakman Wiki](https://github.com/ThomasPak/pakman/wiki) (e.g. how to
+ * extend Pakman).  For an overview of the classes and files defined in the
+ * Pakman project, see the sidebar on the left.
  *
  * # Organisation           {#organisation}
  *
- * The Pakman source files are organised into seven different subdirectories:
+ * The Pakman source files in **src** are organised into seven subdirectories:
  *
  * - **core** Common classes and functions.
  * - **system** Functions for handling system calls, e.g. forking, pipes, etc.
@@ -36,6 +36,9 @@
  *
  * In addition, the **3rdparty** subdirectory contains code imported from
  * external open-source projects.
+ *
+ * Lastly, the **include** directory contains headers for MPI simulators (see
+ * @ref mpi-simulator "here" for more information on MPI simulators).
  *
  * # Software architecture  {#software_architecture}
  *
@@ -86,7 +89,199 @@
 
 /** @page mpi-simulator Implementing an MPI simulator
  *
- * Here are some instructions on implementing an MPI simulator.
+ * # MPI simulators
+ *
+ * As mentioned in @ref index "the main page", it is likely that you will run
+ * into problems when your simulator uses MPI and you try to use it with
+ * MPIMaster directly.  This error occurs because an MPI application forking
+ * another MPI application is not defined by the [MPI
+ * standard](https://www.mpi-forum.org/docs/) and is not supported by current
+ * MPI libraries (and likely never will be).
+ *
+ * Fortunately, there exists a mechanism native to the MPI standard for the
+ * creation of new processes.  In particular, the MPI function `MPI_Comm_spawn`
+ * allows you to spawn a new MPI process and provides an MPI communicator to
+ * communicate with the child MPI process after it has been created.
+ *
+ * However, in order to maintain portability, spawned MPI processes have certain
+ * limitations when it comes to process control.  Firstly, there is no way to
+ * force the termination of a process spawned using `MPI_Comm_spawn`.  When using
+ * a "standard" (i.e.\ a forked) simulator, Pakman can send system signals to
+ * terminate Workers before they have finished their simulations, for example
+ * when an ABC SMC generation has finished, or the requisite number of
+ * parameters have been accepted in ABC rejection.  This is not possible for
+ * spawned MPI processes however, so Pakman has no choice but to wait for the
+ * simulation to finish.
+ *
+ * Secondly, it is impossible to discard the standard error of a process created
+ * using `MPI_Comm_spawn`, so the flag `--discard-child-stderr` does not have any
+ * effect.  Thirdly, spawned MPI programs should not be wrapped in a shell
+ * script because this is not defined by the MPI standard (even though some MPI
+ * libraries may support this).
+ *
+ * Most importantly, using an MPI-based simulator with Pakman breaks Pakman's
+ * modular framework because now the communication between Pakman and the
+ * simulator has to happen through MPI instead of through standard input and
+ * output.  The simulator is thus no longer a black box on the systems-level,
+ * but rather has to be implemented as C or C++ function.  As a result, the
+ * protocol for communicating between Pakman and the simulator has to be
+ * compiled into the user executable.
+ *
+ * We have implemented the Pakman--Worker communication protocol as a C header
+ * and as a C++ header in pakman_mpi_worker.h and PakmanMPIWorker.hpp,
+ * respectively.  These headers define a **Pakman MPI Worker**.  The two roles
+ * of a Pakman MPI Worker are to communicate with Pakman and to run
+ * user-defined simulations.
+ *
+ * @note When using Pakman with an MPI simulator, you must use the flag
+ * `--mpi-simulator` so that Pakman is aware of this.  See [this Wiki
+ * page](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth)
+ * for an example.
+ *
+ * # C: pakman_mpi_worker.h
+ *
+ * When writing an MPI simulator in C, the user needs to define a function with
+ * the following signature:
+ *
+ * ```C
+ * int simulator(int argc, char *argv[],
+ *             const char *input_string, char **p_output_string);
+ * ```
+ *
+ * This function should perform the same tasks that a standard simulator user
+ * executable would do; given some command-line arguments and an input_string
+ * (which contains a tolerance and a parameter), run a simulation, compare the
+ * simulated data to the observed data and return an output string (containing
+ * either `accept` or `reject`).  Moreover, the return value is considered the
+ * "exit code" of the simulation; a nonzero return value indicates that an error
+ * has occurred during the simulation.
+ *
+ * After defining this function, it should be passed on as a function pointer
+ * to the function pakman_run_mpi_worker(), defined in pakman_mpi_worker.h with
+ * the signature
+ *
+ * ```C
+ * int pakman_run_mpi_worker(
+ *         int argc, char *argv[],
+ *         int (*simulator)(int argc, char *argv[],
+ *             const char *input_string, char **p_output_string));
+ * ```
+ *
+ * Hence the template for an MPI simulator written in C is as follows:
+ *
+ *
+ * ```C
+ * #include "pakman_mpi_worker.h"
+ *
+ * int my_simulator(int argc, char *argv[],
+ *         const char* input_string, char **p_output_string)
+ * {
+ *     /* ...
+ *      * Perform simulation
+ *      * ...
+ *      */
+ * }
+ *
+ * int main(int argc, char *argv[])
+ * {
+ *     /* Initialize MPI */
+ *     MPI_Init(NULL, NULL);
+ *
+ *     /* Run MPI Worker */
+ *     pakman_run_mpi_worker(argc, argv, &my_simulator);
+ *
+ *     /* Finalize MPI */
+ *     MPI_Finalize();
+ *
+ *     return 0;
+ * }
+ * ```
+ *
+ * Note that the user still needs to call `MPI_Init` and `MPI_Finalize`, otherwise
+ * the MPI Worker will attempt to call MPI functions without initializing MPI.
+ *
+ * When Pakman is invoked with an MPI simulator, it will spawn the MPI Worker
+ * once and repeatedly execute the simulator function to run simulations.  When
+ * Pakman terminates, it will send a termination signal to the MPI Worker
+ * through MPI.  Only then will MPI Worker terminate.  This is in contrast to
+ * the standard Worker, which is forked from Pakman for each simulation.
+ *
+ * ## Example
+ *
+ * The following MPI simulator example can be found is taken from
+ * mpi-simulator.c.  It is a dummy simulator that by default simply outputs
+ * `accept` and exits with a zero error code.  In addition, the output message
+ * and the error code can be specified with optional command-line arguments.
+ *
+ * @include mpi-simulator.c
+ *
+ * # C++: PakmanMPIWorker.hpp
+ *
+ * When writing an MPI simulator in C++, the user can use pakman_mpi_worker.h
+ * as before.  However, it is also possible to use the PakmanMPIWorker class,
+ * defined in PakmanMPIWorker.hpp.  This method has the advantage that it is
+ * not constrained to function pointers, but rather accepts instantiations of
+ * the
+ * [`std::function`](http://www.cplusplus.com/reference/functional/function/)
+ * class.  This is a class that can wrap any callable element, including
+ * function pointers.  In our case, the expected `std::function` object is of
+ * the following type:
+ *
+ * ```
+ * std::function<int(int argc, char** argv, const std::string& input_string,
+ *     std::string& output_string)>
+ * ```
+ *
+ * The arguments and return value retain the same meaning as in
+ * pakman_mpi_worker.h.
+ *
+ * This function object should be passed to the constructor of PakmanMPIWorker.
+ * Then, to run the MPI Worker, the user needs to call PakmanMPIWorker::run()
+ * on the created object.
+ *
+ * Assuming that the simulator function is written as a normal function, the
+ * template of an MPI simulator written with PakmanMPIWorker.hpp is as follows:
+ *
+ * ```
+ * #include "PakmanMPIWorker.hpp"
+ *
+ * int my_simulator(int argc, char *argv[],
+ *         const std::string& input_string, std::string& output_string)
+ * {
+ *     // ...
+ *     // Perform simulation
+ *     // ...
+ * }
+ *
+ * int main(int argc, char *argv[])
+ * {
+ *     // Initialize MPI
+ *     MPI_Init(nullptr, nullptr);
+ *
+ *     // Create MPI Worker
+ *     PakmanMPIWorker worker(&my_simulator);
+ *
+ *     // Run MPI Worker
+ *     worker.run(argc, argv);
+ *
+ *     // Finalize MPI
+ *     MPI_Finalize();
+ *
+ *     return 0;
+ * }
+ * ```
+ *
+ * As before, the user still needs to call `MPI_Init` and `MPI_Finalize`.
+ *
+ * ## Example
+ *
+ * The following MPI simulator example can be found is taken from
+ * mpi-simulator-cpp.cc.  It is a dummy simulator that by default simply
+ * outputs `accept` and exits with a zero error code.  Furthermore, the output
+ * message and the error code can be specified with optional command-line
+ * arguments.
+ *
+ * @include mpi-simulator-cpp.cc
  */
 
 /** @page controller Writing a new Controller subclass
@@ -94,4 +289,4 @@
  * Here are some instructions on writing a new Controller subclass.
  */
 
-#endif // DOXYGEN_H
+#endif // DOXYGEN_ONLY

@@ -4,13 +4,13 @@
 
 #include "PakmanMPIWorker.hpp"
 
-// Define mpi_simulator
-int mpi_simulator(int argc, char *argv[],
+// Define my_simulator
+int my_simulator(int argc, char *argv[],
         const std::string& input_string, std::string& output_string)
 {
     // Default output string and error code correspond to simulator that always
     // accepts and exits without error
-    output_string.assign("1\n");
+    output_string.assign("accept\n");
     int error_code = 0;
 
     // Print help
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     MPI_Init(nullptr, nullptr);
 
     // Create MPI Worker
-    PakmanMPIWorker worker(&mpi_simulator);
+    PakmanMPIWorker worker(&my_simulator);
 
     // Run MPI Worker
     worker.run(argc, argv);

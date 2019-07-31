@@ -5,13 +5,13 @@
 
 #include "pakman_mpi_worker.h"
 
-/* Define mpi_simulator */
-int mpi_simulator(int argc, char *argv[],
+/* Define my_simulator */
+int my_simulator(int argc, char *argv[],
         const char* input_string, char **p_output_string)
 {
     /* Default output string and error code correspond to simulator that always
      * accepts and exits without error */
-    char *output_string = "1\n";
+    char *output_string = "accept\n";
     int error_code = 0;
 
     /* Print help */
@@ -24,6 +24,7 @@ int mpi_simulator(int argc, char *argv[],
     }
 
     /* Process given output string */
+    int malloced = 0;
     if (argc >= 2)
     {
         output_string = argv[1];
@@ -36,6 +37,7 @@ int mpi_simulator(int argc, char *argv[],
             strcpy(output_string, argv[1]);
             output_string[len] = '\n';
             output_string[len + 1] = '\0';
+            malloced = 1;
         }
     }
 
@@ -57,6 +59,10 @@ int mpi_simulator(int argc, char *argv[],
     /* Copy string */
     strcpy(*p_output_string, output_string);
 
+    /* Free memory if malloced */
+    if (malloced)
+        free(output_string);
+
     /* Return exit code */
     return error_code;
 }
@@ -67,7 +73,7 @@ int main(int argc, char *argv[])
     MPI_Init(NULL, NULL);
 
     /* Run MPI Worker */
-    pakman_run_mpi_worker(argc, argv, &mpi_simulator);
+    pakman_run_mpi_worker(argc, argv, &my_simulator);
 
     /* Finalize MPI */
     MPI_Finalize();
