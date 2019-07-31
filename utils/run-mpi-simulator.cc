@@ -40,7 +40,9 @@ int main(int argc, char *argv[])
     std::string raw_command;
     for (int i = 1; i < argc; i++)
     {
+        raw_command += '\'';
         raw_command += argv[i];
+        raw_command += '\'';
         raw_command += " ";
     }
 
