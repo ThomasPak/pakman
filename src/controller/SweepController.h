@@ -89,7 +89,7 @@ class SweepController : public AbstractController
 
     private:
 
-        /**** Member variables ****/
+        ///// Member variables /////
         // Parameter names
         std::vector<ParameterName> m_parameter_names;
 

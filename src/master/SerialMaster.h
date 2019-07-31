@@ -100,12 +100,12 @@ class SerialMaster : public AbstractMaster
          */
         enum state_t { normal, terminated };
 
-        /**** Member functions ****/
+        ///// Member functions /////
         // Processes a task from pending queue if there is one and places it in
         // the finished queue when done.
         void processTask();
 
-        /**** Member variables ****/
+        ///// Member variables /////
         // Initial state is normal
         state_t m_state = normal;
 

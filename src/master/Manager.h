@@ -67,7 +67,7 @@ class Manager
          */
         enum state_t { idle, busy, terminated };
 
-        /**** Member functions ****/
+        ///// Member functions /////
         // Do idle stuff
         void doIdleStuff();
 
@@ -104,7 +104,7 @@ class Manager
         // Send error code to Master
         void sendErrorCodeToMaster(int error_code);
 
-        /**** Member variables ****/
+        ///// Member variables /////
         // Initial state is idle
         state_t m_state = idle;
 

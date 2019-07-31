@@ -181,17 +181,17 @@ class AbstractMaster
 
     protected:
 
-        /**** Member functions ****/
+        ///// Member functions /////
         /** @return whether the program has been terminated. */
         bool programTerminated() const;
 
-        /**** Member variables ****/
+        ///// Member variables /////
         /** Weak pointer to AbstractController. */
         std::weak_ptr<AbstractController> m_p_controller;
 
     private:
 
-        /**** Member variables ****/
+        ///// Member variables /////
         // Pointer to program terminated flag
         bool *m_p_program_terminated;
 

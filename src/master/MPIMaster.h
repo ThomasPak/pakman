@@ -119,7 +119,7 @@ class MPIMaster : public AbstractMaster
          */
         enum state_t { normal, flushing, terminated };
 
-        /**** Member functions ****/
+        ///// Member functions /////
         // Do normal stuff
         void doNormalStuff();
 
@@ -170,7 +170,7 @@ class MPIMaster : public AbstractMaster
         // Send signal to all Managers
         void sendSignalToAllManagers(int signal);
 
-        /**** Member variables ****/
+        ///// Member variables /////
         // Initial state is normal
         state_t m_state = normal;
 

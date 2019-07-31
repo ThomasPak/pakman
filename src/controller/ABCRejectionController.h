@@ -109,7 +109,7 @@ class ABCRejectionController : public AbstractController
 
     private:
 
-        /**** Member variables ****/
+        ///// Member variables /////
         // Epsilon
         Epsilon m_epsilon;
 

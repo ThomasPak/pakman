@@ -117,11 +117,11 @@ class ABCSMCController : public AbstractController
 
     private:
 
-        /**** Member functions ****/
+        ///// Member functions /////
         // Sample parameter
         Parameter sampleParameter();
 
-        /**** Member variables ****/
+        ///// Member variables /////
         // Epsilons
         std::vector<Epsilon> m_epsilons;
 
