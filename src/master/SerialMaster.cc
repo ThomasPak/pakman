@@ -26,7 +26,7 @@ bool SerialMaster::isActive() const
 void SerialMaster::iterate()
 {
     // This function should never be called recursively
-    if (m_entered) throw;
+    assert(!m_entered);
     m_entered = true;
 
     // This function should never be called if the Master has

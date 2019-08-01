@@ -34,7 +34,7 @@ SweepController::SweepController(const Input &input_obj) :
 void SweepController::iterate()
 {
     // This function should never be called recursively
-    if (m_entered) throw;
+    assert(!m_entered);
     m_entered = true;
 
     // If in the first iteration

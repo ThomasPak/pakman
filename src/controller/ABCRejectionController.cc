@@ -28,7 +28,7 @@ ABCRejectionController::ABCRejectionController(const Input& input_obj) :
 void ABCRejectionController::iterate()
 {
     // This function should never be called recursively
-    if (m_entered) throw;
+    assert(!m_entered);
     m_entered = true;
 
     // Check if there are any new accepted parameters
