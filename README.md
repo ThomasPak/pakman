@@ -77,7 +77,7 @@ processes will be plotted in `speedup.png` and `efficiency.png`, respectively.
 
 Examples of how to use Pakman can be found in the folder `examples` inside the
 build folder.  See the [wiki](https://github.com/ThomasPak/pakman/wiki) for
-documentation.
+detailed documentation.
 
 * [Biased coin and ABC rejection](https://github.com/ThomasPak/pakman/wiki/Example:-biased-coin-flip-and-ABC-rejection)
 * [Biased coin and ABC SMC](https://github.com/ThomasPak/pakman/wiki/Example:-biased-coin-flip-and-ABC-SMC)
@@ -90,7 +90,7 @@ on how to use Pakman.
 **Developers**: code documentation can be found
 [here](https://codedocs.xyz/ThomasPak/pakman/).
 
-# Testing on multiple nodes (advanced)
+# Testing on multiple nodes
 
 By default, running `ctest` will only test Pakman on the local node.  Since
 Pakman uses MPI for parallelisation however, it is possible to run Pakman on
