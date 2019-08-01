@@ -61,19 +61,8 @@ class AbstractMaster
         /** Default destructor does nothing. */
         virtual ~AbstractMaster() = default;
 
-        /** Assign pointer to AbstractController.
-         *
-         * @param p_controller  pointer to AbstractController object to be
-         * assigned to AbstractMaster.
-         */
-        void assignController(
-                std::shared_ptr<AbstractController> p_controller);
-
         /** @return whether the AbstractMaster is active. */
         virtual bool isActive() const = 0;
-
-        /** Iterates the AbstractMaster in an event loop. */
-        virtual void iterate() = 0;
 
         /** @return whether more pending tasks are needed. */
         virtual bool needMorePendingTasks() const = 0;
@@ -179,7 +168,17 @@ class AbstractMaster
 
     protected:
 
-        ///// Member functions /////
+        /** Assign pointer to AbstractController.
+         *
+         * @param p_controller  pointer to AbstractController object to be
+         * assigned to AbstractMaster.
+         */
+        void assignController(
+                std::shared_ptr<AbstractController> p_controller);
+
+        /** Iterates the AbstractMaster in an event loop. */
+        virtual void iterate() = 0;
+
         /** @return whether the program has been terminated. */
         bool programTerminated() const;
 

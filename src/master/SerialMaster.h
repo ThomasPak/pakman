@@ -41,9 +41,6 @@ class SerialMaster : public AbstractMaster
         /** @return whether the AbstractMaster is active. */
         virtual bool isActive() const override;
 
-        /** Iterates the SerialMaster in an event loop. */
-        virtual void iterate() override;
-
         /** @return whether more pending tasks are needed. */
         virtual bool needMorePendingTasks() const override;
 
@@ -89,6 +86,11 @@ class SerialMaster : public AbstractMaster
 
         /** For SerialMaster, this function does nothing. */
         static void cleanup();
+
+    protected:
+
+        /** Iterates the SerialMaster in an event loop. */
+        virtual void iterate() override;
 
     private:
 

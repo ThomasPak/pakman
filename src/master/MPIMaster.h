@@ -51,9 +51,6 @@ class MPIMaster : public AbstractMaster
         /** @return whether the MPIMaster is active. */
         virtual bool isActive() const override;
 
-        /** Iterates the MPIMaster in an event loop. */
-        virtual void iterate() override;
-
         /** @return whether more pending tasks are needed. */
         virtual bool needMorePendingTasks() const override;
 
@@ -105,6 +102,11 @@ class MPIMaster : public AbstractMaster
          * does not hang after an exception.
          */
         static void cleanup();
+
+    protected:
+
+        /** Iterates the MPIMaster in an event loop. */
+        virtual void iterate() override;
 
     private:
 
