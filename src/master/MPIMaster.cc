@@ -107,25 +107,6 @@ void MPIMaster::doNormalStuff()
         m_state = terminated;
         return;
     }
-    // Check for flushing of Workers
-    if (m_worker_flushed)
-    {
-        spdlog::debug("MPIMaster::doNormalStuff: Flushing workers!");
-
-        // Send FLUSH_WORKER_SIGNAL to all Managers
-        sendSignalToAllManagers(FLUSH_WORKER_SIGNAL);
-
-        // Flush all TaskHandler queues
-        flushQueues();
-
-        // Reset flag
-        m_worker_flushed = false;
-
-        // Switch to flushing state
-        m_state = flushing;
-        return;
-    }
-
     // Listen to Managers
     listenToManagers();
 
@@ -144,6 +125,22 @@ void MPIMaster::doNormalStuff()
 
         // Terminate Master
         m_state = terminated;
+        return;
+    }
+
+    // Check for flushing of Workers
+    if (m_worker_flushed)
+    {
+        spdlog::debug("MPIMaster::doNormalStuff: Flushing workers!");
+
+        // Send FLUSH_WORKER_SIGNAL to all Managers
+        sendSignalToAllManagers(FLUSH_WORKER_SIGNAL);
+
+        // Reset flag
+        m_worker_flushed = false;
+
+        // Switch to flushing state
+        m_state = flushing;
         return;
     }
 
@@ -226,6 +223,9 @@ void MPIMaster::popFinishedTask()
 void MPIMaster::flush()
 {
     m_worker_flushed = true;
+
+    // Flush all TaskHandler queues
+    flushQueues();
 }
 
 // Terminate Master
