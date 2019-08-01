@@ -51,22 +51,31 @@ $ cd scaling
 $ ./run-scaling.sh
 ```
 
-This script will benchmark Pakman with a CPU-intensive simulator for different
-numbers of parallel instances of the simulator.  The results are saved in the
-comma-separated file `scaling.csv`.  In addition, if Python was detected by
-CMake, the speedup and efficiency with respect to the number of processes will
-be plotted in `speedup.png` and `efficiency.png`, respectively.
+This script will benchmark Pakman with a computationally intensive simulator
+for different numbers of parallel instances of the simulator.  The results are
+saved in the comma-separated file `scaling.csv`.  In addition, if Python was
+detected by CMake, the speedup and efficiency with respect to the number of
+processes will be plotted in `speedup.png` and `efficiency.png`, respectively.
 
-# Examples
+> It is recommended to use the flag `-DCMAKE_BUILD_TYPE=Release` with the
+> `cmake` command before running the scaling test to reduce computation time.
+
+# Documentation
 
 Examples of how to use Pakman can be found in the folder `examples` inside the
 build folder.  See the [wiki](https://github.com/ThomasPak/pakman/wiki) for
-further documentation.
+documentation.
 
 * [Biased coin and ABC rejection](https://github.com/ThomasPak/pakman/wiki/Example:-biased-coin-flip-and-ABC-rejection)
 * [Biased coin and ABC SMC](https://github.com/ThomasPak/pakman/wiki/Example:-biased-coin-flip-and-ABC-SMC)
 * [SIS model](https://github.com/ThomasPak/pakman/wiki/Example:-SIS-model)
 * [Epithelial cell growth](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth)
+
+In addition, the command `build/src/pakman --help` provides a quick reference
+on how to use Pakman.
+
+**Developers**: code documentation can be found
+[here](https://codedocs.xyz/ThomasPak/pakman/).
 
 # Testing on multiple nodes (advanced)
 
