@@ -5,7 +5,21 @@
 A modular, efficient and portable tool for running parallel approximate
 Bayesian computation algorithms.
 
-# Requirements
+## Introduction
+
+Pakman is a software tool for parallel approximate Bayesian computation (ABC)
+algorithms.  Its modular framework is based on **user executables**, which
+means that problem-specific tasks, like model simulations, are performed by
+black box executables supplied to Pakman by the user.
+
+Pakman parallelises the execution of simulations using MPI, a portable standard
+for distributed computing, and was designed to be lightweight so that a minimal
+amount of overhead goes into parallelisation.
+
+The problems that will benefit the most from Pakman are those where model
+simulations take a relatively long time, on the order of seconds or more.
+
+## Requirements
 
 * C++11 compiler
 * MPI-3.1 library
@@ -18,7 +32,7 @@ Pakman has been tested with [OpenMPI](https://www.open-mpi.org/) and
 [MPICH](https://www.mpich.org/).  Python is not necessary to build Pakman, but
 it is used in some Pakman examples and to create figures.
 
-# Building
+## Building
 
 To build Pakman, run:
 
@@ -47,8 +61,7 @@ To test how well Pakman scales with the number of parallel processes employed,
 run (in the build folder):
 
 ```
-$ cd scaling
-$ ./run-scaling.sh
+$ scaling/run-scaling.sh
 ```
 
 This script will benchmark Pakman with a computationally intensive simulator
