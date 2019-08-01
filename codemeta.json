@@ -1,0 +1,23 @@
+{
+  "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
+  "@type": "Code",
+  "author": [
+    {
+      "@id": "https://orcid.org/0000-0002-7198-7688",
+      "@type": "Person",
+      "email": "thomas.pak@maths.ox.ac.uk",
+      "name": "Thomas Pak",
+      "affiliation": "Mathematical Institute, University of Oxford"
+    }
+  ],
+  "identifier": "https://doi.org/10.5281/zenodo.3357293",
+  "codeRepository": "https://github.com/ThomasPak/pakman",
+  "datePublished": "2019-08-01",
+  "dateModified": "2019-08-01",
+  "dateCreated": "2019-08-01",
+  "description": "A modular, efficient and portable tool for running parallel approximate Bayesian computation algorithms.",
+  "keywords": "C++, MPI, approximate Bayesian computation, Bayesian inference, parallel computing, distributed computing",
+  "license": "BSD 3-Clause License",
+  "title": "Pakman",
+  "version": "v1.0.0"
+}
