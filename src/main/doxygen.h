@@ -14,7 +14,7 @@
  *
  * These pages contain documentation generated from the source files of the
  * Pakman project, as well as some advanced instructions that are not found in
- * the [Pakman Wiki](https://github.com/ThomasPak/pakman/wiki) (e.g. how to
+ * the [Pakman wiki](https://github.com/ThomasPak/pakman/wiki) (e.g. how to
  * extend Pakman).  For an overview of the classes and files defined in the
  * Pakman project, see the sidebar on the left.
  *
@@ -76,7 +76,7 @@
  * If your simulator uses MPI, you are likely to run into troubles when trying
  * to use it directly with MPIMaster.  This is because an MPI program forking
  * another MPI program is not supported.  For this reason, we have implemented
- * a separate communication protocol for MPI simulators.  See [this Wiki
+ * a separate communication protocol for MPI simulators.  See [this wiki
  * page](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth)
  * for an example of an MPI simulator and see
  * @ref mpi-simulator "this documentation page" for instructions on how to
@@ -134,7 +134,7 @@
  * user-defined simulations.
  *
  * @note When using Pakman with an MPI simulator, you must use the flag
- * `--mpi-simulator` so that Pakman is aware of this.  See [this Wiki
+ * `--mpi-simulator` so that Pakman is aware of this.  See [this wiki
  * page](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth)
  * for an example.
  *
