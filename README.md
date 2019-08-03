@@ -46,7 +46,7 @@ $ make
 This will create a `pakman` binary under the `src` subfolder of the build
 directory.
 
-# Testing
+## Testing
 
 To test Pakman, run (in the build folder):
 
@@ -73,7 +73,7 @@ processes will be plotted in `speedup.png` and `efficiency.png`, respectively.
 > It is recommended to use the flag `-DCMAKE_BUILD_TYPE=Release` with the
 > `cmake` command before running the scaling test to reduce computation time.
 
-# Documentation
+## Documentation
 
 Examples of how to use Pakman can be found in the folder `examples` inside the
 build folder.  See the [wiki](https://github.com/ThomasPak/pakman/wiki) for
@@ -90,7 +90,7 @@ on how to use Pakman.
 **Developers**: code documentation can be found
 [here](https://codedocs.xyz/ThomasPak/pakman/).
 
-# Testing on multiple nodes
+## Testing on multiple nodes
 
 By default, running `ctest` will only test Pakman on the local node.  Since
 Pakman uses MPI for parallelisation however, it is possible to run Pakman on
@@ -121,3 +121,8 @@ When building Pakman with these flags, CMake will automatically insert the
 appropriate flags in the `mpiexec` commands for running tests (including the
 scaling benchmark) and examples.  Thus, running the above commands as before
 will now test Pakman on multiple nodes.
+
+## Contributing
+
+We welcome your contributions!  Please see our [contributing
+guidelines](CONTRIBUTING.md).
