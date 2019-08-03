@@ -25,7 +25,7 @@ executables) that is [**minimal** and
 **reproducible**](https://stackoverflow.com/help/minimal-reproducible-example).
 
 If you can fix the problem yourself, [create a pull
-request](https://github.com/ThomasPak/pakman/pulls).
+request](https://github.com/ThomasPak/pakman/compare).
 
 ### Adding examples
 
@@ -36,9 +36,9 @@ share this with the world, please do so!
 
 If your application can be implemented as a short and self-contained example,
 please add it to the `examples` folder and [create a pull
-request](https://github.com/ThomasPak/pakman/pulls).  In addition, you must add
-a tutorial page to the Pakman wiki.  **Pull requests for examples will only be
-accepted once its accompanying tutorial page has been written.**
+request](https://github.com/ThomasPak/pakman/compare).  In addition, you must
+add a tutorial page to the Pakman wiki.  **Pull requests for examples will only
+be accepted once its accompanying tutorial page has been written.**
 
 Alternatively, if you are using a codebase that is too large to pull into
 Pakman, you can add a tutorial to the Pakman wiki directly without contributing
@@ -71,7 +71,7 @@ and [this documentation
 page](https://codedocs.xyz/ThomasPak/pakman/mpi-simulator.html).
 
 When you are ready to contribute your new Controller, please [create a pull
-request](https://github.com/ThomasPak/pakman/pulls).
+request](https://github.com/ThomasPak/pakman/compare).
 
 ### Rest
 
@@ -79,7 +79,7 @@ If you want to make any other type of contribution, please [open an
 issue](https://github.com/ThomasPak/pakman/issues/new) first describing what
 you plan to add or change, as well as why you want to make the changes.  If we
 approve the proposed changes, you can contribute your code by [creating a pull
-request](https://github.com/ThomasPak/pakman/pulls).
+request](https://github.com/ThomasPak/pakman/compare).
 
 You are also welcome to open issues to request features or make other
 suggestions.
