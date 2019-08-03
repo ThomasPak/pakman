@@ -8,7 +8,8 @@ int main(int argc, char *argv[])
     // Process arguments
     if (argc != 5)
     {
-        std::cerr << "Usage: " << argv[0] << " BETA_LOW BETA_HIGH GAMMA_LOW GAMMA_HIGH\n"
+        std::cerr << "Usage: " << argv[0]
+            << " BETA_LOW BETA_HIGH GAMMA_LOW GAMMA_HIGH\n"
             "Sample from two uniform distributions; one with lower bound\n"
             "BETA_LOW and upper bound BETA_HIGH, and one with lower bound\n"
             "GAMMA_LOW and upper bound GAMMA_HIGH.\n";

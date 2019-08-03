@@ -51,7 +51,8 @@ Available controllers:
   smc           run the ABC SMC algorithm
 See ')" << program_name << R"( <controller> --help' for more info.
 
-Alternatively, see ')" << program_name << R"( <master> <controller> --help' for more info
+Alternatively, see ')" <<
+program_name << R"( <master> <controller> --help' for more info
 on both <master> and <controller>.
 )";
 

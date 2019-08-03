@@ -65,7 +65,8 @@ bool waitpid_success(pid_t pid, int options, const Command& cmd,
     return true;
 }
 
-bool waitpid_success(pid_t pid, int& error_code, int options, const Command& cmd)
+bool waitpid_success(pid_t pid, int& error_code, int options,
+        const Command& cmd)
 {
     // Wait on child
     int status;

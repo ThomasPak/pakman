@@ -16,7 +16,8 @@ bool is_whitespace(const char letter)
 std::vector<std::string> parse_command_tokens(const std::string& raw_command)
 {
     // Define states of finite state machine
-    enum state_t { start, unquoted, quote_next_letter, singly_quoted, doubly_quoted };
+    enum state_t { start, unquoted, quote_next_letter, singly_quoted,
+        doubly_quoted };
 
     // Initialize
     state_t state = start;
@@ -169,7 +170,8 @@ endloop:
             (state == quote_next_letter))
     {
         std::string error_msg;
-        error_msg += "Encountered unfinished quotations while parsing command: ";
+        error_msg += "Encountered unfinished quotations "
+            "while parsing command: ";
         error_msg += raw_command;
         throw std::runtime_error(error_msg);
     }

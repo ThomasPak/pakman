@@ -30,7 +30,8 @@ class AbstractWorkerHandler
          * @param simulator  command to run simulation.
          * @param input_string  input string to simulator.
          */
-        AbstractWorkerHandler(const Command& simulator, const std::string& input_string);
+        AbstractWorkerHandler(const Command& simulator,
+                const std::string& input_string);
 
         /** Default destructor does nothing. */
         virtual ~AbstractWorkerHandler() = default;
@@ -40,15 +41,15 @@ class AbstractWorkerHandler
 
         /** @return output of finished Worker.
          *
-         * @warning Calling this function before Worker is finished will result in an error,
-         * so always check with isDone() first.
+         * @warning Calling this function before Worker is finished will result
+         * in an error, so always check with isDone() first.
          */
         std::string getOutput();
 
         /** @return error code of finished Worker.
          *
-         * @warning Calling this function before Worker is finished will result in an error,
-         * so always check with isDone() first.
+         * @warning Calling this function before Worker is finished will result
+         * in an error, so always check with isDone() first.
          */
         int getErrorCode();
 

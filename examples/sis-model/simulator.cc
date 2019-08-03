@@ -9,8 +9,8 @@
 
 std::default_random_engine generator;
 
-std::vector<int> run_SIS_simulation(double beta, double gamma, int S0, int I0, double tend,
-        int Nobs)
+std::vector<int> run_SIS_simulation(double beta, double gamma, int S0, int I0,
+        double tend, int Nobs)
 {
     // Initialize arrays
     std::vector<double> t(1, 0.0);
@@ -138,7 +138,8 @@ int main(int argc, char *argv[])
 
     if (std::cin.fail())
     {
-        std::cerr << "Error: could not read epsilon, beta or gamma from stdin\n";
+        std::cerr <<
+            "Error: could not read epsilon, beta or gamma from stdin\n";
         return 1;
     }
 
@@ -150,16 +151,19 @@ int main(int argc, char *argv[])
 
     if (datafile.fail())
     {
-        std::cerr << "Error: could not read data from " << argv[4] << std::endl;
+        std::cerr << "Error: could not read data from " << argv[4]
+            << std::endl;
         return 1;
     }
 
     // Seed random number generator
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned seed =
+        std::chrono::system_clock::now().time_since_epoch().count();
     generator.seed(seed);
 
     // Run simulation
-    std::vector<int> S_sim = run_SIS_simulation(beta, gamma, S0, I0, tend, Nobs);
+    std::vector<int> S_sim = run_SIS_simulation(beta, gamma, S0, I0, tend,
+            Nobs);
 
     // Compute distance
     double dist = distance(S_obs, S_sim);

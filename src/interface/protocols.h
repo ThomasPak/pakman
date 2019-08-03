@@ -148,8 +148,8 @@ double get_prior_pdf(const Command& prior_pdf, Parameter parameter);
  * @return perturbation kernel probability densities for perturbed parameter
  * and parameter population.
  */
-std::vector<double> get_perturbation_pdf(const Command& perturbation_pdf, int t, const
-        Parameter& perturbed_parameter, const std::vector<Parameter>&
-        parameter_population);
+std::vector<double> get_perturbation_pdf(const Command& perturbation_pdf,
+        int t, const Parameter& perturbed_parameter,
+        const std::vector<Parameter>& parameter_population);
 
 #endif // PROTOCOLS_H

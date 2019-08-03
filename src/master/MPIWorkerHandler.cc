@@ -94,7 +94,8 @@ void MPIWorkerHandler::terminateStatic()
 
     // Else, send termination signal to Worker
     int signal = TERMINATE_WORKER_SIGNAL;
-    MPI_Send(&signal, 1, MPI_INT, WORKER_RANK, MANAGER_SIGNAL_TAG, m_child_comm);
+    MPI_Send(&signal, 1, MPI_INT, WORKER_RANK, MANAGER_SIGNAL_TAG,
+            m_child_comm);
 
     // Free communicator
     MPI_Comm_disconnect(&m_child_comm);

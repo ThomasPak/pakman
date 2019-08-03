@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
     if (argc != 3)
     {
         std::cerr << "Usage: " << argv[0] << " STDEV1 STDEV2\n"
-            "Return probability densities of joint normal distributions centered \n"
+            "Return probability densities of "
+            "joint normal distributions centered \n"
             "on given parameters for the perturbed parameter \n"
             "and with standard deviations STDEV1 and STDEV2\n";
         return 1;

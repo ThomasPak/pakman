@@ -18,7 +18,8 @@ int main(int argc, char *argv[])
 
     if (tcycle_high <= tcycle_low)
     {
-        std::cerr << "Error: TCYCLE_LOW must be strictly less than TCYCLE_HIGH\n";
+        std::cerr <<
+            "Error: TCYCLE_LOW must be strictly less than TCYCLE_HIGH\n";
         return 1;
     }
 

@@ -62,7 +62,8 @@ ABCRejectionController* ABCRejectionController::makeController(
 }
 
 // Construct Input from Arguments object
-ABCRejectionController::Input ABCRejectionController::Input::makeInput(const Arguments& args)
+ABCRejectionController::Input ABCRejectionController::Input::makeInput(
+        const Arguments& args)
 {
     // Initialize input
     Input input_obj;

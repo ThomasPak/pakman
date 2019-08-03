@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
     double stdev = std::stod(argv[1]);
 
     // Seed random number generator
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned seed =
+        std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
 
     // Read generation t and parameter from stdin

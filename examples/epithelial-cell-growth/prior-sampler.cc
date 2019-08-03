@@ -18,11 +18,13 @@ int main(int argc, char *argv[])
     double tcycle_high = std::stod(argv[2]);
 
     // Seed random number generator
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned seed =
+        std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
 
     // Sample from uniform distribution
-    std::uniform_real_distribution<double> distribution(tcycle_low, tcycle_high);
+    std::uniform_real_distribution<double> distribution(tcycle_low,
+            tcycle_high);
     double tcycle_sampled = distribution(generator);
 
     // Print sampled parameter

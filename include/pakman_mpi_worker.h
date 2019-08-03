@@ -134,7 +134,8 @@ void pakman_send_message(MPI_Comm comm, const char *message)
 void pakman_send_error_code(MPI_Comm comm, int error_code)
 {
     /* Send error_code */
-    MPI_Send(&error_code, 1, MPI_INT, PAKMAN_ROOT, PAKMAN_WORKER_ERROR_CODE_TAG, comm);
+    MPI_Send(&error_code, 1, MPI_INT, PAKMAN_ROOT,
+            PAKMAN_WORKER_ERROR_CODE_TAG, comm);
 }
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
@@ -150,7 +151,8 @@ int pakman_run_mpi_worker(
     /* Check if I was spawned */
     if (parent_comm == MPI_COMM_NULL)
     {
-        fputs("Pakman Worker error: MPI Worker was not spawned, exiting...\n", stderr);
+        fputs("Pakman Worker error: MPI Worker was not spawned, exiting...\n",
+                stderr);
         return PAKMAN_EXIT_FAILURE;
     }
 

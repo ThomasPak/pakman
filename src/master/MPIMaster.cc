@@ -183,9 +183,11 @@ void MPIMaster::doFlushingStuff()
         // Debug info
         if (spdlog::get(program_name)->level() <= spdlog::level::debug)
         {
-            spdlog::debug("MPIMaster::doFlushingStuff: transition to normal state!");
+            spdlog::debug("MPIMaster::doFlushingStuff: "
+                    "transition to normal state!");
             spdlog::debug("Idle managers:");
-            for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+            for (auto it = m_idle_managers.begin();
+                    it != m_idle_managers.end(); it++)
                 spdlog::debug("{}", *it);
             spdlog::debug("-- END --");
         }
@@ -250,8 +252,8 @@ void MPIMaster::listenToManagers()
         int error_code = receiveErrorCode(manager_rank);
 
         // Record output string
-        m_map_manager_to_task[manager_rank]->recordOutputAndErrorCode(output_string,
-                error_code);
+        m_map_manager_to_task[manager_rank]->recordOutputAndErrorCode(
+                output_string, error_code);
 
         // Mark manager as idle
         m_idle_managers.insert(manager_rank);
@@ -296,7 +298,8 @@ void MPIMaster::delegateToManagers()
     {
         spdlog::debug("MPIMaster::delegateToManagers: entered!");
         spdlog::debug("Idle managers:");
-        for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+        for (auto it = m_idle_managers.begin();
+                it != m_idle_managers.end(); it++)
             spdlog::debug("{}", *it);
         spdlog::debug("-- END --");
     }
@@ -337,7 +340,8 @@ void MPIMaster::delegateToManagers()
     {
         spdlog::debug("MPIMaster::delegateToManagers: exiting");
         spdlog::debug("Idle managers:");
-        for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+        for (auto it = m_idle_managers.begin();
+                it != m_idle_managers.end(); it++)
             spdlog::debug("{}", *it);
         spdlog::debug("-- END --");
     }
@@ -431,7 +435,8 @@ int MPIMaster::receiveSignal(int manager_rank) const
 // Receive error code from Manager
 int MPIMaster::receiveErrorCode(int manager_rank) const
 {
-    return receive_integer(MPI_COMM_WORLD, manager_rank, MANAGER_ERROR_CODE_TAG);
+    return receive_integer(MPI_COMM_WORLD, manager_rank,
+            MANAGER_ERROR_CODE_TAG);
 }
 
 // Send message to a Manager
@@ -440,10 +445,12 @@ void MPIMaster::sendMessageToManager(int manager_rank,
 {
     if (spdlog::get(program_name)->level() <= spdlog::level::debug)
     {
-        spdlog::debug("MPIMaster::sendMessageToManager: sending to manager_rank {}",
+        spdlog::debug("MPIMaster::sendMessageToManager: "
+                "sending to manager_rank {}",
                 " and message:\n{}", manager_rank, message_string);
         spdlog::debug("Idle managers:");
-        for (auto it = m_idle_managers.begin(); it != m_idle_managers.end(); it++)
+        for (auto it = m_idle_managers.begin();
+                it != m_idle_managers.end(); it++)
             spdlog::debug("{}", *it);
         spdlog::debug("-- END --");
     }

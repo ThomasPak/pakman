@@ -6,10 +6,13 @@ int main(int argc, char *argv[])
     // Process arguments
     if (argc != 5)
     {
-        std::cerr << "Usage: " << argv[0] << " BETA_LOW BETA_HIGH GAMMA_LOW GAMMA_HIGH\n"
+        std::cerr << "Usage: " << argv[0] <<
+            " BETA_LOW BETA_HIGH GAMMA_LOW GAMMA_HIGH\n"
             "Return probability density of prior distribution with\n"
-            "uniformly distributed beta with lower bound BETA_LOW and upper BETA_HIGH,\n"
-            "and uniformly distributed gamma with lower bound GAMMA_LOW and upper GAMMA_HIGH,\n"
+            "uniformly distributed beta with lower bound "
+            "BETA_LOW and upper BETA_HIGH,\n"
+            "and uniformly distributed gamma with "
+            "lower bound GAMMA_LOW and upper GAMMA_HIGH,\n"
             "for given parameter\n";
         return 1;
     }
@@ -27,7 +30,8 @@ int main(int argc, char *argv[])
 
     if (gamma_high <= gamma_low)
     {
-        std::cerr << "Error: GAMMA_LOW must be strictly less than GAMMA_HIGH\n";
+        std::cerr <<
+            "Error: GAMMA_LOW must be strictly less than GAMMA_HIGH\n";
         return 1;
     }
 

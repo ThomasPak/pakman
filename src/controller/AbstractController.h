@@ -76,8 +76,8 @@ class AbstractController
 
         /** Return help message based on Controller type.
          *
-         * When subclassing AbstractController, be sure to include a static method
-         * with the signature
+         * When subclassing AbstractController, be sure to include a static
+         * method with the signature
          *
          * ```
          * static std::string help()

@@ -104,7 +104,8 @@ ABCSMCController* ABCSMCController::makeController(const Arguments& args)
 }
 
 // Construct Input from Arguments object
-ABCSMCController::Input ABCSMCController::Input::makeInput(const Arguments& args)
+ABCSMCController::Input ABCSMCController::Input::makeInput(
+        const Arguments& args)
 {
     // Initialize input
     Input input_obj;

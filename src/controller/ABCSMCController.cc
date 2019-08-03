@@ -126,8 +126,8 @@ void ABCSMCController::iterate()
     {
         // Print message
         spdlog::info("Accepted/simulated: {}/{} ({:5.2f}%)",
-                m_population_size, m_number_simulated, (100.0 * m_population_size /
-                    (double) m_number_simulated));
+                m_population_size, m_number_simulated,
+                (100.0 * m_population_size / (double) m_number_simulated));
         m_number_simulated = 0;
 
         // Increment generation counter
@@ -137,7 +137,8 @@ void ABCSMCController::iterate()
         if (m_t == m_epsilons.size())
         {
             // Print accepted parameters
-            write_parameters(std::cout, m_parameter_names, m_prmtr_accepted_new);
+            write_parameters(std::cout, m_parameter_names,
+                    m_prmtr_accepted_new);
 
             // Terminate Master
             m_p_master->terminate();
@@ -207,7 +208,8 @@ Parameter ABCSMCController::sampleParameter()
     do
     {
         // Sample parameter population
-        int idx = sample_population(m_weights_cumsum, m_distribution, *m_p_generator);
+        int idx = sample_population(m_weights_cumsum, m_distribution,
+                *m_p_generator);
         Parameter source_parameter = m_prmtr_accepted_old[idx];
 
         // Perturb parameter

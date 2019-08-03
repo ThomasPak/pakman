@@ -16,13 +16,13 @@ class Arguments;
 
 /** A Controller class implementing the ABC SMC algorithm.
  *
- * The ABCSMCController class implements the ABC SMC algorithm, which is detailed
- * in the following paper:
+ * The ABCSMCController class implements the ABC SMC algorithm, which is
+ * detailed in the following paper:
  *
- * > Toni, Tina, David Welch, Natalja Strelkowa, Andreas Ipsen, and Michael P.H.
- * > Stumpf. 2009.  “Approximate Bayesian computation scheme for parameter
- * > inference and model selection in dynamical systems.” J. R. Soc. Interface 6
- * > (31): 187–202. doi:10.1098/rsif.2008.0172.
+ * > Toni, Tina, David Welch, Natalja Strelkowa, Andreas Ipsen, and Michael
+ * P.H.  > Stumpf. 2009.  “Approximate Bayesian computation scheme for
+ * parameter > inference and model selection in dynamical systems.” J. R. Soc.
+ * Interface 6 > (31): 187–202. doi:10.1098/rsif.2008.0172.
  *
  * For instructions on how to use Pakman with the ABC SMC controller, execute
  * the following command

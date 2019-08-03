@@ -48,12 +48,14 @@ int main(int argc, char *argv[])
 
     if (datafile.fail())
     {
-        std::cerr << "Error: could not read data from " << argv[1] << std::endl;
+        std::cerr << "Error: could not read data from " << argv[1]
+            << std::endl;
         return 1;
     }
 
     // Seed random number generator
-    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    unsigned seed =
+        std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
 
     // Run simulation

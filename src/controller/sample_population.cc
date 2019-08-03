@@ -4,7 +4,8 @@
 
 #include "sample_population.h"
 
-void cumsum(const std::vector<double>& array, std::vector<double>& cumsum_array)
+void cumsum(const std::vector<double>& array,
+        std::vector<double>& cumsum_array)
 {
 
     double sum = 0.0;

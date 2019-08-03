@@ -77,10 +77,10 @@
  * to use it directly with MPIMaster.  This is because an MPI program forking
  * another MPI program is not supported.  For this reason, we have implemented
  * a separate communication protocol for MPI simulators.  See [this wiki
- * page](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth)
- * for an example of an MPI simulator and see
- * @ref mpi-simulator "this documentation page" for instructions on how to
- * implement an MPI simulator.
+ * page](
+ * https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth)
+ * for an example of an MPI simulator and see @ref mpi-simulator "this
+ * documentation page" for instructions on how to implement an MPI simulator.
  *
  * If you wish to implement an ABC algorithm that is currently not part of
  * Pakman, please see @ref controller "this link" on how to write a new
@@ -103,21 +103,21 @@
  * allows you to spawn a new MPI process and provides an MPI communicator to
  * communicate with the child MPI process after it has been created.
  *
- * However, in order to maintain portability, spawned MPI processes have certain
- * limitations when it comes to process control.  Firstly, there is no way to
- * force the termination of a process spawned using `MPI_Comm_spawn`.  When using
- * a "standard" (i.e.\ a forked) simulator, Pakman can send system signals to
- * terminate Workers before they have finished their simulations, for example
- * when an ABC SMC generation has finished, or the requisite number of
- * parameters have been accepted in ABC rejection.  This is not possible for
+ * However, in order to maintain portability, spawned MPI processes have
+ * certain limitations when it comes to process control.  Firstly, there is no
+ * way to force the termination of a process spawned using `MPI_Comm_spawn`.
+ * When using a "standard" (i.e.\ a forked) simulator, Pakman can send system
+ * signals to terminate Workers before they have finished their simulations,
+ * for example when an ABC SMC generation has finished, or the requisite number
+ * of parameters have been accepted in ABC rejection.  This is not possible for
  * spawned MPI processes however, so Pakman has no choice but to wait for the
  * simulation to finish.
  *
- * Secondly, it is impossible to discard the standard error of a process created
- * using `MPI_Comm_spawn`, so the flag `--discard-child-stderr` does not have any
- * effect.  Thirdly, spawned MPI programs should not be wrapped in a shell
- * script because this is not defined by the MPI standard (even though some MPI
- * libraries may support this).
+ * Secondly, it is impossible to discard the standard error of a process
+ * created using `MPI_Comm_spawn`, so the flag `--discard-child-stderr` does
+ * not have any effect.  Thirdly, spawned MPI programs should not be wrapped in
+ * a shell script because this is not defined by the MPI standard (even though
+ * some MPI libraries may support this).
  *
  * Most importantly, using an MPI-based simulator with Pakman breaks Pakman's
  * modular framework because now the communication between Pakman and the
@@ -135,7 +135,8 @@
  *
  * @note When using Pakman with an MPI simulator, you must use the flag
  * `--mpi-simulator` so that Pakman is aware of this.  See [this wiki
- * page](https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth)
+ * page](
+ * https://github.com/ThomasPak/pakman/wiki/Example:-epithelial-cell-growth)
  * for an example.
  *
  * # C: pakman_mpi_worker.h
@@ -153,8 +154,8 @@
  * (which contains a tolerance and a parameter), run a simulation, compare the
  * simulated data to the observed data and return an output string (containing
  * either `accept` or `reject`).  Moreover, the return value is considered the
- * "exit code" of the simulation; a nonzero return value indicates that an error
- * has occurred during the simulation.
+ * "exit code" of the simulation; a nonzero return value indicates that an
+ * error has occurred during the simulation.
  *
  * After defining this function, it should be passed on as a function pointer
  * to the function pakman_run_mpi_worker(), defined in pakman_mpi_worker.h with
@@ -197,8 +198,9 @@
  * }
  * ```
  *
- * Note that the user still needs to call `MPI_Init` and `MPI_Finalize`, otherwise
- * the MPI Worker will attempt to call MPI functions without initializing MPI.
+ * Note that the user still needs to call `MPI_Init` and `MPI_Finalize`,
+ * otherwise the MPI Worker will attempt to call MPI functions without
+ * initializing MPI.
  *
  * When Pakman is invoked with an MPI simulator, it will spawn the MPI Worker
  * once and repeatedly execute the simulator function to run simulations.  When
