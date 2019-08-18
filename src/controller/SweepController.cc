@@ -82,7 +82,7 @@ void SweepController::iterate()
     if (m_num_finished == m_prmtr_list.size())
     {
         // Print finished parameters
-        write_parameters(std::cout, m_parameter_names, m_prmtr_list);
+        write_parameters(*p_output_stream, m_parameter_names, m_prmtr_list);
 
         // Terminate Master
         m_p_master->terminate();

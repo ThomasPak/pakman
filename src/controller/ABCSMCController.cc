@@ -137,7 +137,7 @@ void ABCSMCController::iterate()
         if (m_t == m_epsilons.size())
         {
             // Print accepted parameters
-            write_parameters(std::cout, m_parameter_names,
+            write_parameters(*p_output_stream, m_parameter_names,
                     m_prmtr_accepted_new);
 
             // Terminate Master

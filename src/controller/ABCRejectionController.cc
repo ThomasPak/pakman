@@ -84,7 +84,7 @@ void ABCRejectionController::iterate()
                     (double) m_number_simulated));
 
         // Print accepted parameters
-        write_parameters(std::cout, m_parameter_names, m_prmtr_accepted);
+        write_parameters(*p_output_stream, m_parameter_names, m_prmtr_accepted);
 
         // Terminate Master
         m_p_master->terminate();

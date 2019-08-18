@@ -25,6 +25,7 @@ std::string general_options()
   -d, --discard-child-stderr    discard stderr from child processes
   -v, --verbosity=level         set verbosity level to debug/info/off
                                 (default info)
+  -o, --output-file             set output file (default stdout)
 )";
 }
 

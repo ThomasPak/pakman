@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <exception>
 #include <chrono>
 
@@ -29,6 +30,9 @@ bool discard_child_stderr = false;
 
 bool program_terminated = false;
 
+std::ostream *p_output_stream = &std::cout;
+bool is_output_stream_allocated = false;
+
 // Is help flag
 bool is_help_flag(const std::string& flag)
 {
@@ -42,6 +46,7 @@ void add_general_long_options(LongOptions& lopts)
     lopts.add({"ignore-errors", no_argument, nullptr, 'i'});
     lopts.add({"discard-child-stderr", no_argument, nullptr, 'd'});
     lopts.add({"verbosity", required_argument, nullptr, 'v'});
+    lopts.add({"output-file", required_argument, nullptr, 'o'});
 }
 
 // Process general options
@@ -69,6 +74,14 @@ void process_general_options(master_t master, controller_t controller,
             spdlog::set_level(spdlog::level::off);
         else
             help(master, controller, EXIT_FAILURE);
+    }
+
+    if (args.isOptionalArgumentSet("output-file"))
+    {
+        std::string filename = args.optionalArgument("output-file");
+
+        p_output_stream = new std::ofstream(filename);
+        is_output_stream_allocated = true;
     }
 }
 
@@ -161,9 +174,15 @@ int main(int argc, char *argv[])
         // Clean up
         AbstractMaster::cleanup(master);
 
+        if (is_output_stream_allocated)
+            delete p_output_stream;
+
         // Return nonzero exit code
         return EXIT_FAILURE;
     }
+
+    if (is_output_stream_allocated)
+        delete p_output_stream;
 
     // Exit
     return 0;
