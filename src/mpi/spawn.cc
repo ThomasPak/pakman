@@ -41,8 +41,8 @@ MPI_Comm spawn_worker(const Command& cmd)
     MPI_Info info;
     MPI_Info_create(&info);
 
-    // Ensure process is spawned on same node if force_host_spawn is set
-    if (force_host_spawn)
+    // Ensure process is spawned on same node if g_force_host_spawn is set
+    if (g_force_host_spawn)
     {
         struct utsname buf;
         uname(&buf);

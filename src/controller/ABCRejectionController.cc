@@ -63,8 +63,8 @@ void ABCRejectionController::iterate()
                 m_prmtr_accepted.push_back(std::move(raw_parameter));
             }
         }
-        // If error occurred, check if ignore_errors is set
-        else if (!ignore_errors)
+        // If error occurred, check if g_ignore_errors is set
+        else if (!g_ignore_errors)
         {
             std::runtime_error e("Task finished with error!");
             throw e;
@@ -84,7 +84,7 @@ void ABCRejectionController::iterate()
                     (double) m_number_simulated));
 
         // Print accepted parameters
-        write_parameters(*p_output_stream, m_parameter_names, m_prmtr_accepted);
+        write_parameters(*g_p_output_stream, m_parameter_names, m_prmtr_accepted);
 
         // Terminate Master
         m_p_master->terminate();

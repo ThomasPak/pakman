@@ -56,8 +56,8 @@ void ForkedWorkerHandler::terminate()
         throw e;
     }
 
-    // Sleep for KILL_TIMEOUT
-    std::this_thread::sleep_for(KILL_TIMEOUT);
+    // Sleep for g_kill_timeout
+    std::this_thread::sleep_for(g_kill_timeout);
 
     // If simulation has finished, mark by setting m_child_pid to zero
     if ( waitpid_success(m_child_pid, WNOHANG, m_simulator, ignore_error) )

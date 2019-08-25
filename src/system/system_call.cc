@@ -191,7 +191,7 @@ std::string system_call(const Command& cmd)
         close_check(pipefd[WRITE_END]);
 
         // Suppress stderr of child process
-        if (discard_child_stderr)
+        if (g_discard_child_stderr)
         {
             int devnull = open("/dev/null", O_WRONLY);
             dup2_check(devnull, STDERR_FILENO);
@@ -289,7 +289,7 @@ std::string system_call(const Command& cmd, const std::string& input)
         close_check(recv_pipefd[WRITE_END]);
 
         // Suppress stderr of child process
-        if (discard_child_stderr)
+        if (g_discard_child_stderr)
         {
             int devnull = open("/dev/null", O_WRONLY);
             dup2_check(devnull, STDERR_FILENO);
@@ -389,7 +389,7 @@ std::pair<std::string, int> system_call_error_code(const Command& cmd,
         close_check(recv_pipefd[WRITE_END]);
 
         // Suppress stderr of child process
-        if (discard_child_stderr)
+        if (g_discard_child_stderr)
         {
             int devnull = open("/dev/null", O_WRONLY);
             dup2_check(devnull, STDERR_FILENO);
@@ -483,7 +483,7 @@ std::tuple<pid_t, int, int> system_call_non_blocking_read_write(
         close_check(recv_pipefd[WRITE_END]);
 
         // Suppress stderr of child process
-        if (discard_child_stderr)
+        if (g_discard_child_stderr)
         {
             int devnull = open("/dev/null", O_WRONLY);
             dup2_check(devnull, STDERR_FILENO);

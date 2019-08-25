@@ -91,7 +91,7 @@ ABCRejectionController::Input ABCRejectionController::Input::makeInput(
         error_msg += e.what();
         error_msg += '\n';
         error_msg += "One or more arguments missing or incorrect, try '";
-        error_msg += program_name;
+        error_msg += g_program_name;
         error_msg += " rejection --help' for more info";
         throw std::runtime_error(error_msg);
     }
@@ -102,7 +102,7 @@ ABCRejectionController::Input ABCRejectionController::Input::makeInput(
         error_msg += e.what();
         error_msg += '\n';
         error_msg += "One or more arguments missing or incorrect, try '";
-        error_msg += program_name;
+        error_msg += g_program_name;
         error_msg += " rejection --help' for more info";
         throw std::runtime_error(error_msg);
     }

@@ -10,7 +10,7 @@ std::string usage()
 {
     std::string usage_string;
     usage_string += "Usage: ";
-    usage_string += program_name;
+    usage_string += g_program_name;
     usage_string += " <master> <controller>";
     usage_string += " <required args>... [optional args]...";
     usage_string += "\n";
@@ -44,16 +44,16 @@ void overview(int status)
 R"(Available masters:
   serial        run at most one simulation overall
   mpi           run at most one simulation per launched MPI process
-See ')" << program_name << R"( <master> --help' for more info.
+See ')" << g_program_name << R"( <master> --help' for more info.
 
 Available controllers:
   sweep         run a parameter sweep
   rejection     run the ABC rejection algorithm
   smc           run the ABC SMC algorithm
-See ')" << program_name << R"( <controller> --help' for more info.
+See ')" << g_program_name << R"( <controller> --help' for more info.
 
 Alternatively, see ')" <<
-program_name << R"( <master> <controller> --help' for more info
+g_program_name << R"( <master> <controller> --help' for more info
 on both <master> and <controller>.
 )";
 

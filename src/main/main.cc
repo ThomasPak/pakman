@@ -18,19 +18,19 @@
 #include "controller/AbstractController.h"
 
 // Program name
-const char *program_name;
+const char *g_program_name;
 
 // Global variables
-std::chrono::milliseconds MAIN_TIMEOUT(1);
-std::chrono::milliseconds KILL_TIMEOUT(100);
+std::chrono::milliseconds g_main_timeout(1);
+std::chrono::milliseconds g_kill_timeout(100);
 
-bool ignore_errors = false;
-bool force_host_spawn = false;
-bool discard_child_stderr = false;
+bool g_ignore_errors = false;
+bool g_force_host_spawn = false;
+bool g_discard_child_stderr = false;
 
-bool program_terminated = false;
+bool g_program_terminated = false;
 
-std::ostream *p_output_stream = &std::cout;
+std::ostream *g_p_output_stream = &std::cout;
 bool is_output_stream_allocated = false;
 
 // Is help flag
@@ -57,10 +57,10 @@ void process_general_options(master_t master, controller_t controller,
         help(master, controller, EXIT_SUCCESS);
 
     if (args.isOptionalArgumentSet("ignore-errors"))
-        ignore_errors = true;
+        g_ignore_errors = true;
 
     if (args.isOptionalArgumentSet("discard-child-stderr"))
-        discard_child_stderr = true;
+        g_discard_child_stderr = true;
 
     if (args.isOptionalArgumentSet("verbosity"))
     {
@@ -80,18 +80,18 @@ void process_general_options(master_t master, controller_t controller,
     {
         std::string filename = args.optionalArgument("output-file");
 
-        p_output_stream = new std::ofstream(filename);
+        g_p_output_stream = new std::ofstream(filename);
         is_output_stream_allocated = true;
     }
 }
 
 int main(int argc, char *argv[])
 {
-    // Set program_name
-    program_name = basename(argv[0]);
+    // Set g_program_name
+    g_program_name = basename(argv[0]);
 
     // Set logger
-    auto stderr_console = spdlog::stderr_color_st(program_name);
+    auto stderr_console = spdlog::stderr_color_st(g_program_name);
     spdlog::set_default_logger(stderr_console);
     spdlog::set_level(spdlog::level::info);
 
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
         // Print error message
         std::string error_msg;
         error_msg += "An exception occurred while running ";
-        error_msg += program_name;
+        error_msg += g_program_name;
         error_msg += "!\n";
         error_msg += "  what(): ";
         error_msg += e.what();
@@ -175,14 +175,14 @@ int main(int argc, char *argv[])
         AbstractMaster::cleanup(master);
 
         if (is_output_stream_allocated)
-            delete p_output_stream;
+            delete g_p_output_stream;
 
         // Return nonzero exit code
         return EXIT_FAILURE;
     }
 
     if (is_output_stream_allocated)
-        delete p_output_stream;
+        delete g_p_output_stream;
 
     // Exit
     return 0;

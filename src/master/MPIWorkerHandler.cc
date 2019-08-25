@@ -69,7 +69,7 @@ void MPIWorkerHandler::discardResults()
     {
         // Timeout if message is not ready yet
         while (!iprobe_wrapper(WORKER_RANK, WORKER_MSG_TAG, s_child_comm))
-            std::this_thread::sleep_for(MAIN_TIMEOUT);
+            std::this_thread::sleep_for(g_main_timeout);
 
         // Receive message
         receiveMessage();

@@ -67,7 +67,7 @@ void SweepController::iterate()
 
         // Throw error if task finished with error and we are not ignoring
         // task errors
-        if (!ignore_errors && task.didErrorOccur())
+        if (!g_ignore_errors && task.didErrorOccur())
         {
             std::runtime_error e("Task finished with error!");
             throw e;
@@ -82,7 +82,7 @@ void SweepController::iterate()
     if (m_num_finished == m_prmtr_list.size())
     {
         // Print finished parameters
-        write_parameters(*p_output_stream, m_parameter_names, m_prmtr_list);
+        write_parameters(*g_p_output_stream, m_parameter_names, m_prmtr_list);
 
         // Terminate Master
         m_p_master->terminate();

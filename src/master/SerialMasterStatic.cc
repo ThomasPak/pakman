@@ -44,7 +44,7 @@ void SerialMaster::run(controller_t controller, const Arguments& args)
 
     auto p_master =
         std::make_shared<SerialMaster>(p_controller->getSimulator(),
-                &program_terminated);
+                &g_program_terminated);
 
     // Associate with each other
     p_master->assignController(p_controller);

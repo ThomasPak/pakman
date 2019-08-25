@@ -94,8 +94,8 @@ void ABCSMCController::iterate()
                 m_prior_pdf_accepted.push_back(m_prior_pdf_pending.front());
             }
         }
-        // If error occurred, check if ignore_errors is set
-        else if (!ignore_errors)
+        // If error occurred, check if g_ignore_errors is set
+        else if (!g_ignore_errors)
         {
             std::runtime_error e("Task finished with error!");
             throw e;
@@ -137,7 +137,7 @@ void ABCSMCController::iterate()
         if (m_t == m_epsilons.size())
         {
             // Print accepted parameters
-            write_parameters(*p_output_stream, m_parameter_names,
+            write_parameters(*g_p_output_stream, m_parameter_names,
                     m_prmtr_accepted_new);
 
             // Terminate Master

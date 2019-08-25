@@ -9,7 +9,7 @@ void set_terminate_flag(int signal)
     {
         case SIGINT:
         case SIGTERM:
-            program_terminated = true;
+            g_program_terminated = true;
             break;
     }
 }

@@ -142,7 +142,7 @@ ABCSMCController::Input ABCSMCController::Input::makeInput(
         error_msg += e.what();
         error_msg += '\n';
         error_msg += "One or more arguments missing or incorrect, try '";
-        error_msg += program_name;
+        error_msg += g_program_name;
         error_msg += " smc --help' for more info";
         throw std::runtime_error(error_msg);
     }
@@ -153,7 +153,7 @@ ABCSMCController::Input ABCSMCController::Input::makeInput(
         error_msg += e.what();
         error_msg += '\n';
         error_msg += "One or more arguments missing or incorrect, try '";
-        error_msg += program_name;
+        error_msg += g_program_name;
         error_msg += " smc --help' for more info";
         throw std::runtime_error(error_msg);
     }

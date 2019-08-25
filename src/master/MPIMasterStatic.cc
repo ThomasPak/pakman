@@ -99,13 +99,13 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
     if (args.isOptionalArgumentSet("main-timeout"))
     {
         std::string&& arg = args.optionalArgument("main-timeout");
-        MAIN_TIMEOUT = std::chrono::milliseconds(std::stoi(arg));
+        g_main_timeout = std::chrono::milliseconds(std::stoi(arg));
     }
 
     if (args.isOptionalArgumentSet("kill-timeout"))
     {
         std::string&& arg = args.optionalArgument("kill-timeout");
-        KILL_TIMEOUT = std::chrono::milliseconds(std::stoi(arg));
+        g_kill_timeout = std::chrono::milliseconds(std::stoi(arg));
     }
 
     if (args.isOptionalArgumentSet("mpi-simulator"))
@@ -113,7 +113,7 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
         mpi_simulator = true;
 
         if (args.isOptionalArgumentSet("force-host-spawn"))
-            force_host_spawn = true;
+            g_force_host_spawn = true;
     }
     else if (args.isOptionalArgumentSet("force-host-spawn"))
     {
@@ -142,12 +142,12 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
 
     // Create Manager object
     auto p_manager = std::make_shared<Manager>(p_controller->getSimulator(),
-            worker_type, &program_terminated);
+            worker_type, &g_program_terminated);
 
     if (rank == 0)
     {
         // Create MPI master
-        auto p_master = std::make_shared<MPIMaster>(&program_terminated);
+        auto p_master = std::make_shared<MPIMaster>(&g_program_terminated);
 
         // Associate with each other
         p_master->assignController(p_controller);
@@ -162,7 +162,7 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
             if (p_manager->isActive())
                 p_manager->iterate();
 
-            std::this_thread::sleep_for(MAIN_TIMEOUT);
+            std::this_thread::sleep_for(g_main_timeout);
         }
     }
     else
@@ -172,7 +172,7 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
         {
             p_manager->iterate();
 
-            std::this_thread::sleep_for(MAIN_TIMEOUT);
+            std::this_thread::sleep_for(g_main_timeout);
         }
     }
 

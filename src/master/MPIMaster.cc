@@ -181,7 +181,7 @@ void MPIMaster::doFlushingStuff()
     if (m_idle_managers.size() == m_comm_size)
     {
         // Debug info
-        if (spdlog::get(program_name)->level() <= spdlog::level::debug)
+        if (spdlog::get(g_program_name)->level() <= spdlog::level::debug)
         {
             spdlog::debug("MPIMaster::doFlushingStuff: "
                     "transition to normal state!");
@@ -294,7 +294,7 @@ void MPIMaster::popBusyQueue()
 // Delegate to Managers
 void MPIMaster::delegateToManagers()
 {
-    if (spdlog::get(program_name)->level() <= spdlog::level::debug)
+    if (spdlog::get(g_program_name)->level() <= spdlog::level::debug)
     {
         spdlog::debug("MPIMaster::delegateToManagers: entered!");
         spdlog::debug("Idle managers:");
@@ -336,7 +336,7 @@ void MPIMaster::delegateToManagers()
     // Mark Managers as busy
     m_idle_managers.erase(m_idle_managers.begin(), it);
 
-    if (spdlog::get(program_name)->level() <= spdlog::level::debug)
+    if (spdlog::get(g_program_name)->level() <= spdlog::level::debug)
     {
         spdlog::debug("MPIMaster::delegateToManagers: exiting");
         spdlog::debug("Idle managers:");
@@ -443,7 +443,7 @@ int MPIMaster::receiveErrorCode(int manager_rank) const
 void MPIMaster::sendMessageToManager(int manager_rank,
         const std::string& message_string)
 {
-    if (spdlog::get(program_name)->level() <= spdlog::level::debug)
+    if (spdlog::get(g_program_name)->level() <= spdlog::level::debug)
     {
         spdlog::debug("MPIMaster::sendMessageToManager: "
                 "sending to manager_rank {}",

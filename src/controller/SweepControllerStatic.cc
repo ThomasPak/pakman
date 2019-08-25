@@ -69,7 +69,7 @@ SweepController::Input SweepController::Input::makeInput(const Arguments& args)
     {
         std::string error_msg;
         error_msg += "One or more arguments missing, try '";
-        error_msg += program_name;
+        error_msg += g_program_name;
         error_msg += " sweep --help' for more info";
         throw std::runtime_error(error_msg);
     }
