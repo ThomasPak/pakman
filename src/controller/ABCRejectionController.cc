@@ -8,6 +8,7 @@
 #include "spdlog/spdlog.h"
 
 #include "core/common.h"
+#include "core/OutputStreamHandler.h"
 #include "interface/protocols.h"
 #include "interface/output.h"
 #include "master/AbstractMaster.h"
@@ -84,7 +85,8 @@ void ABCRejectionController::iterate()
                     (double) m_number_simulated));
 
         // Print accepted parameters
-        write_parameters(*g_p_output_stream, m_parameter_names, m_prmtr_accepted);
+        write_parameters(OutputStreamHandler::instance()->getOutputStream(),
+                m_parameter_names, m_prmtr_accepted);
 
         // Terminate Master
         m_p_master->terminate();

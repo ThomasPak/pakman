@@ -10,6 +10,7 @@
 #include "spdlog/spdlog.h"
 
 #include "core/common.h"
+#include "core/OutputStreamHandler.h"
 #include "interface/protocols.h"
 #include "interface/output.h"
 #include "master/AbstractMaster.h"
@@ -137,8 +138,8 @@ void ABCSMCController::iterate()
         if (m_t == m_epsilons.size())
         {
             // Print accepted parameters
-            write_parameters(*g_p_output_stream, m_parameter_names,
-                    m_prmtr_accepted_new);
+            write_parameters(OutputStreamHandler::instance()->getOutputStream(),
+                    m_parameter_names, m_prmtr_accepted_new);
 
             // Terminate Master
             m_p_master->terminate();

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <fstream>
+#include <string>
 #include <exception>
 #include <chrono>
 
@@ -13,6 +13,7 @@
 #include "help.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
+#include "core/OutputStreamHandler.h"
 
 #include "master/AbstractMaster.h"
 #include "controller/AbstractController.h"
@@ -30,8 +31,7 @@ bool g_discard_child_stderr = false;
 
 bool g_program_terminated = false;
 
-std::ostream *g_p_output_stream = &std::cout;
-bool is_output_stream_allocated = false;
+std::string g_output_file;
 
 // Is help flag
 bool is_help_flag(const std::string& flag)
@@ -77,12 +77,7 @@ void process_general_options(master_t master, controller_t controller,
     }
 
     if (args.isOptionalArgumentSet("output-file"))
-    {
-        std::string filename = args.optionalArgument("output-file");
-
-        g_p_output_stream = new std::ofstream(filename);
-        is_output_stream_allocated = true;
-    }
+        g_output_file = args.optionalArgument("output-file");
 }
 
 int main(int argc, char *argv[])
@@ -173,16 +168,14 @@ int main(int argc, char *argv[])
 
         // Clean up
         AbstractMaster::cleanup(master);
-
-        if (is_output_stream_allocated)
-            delete g_p_output_stream;
+        OutputStreamHandler::destroy();
 
         // Return nonzero exit code
         return EXIT_FAILURE;
     }
 
-    if (is_output_stream_allocated)
-        delete g_p_output_stream;
+    // Cleanup
+    OutputStreamHandler::destroy();
 
     // Exit
     return 0;

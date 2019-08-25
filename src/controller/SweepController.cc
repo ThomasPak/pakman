@@ -6,6 +6,7 @@
 #include <assert.h>
 
 #include "core/utils.h"
+#include "core/OutputStreamHandler.h"
 #include "system/system_call.h"
 #include "interface/output.h"
 #include "interface/protocols.h"
@@ -82,7 +83,8 @@ void SweepController::iterate()
     if (m_num_finished == m_prmtr_list.size())
     {
         // Print finished parameters
-        write_parameters(*g_p_output_stream, m_parameter_names, m_prmtr_list);
+        write_parameters(OutputStreamHandler::instance()->getOutputStream(),
+                m_parameter_names, m_prmtr_list);
 
         // Terminate Master
         m_p_master->terminate();

@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <ostream>
+#include <string>
 #include <chrono>
 
 /** @file common.h
@@ -30,8 +30,8 @@ extern bool g_program_terminated;
 /** Global variable containing name of program. */
 extern const char *g_program_name;
 
-/** Global variable pointing to output stream. */
-extern std::ostream *g_p_output_stream;
+/** Global variable containing name of output file if given. */
+extern std::string g_output_file;
 
 /** Enumeration type for master type. */
 enum master_t
