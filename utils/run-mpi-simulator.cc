@@ -10,11 +10,11 @@
 #include "master/MPIWorkerHandler.h"
 
 // Program name
-const char *program_name;
+const char *g_program_name;
 
 // Global variables
-std::chrono::milliseconds MAIN_TIMEOUT(1);
-bool force_host_spawn = false;
+std::chrono::milliseconds g_main_timeout(1);
+bool g_force_host_spawn = false;
 
 // Help functions
 void help();
@@ -22,7 +22,7 @@ void help();
 int main(int argc, char *argv[])
 {
     // Set program_name
-    program_name = basename(argv[0]);
+    g_program_name = basename(argv[0]);
 
     // Check arguments
     if ((argc == 1)
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
     // Loop until MPI Worker is done
     while (!mpi_worker_handler.isDone())
-        std::this_thread::sleep_for(MAIN_TIMEOUT);
+        std::this_thread::sleep_for(g_main_timeout);
 
     // Print output string
     std::cout << mpi_worker_handler.getOutput();
@@ -85,7 +85,7 @@ void help()
 {
     std::string help_string;
     help_string += "Usage: ";
-    help_string += program_name;
+    help_string += g_program_name;
     help_string += " <mpi simulator>";
     help_string += " <mpi simulator args>...";
     help_string += "\n";
