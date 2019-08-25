@@ -85,7 +85,7 @@ class MPIWorkerHandler : public AbstractWorkerHandler
         // Intercomm with child
         // This intercommunicator is static so that it survives across multiple
         // instances of MPIWorkerHandler
-        static MPI_Comm m_child_comm;
+        static MPI_Comm s_child_comm;
 
         // Flag for receiving result
         bool m_result_received = false;
