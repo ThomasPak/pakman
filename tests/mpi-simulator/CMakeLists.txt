@@ -12,6 +12,39 @@ link_libraries (${MPI_CXX_LIBRARIES})
 add_executable (mpi-simulator mpi-simulator.c)
 add_executable (mpi-simulator-cpp mpi-simulator-cpp.cc)
 
+# Test run-mpi-simulator
+add_test (RunMPISimulatorMatch
+    bash -c
+    "printf '0\\\\n0\\\\n' | '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    '${CMAKE_CURRENT_BINARY_DIR}/mpi-simulator' somestring 0")
+
+set_property (TEST RunMPISimulatorMatch
+    PROPERTY PASS_REGULAR_EXPRESSION "somestring")
+
+add_test (RunMPISimulatorError
+    bash -c
+    "printf '0\\\\n0\\\\n' | '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    '${CMAKE_CURRENT_BINARY_DIR}/mpi-simulator' somestring 1")
+
+set_property (TEST RunMPISimulatorError
+    PROPERTY PASS_REGULAR_EXPRESSION "somestring")
+
+add_test (RunMPISimulatorMatchCpp
+    bash -c
+    "printf '0\\\\n0\\\\n' | '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    '${CMAKE_CURRENT_BINARY_DIR}/mpi-simulator-cpp' somestring 0")
+
+set_property (TEST RunMPISimulatorMatchCpp
+    PROPERTY PASS_REGULAR_EXPRESSION "somestring")
+
+add_test (RunMPISimulatorErrorCpp
+    bash -c
+    "printf '0\\\\n0\\\\n' | '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    '${CMAKE_CURRENT_BINARY_DIR}/mpi-simulator-cpp' somestring 1")
+
+set_property (TEST RunMPISimulatorErrorCpp
+    PROPERTY PASS_REGULAR_EXPRESSION "somestring")
+
 #####################
 ## Test sweep mode ##
 #####################
