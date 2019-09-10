@@ -33,10 +33,14 @@ void write_parameters(std::ostream& ostrm,
 
         std::stringstream sstrm;
 
-        for (const std::string& token : parameter_tokens)
-            sstrm << token << ",";
+        for (int i = 0; i < parameter_tokens.size(); i++)
+        {
+            sstrm << parameter_tokens[i];
 
-        sstrm.seekp(sstrm.tellp() - static_cast<std::streamoff>(1));
+            if (i < parameter_tokens.size() - 1)
+                sstrm << ',';
+        }
+
         sstrm << std::endl;
 
         ostrm << sstrm.str();
