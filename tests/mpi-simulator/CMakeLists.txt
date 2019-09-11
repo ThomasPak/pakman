@@ -15,7 +15,12 @@ add_executable (mpi-simulator-cpp mpi-simulator-cpp.cc)
 # Test run-mpi-simulator
 add_test (RunMPISimulatorMatch
     bash -c
-    "printf '0\\\\n0\\\\n' | '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    "printf 'epsilon\\\\nparameter\\\\n' > input_file.txt && \
+    ${MPIEXEC_EXECUTABLE} \
+    ${MPIEXEC_NUMPROC_FLAG} 1 \
+    ${MPIEXEC_PREFLAGS} \
+    '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    input_file.txt \
     '${CMAKE_CURRENT_BINARY_DIR}/mpi-simulator' somestring 0")
 
 set_property (TEST RunMPISimulatorMatch
@@ -23,7 +28,12 @@ set_property (TEST RunMPISimulatorMatch
 
 add_test (RunMPISimulatorError
     bash -c
-    "printf '0\\\\n0\\\\n' | '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    "printf 'epsilon\\\\nparameter\\\\n' > input_file.txt && \
+    ${MPIEXEC_EXECUTABLE} \
+    ${MPIEXEC_NUMPROC_FLAG} 1 \
+    ${MPIEXEC_PREFLAGS} \
+    '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    input_file.txt \
     '${CMAKE_CURRENT_BINARY_DIR}/mpi-simulator' somestring 1")
 
 set_property (TEST RunMPISimulatorError
@@ -31,7 +41,12 @@ set_property (TEST RunMPISimulatorError
 
 add_test (RunMPISimulatorMatchCpp
     bash -c
-    "printf '0\\\\n0\\\\n' | '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    "printf 'epsilon\\\\nparameter\\\\n' > input_file.txt && \
+    ${MPIEXEC_EXECUTABLE} \
+    ${MPIEXEC_NUMPROC_FLAG} 1 \
+    ${MPIEXEC_PREFLAGS} \
+    '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    input_file.txt \
     '${CMAKE_CURRENT_BINARY_DIR}/mpi-simulator-cpp' somestring 0")
 
 set_property (TEST RunMPISimulatorMatchCpp
@@ -39,7 +54,12 @@ set_property (TEST RunMPISimulatorMatchCpp
 
 add_test (RunMPISimulatorErrorCpp
     bash -c
-    "printf '0\\\\n0\\\\n' | '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    "printf 'epsilon\\\\nparameter\\\\n' > input_file.txt && \
+    ${MPIEXEC_EXECUTABLE} \
+    ${MPIEXEC_NUMPROC_FLAG} 1 \
+    ${MPIEXEC_PREFLAGS} \
+    '${PROJECT_BINARY_DIR}/utils/run-mpi-simulator' \
+    input_file.txt \
     '${CMAKE_CURRENT_BINARY_DIR}/mpi-simulator-cpp' somestring 1")
 
 set_property (TEST RunMPISimulatorErrorCpp
