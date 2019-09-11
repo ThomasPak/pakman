@@ -32,7 +32,12 @@ int main(int argc, char *argv[])
             || (std::string(argv[1]).compare("--help") == 0))
     {
         help();
-        return 2;
+
+        if ((std::string(argv[1]).compare("-h") == 0)
+            || (std::string(argv[1]).compare("--help") == 0))
+            return 0;
+        else
+            return 2;
     }
 
     // Initialize MPI
