@@ -33,8 +33,9 @@ int main(int argc, char *argv[])
     {
         help();
 
-        if ((std::string(argv[1]).compare("-h") == 0)
-            || (std::string(argv[1]).compare("--help") == 0))
+        if ((argc == 2) &&
+               ((std::string(argv[1]).compare("-h") == 0)
+            || (std::string(argv[1]).compare("--help") == 0)))
             return 0;
         else
             return 2;
