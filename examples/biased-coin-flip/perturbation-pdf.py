@@ -23,12 +23,13 @@ q_perturbed = float(stdin.readline())
 normal_pdf = lambda mu, x: 1.0 / sqrt(2 * pi * stdev**2) * \
         exp( - (x - mu)**2 / (2.0 * stdev**2))
 
-# Return normal_pdf for every parameter
+# Read parameters from stdin
 stderr.write("Enter parameters\n")
 q_array = []
 for line in stdin:
     q_array.append(float(line))
 
+# Return normal_pdf for every parameter
 for q in q_array:
     pdf = normal_pdf(q, q_perturbed)
     stdout.write("{}\n".format(pdf))

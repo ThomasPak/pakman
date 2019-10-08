@@ -25,7 +25,7 @@ beta_perturbed, gamma_perturbed = \
 normal_pdf = lambda mu, stdev, x: 1.0 / sqrt(2 * pi * stdev**2) * \
         exp( - (x - mu)**2 / (2.0 * stdev**2))
 
-# Return normal_pdf for every parameter
+# Read parameters from stdin
 stderr.write("Enter parameters\n")
 beta_array = []
 gamma_array = []
@@ -34,6 +34,7 @@ for line in stdin:
     beta_array.append(beta)
     gamma_array.append(gamma)
 
+# Return normal_pdf for every parameter
 for beta, gamma in zip(beta_array, gamma_array):
     pdf1 = normal_pdf(beta, stdev1, beta_perturbed)
     pdf2 = normal_pdf(gamma, stdev2, gamma_perturbed)

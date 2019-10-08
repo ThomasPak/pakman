@@ -3,9 +3,30 @@ from scipy.linalg import expm
 from scipy.integrate import quad, dblquad
 
 def evaluate_SIS_likelihood(beta, gamma, Npop, dt, y):
+    '''
+    Evaluate SIS likelihood at given parameters.
 
-    # It is assumed that the first element of y is at t = 0 and that all
-    # subsequent observations were made at times t = dt * np.arange(len(y))
+    Parameters
+    ----------
+    beta, gamma : array_like
+        The parameters for which to compute the SIS likelihood.  The arrays
+        `beta` and `gamma` must have the same shape.  If `beta` is a scalar, it
+        is converted to an array of the same shape as `gamma` and vice versa.
+    Npop : int
+        Total population size.
+    dt : scalar
+        Timestep between observed S counts.
+    y : array_like
+        Observed time series of S counts. It is assumed that the first
+        observation in y was made at t = 0 and that subsequent observations
+        were made at increments of `dt`.
+
+    Returns
+    -------
+    array_like
+        An array with the same shape as `beta` containing the likelihood
+        values for the given parameters.
+    '''
 
     if (type(beta) == float):
         beta = np.array(beta)
@@ -62,22 +83,30 @@ def evaluate_SIS_likelihood(beta, gamma, Npop, dt, y):
     # Return output with appropriate output shape
     return np.reshape(prod_array, output_shape)
 
-def evaluate_marginal_SIS_likelihood_in_beta(beta, gamma_low, gamma_high, Npop, dt, y):
-
-    # Define integrand
-    f = lambda gamma: evaluate_SIS_likelihood(beta, gamma, Npop, dt, y)
-
-    return quad(f, gamma_low, gamma_high)
-
-def evaluate_marginal_SIS_likelihood_in_gamma(beta_low, beta_high, gamma, Npop, dt, y):
-
-    # Define integrand
-    f = lambda beta: evaluate_SIS_likelihood(beta, gamma, Npop, dt, y)
-
-    return quad(f, beta_low, beta_high)
-
 def integrate_SIS_likelihood(beta_low, beta_high, gamma_low, gamma_high, Npop,
     dt, y):
+    '''
+    Integrate SIS likelihood over given range of parameters.
+
+    Parameters
+    ----------
+    beta_low, beta_high, gamma_low, gamma_high : scalar
+        The bounds of the rectangular area in parameter space over which to
+        integrate the SIS likelihood.
+    Npop : int
+        Total population size.
+    dt : scalar
+        Timestep between observed S counts.
+    y : array_like
+        Observed time series of S counts. It is assumed that the first
+        observation in y was made at t = 0 and that subsequent observations
+        were made at increments of `dt`.
+
+    Returns
+    -------
+    scalar
+        Integral of SIS likelihood for the given parameters.
+    '''
 
     # Integrand
     f = lambda beta, gamma: evaluate_SIS_likelihood(beta, gamma, Npop, dt, y)
@@ -86,6 +115,8 @@ def integrate_SIS_likelihood(beta_low, beta_high, gamma_low, gamma_high, Npop,
         gamma: beta_high, epsabs=1e-19)
 
 if __name__ == "__main__":
+
+    # Test functions when run as main
 
     # Prior domain
     beta_lim   = (0, 0.06)

@@ -21,10 +21,10 @@ ap.add_argument('-ng', '--ngamma', type=int, help=('number of gamma points compu
     'for the analytical likelihood'), default=101)
 ap.add_argument('-e', '--epsilon', type=str, help='epsilon used to generate data',
                 default=None)
-ap.add_argument('-d', '--datafile', help='file to read data from')
+ap.add_argument('-d', '--datafile', help='file to read observed data from')
 ap.add_argument('-o', '--outputfile', help='file to save figure to',
                 default = 'sis_histogram.png')
-ap.add_argument('-i', '--inputfile', help='file to read data from (default: STDIN)',
+ap.add_argument('-i', '--inputfile', help='file to read posterior samples from (default: STDIN)',
                 default = sys.stdin)
 ap.add_argument('-W', '--figwidth', type=float, help='figure width',
         default=10)
@@ -58,7 +58,7 @@ if type(inputfile) == str:
     inputfile = open(inputfile, 'r')
 header = inputfile.readline()
 
-# Process input
+# Read input
 beta_array = []
 gamma_array = []
 
@@ -70,7 +70,7 @@ for line in inputfile:
 beta_array = np.array(beta_array)
 gamma_array = np.array(gamma_array)
 
-# Read input
+# Read data
 if type(datafile) == str:
     datafile = open(datafile, 'r')
 

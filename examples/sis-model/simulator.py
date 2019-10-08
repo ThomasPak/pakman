@@ -37,7 +37,39 @@ with open(datafile, 'r') as dfile:
     for line in dfile:
         S_obs.append(int(line))
 
-def run_SIS_simulation(beta, gamma, S0, I0, tend, Nobs, tracefile):
+def run_SIS_simulation(beta, gamma, S0, I0, tend, Nobs, tracefile=None):
+    '''
+    Run Gillespie algorithm for SIS system and return time series of S.
+
+    Parameters
+    ----------
+    beta : scalar
+        Contact rate parameter.
+    gamma : scalar
+        Recovery rate parameter.
+    S0 : int
+        Initial number of susceptible people.
+    I0 : int
+        Initial number of infected people.
+    tend : scalar
+        End of simulation time.
+    Nobs : int
+        Number of observations to output.
+    tracefile : str, optional
+        Name of file to save S trace to.
+
+    Returns
+    -------
+    S_sim : numpy array of int values
+        Array containing simulated S counts at times
+        t = 0, t = dt, t = 2 * dt, ... t = tend,
+        where dt = tend / Nobs.
+
+    Notes
+    -----
+    A thorough explanation of the SIS model can be found at
+    https://github.com/ThomasPak/pakman/wiki/Example:-SIS-model.
+    '''
 
     # Initialize arrays
     t = [0.0]
@@ -106,6 +138,22 @@ def run_SIS_simulation(beta, gamma, S0, I0, tend, Nobs, tracefile):
     return S_sim
 
 def distance(S_obs, S_sim):
+    '''
+    Return square sum of squared differences between observed and simulated S
+    counts.
+
+    Parameters
+    ----------
+    S_obs : array_like
+        Time series of observed S counts.
+    S_sim : array_like
+        Time series of simulated S counts.
+
+    Returns
+    -------
+    scalar
+        Sum of squared differences.
+    '''
     return sqrt(sum((obs - sim)**2 for obs, sim in zip(S_obs, S_sim)))
 
 # Run simulation
