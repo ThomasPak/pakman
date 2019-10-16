@@ -4,7 +4,14 @@
 
 #include <math.h>
 
-// Define normal pdf
+/** Return probabilility density function of normal distribution.
+ *
+ * @param mu  mean of normal distribution.
+ * @param sigma  standard deviation of normal distribution.
+ * @param x  position to evaluate distribution on.
+ *
+ * @return probability density of normal distribution at x.
+ */
 double normal_pdf(double mu, double sigma, double x)
 {
 

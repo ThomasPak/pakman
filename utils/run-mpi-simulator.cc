@@ -11,6 +11,21 @@
 
 #include "master/MPIWorkerHandler.h"
 
+/** @file run-mpi-simulator.cc
+ *
+ * Since the communication between Pakman and MPI simulators happens through
+ * MPI functions, it is not possible to test MPI simulators directly in the
+ * terminal as it is for standard simulators.  When you attempt to run an MPI
+ * simulator in the terminal, it will simply detect that it was not spawned
+ * using MPI_Comm_spawn and terminate.
+ *
+ * This program implements the communication protocol that Pakman uses to spawn
+ * and run an MPI simulator with the input given by a file.  After running the
+ * MPI simulator, the program prints the simulator output to stdout and exit
+ * with the error code returned by the simulator.  Thus, this program is a tool
+ * that allows the user to test MPI simulators in the terminal.
+ */
+
 // Program name
 const char *g_program_name;
 
@@ -107,6 +122,7 @@ int main(int argc, char *argv[])
     return error_code;
 }
 
+/** Print out help message to stdout. */
 void help()
 {
     std::string help_string;

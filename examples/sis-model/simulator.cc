@@ -9,6 +9,21 @@
 
 std::default_random_engine generator;
 
+/** Run Gillespie algorithm for SIS system and return time series of S.
+ *
+ *  A thorough explanation of the SIS model can be found at
+ *  https://github.com/ThomasPak/pakman/wiki/Example:-SIS-model.
+ *
+ * @param beta  contact rate parameter.
+ * @param gamma  recovery rate parameter.
+ * @param S0  initial number of susceptible people.
+ * @param I0  initial number of infected people.
+ * @param tend  end of simulation time.
+ * @param Nobs  number of observations to output.
+ *
+ * @return array containing simulated S counts at times
+ *      t = 0, t = dt, t = 2 * dt, ... t = tend, where dt = tend / Nobs.
+ */
 std::vector<int> run_SIS_simulation(double beta, double gamma, int S0, int I0,
         double tend, int Nobs)
 {

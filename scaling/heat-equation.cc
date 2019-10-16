@@ -8,7 +8,16 @@ int main(int argc, char *argv[])
     if (argc != 4)
     {
         std::cerr << "Usage: " << argv[0] <<
-            " M Nx Ny\n";
+            " M Nx Ny\n"
+            "\n"
+            "Solve heat equation on the unit square for a single unit of time.\n"
+            "The initial temperature profile is set to 1 over the whole domain.\n"
+            "\n"
+            "Space is discretised using the finite difference method.\n"
+            "Time is discretised using the forward Euler method.\n"
+            "\n"
+            "The domain is discretised by a (Nx + 1)-by-(Ny + 1) grid.\n"
+            "Time is discretised into M timesteps.\n";
 
         return 2;
     }

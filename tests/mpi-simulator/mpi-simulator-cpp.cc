@@ -4,7 +4,28 @@
 
 #include "PakmanMPIWorker.hpp"
 
-// Define my_simulator
+/** @file mpi-simulator-cpp.cc
+ *
+ * This program is a dummy MPI simulator that will always return a
+ * user-specified output and error code, regardless of the input to the
+ * simulator.  If no arguments are given, the MPI simulator outputs "accept"
+ * and returns the error code 0.
+ */
+
+/** Run dummy simulation
+ *
+ * By default, this function assigns the string "accept" to output_string and
+ * returns the error code 0 (which means no error has occurred).  The output
+ * string and error code can be altered by optional arguments given through
+ * `argc` and `argv`.
+ *
+ * @param argc  number of command-line arguments.
+ * @param argv  array containing command-line arguments.
+ * @param input_string  input to simulator
+ * @param output_string  output from simulator
+ *
+ * @return error code.
+ */
 int my_simulator(int argc, char *argv[],
         const std::string& input_string, std::string& output_string)
 {
