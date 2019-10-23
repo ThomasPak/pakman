@@ -4,6 +4,7 @@ set -euo pipefail
 # Process arguments
 usage="Usage: $0 [num_procs] [num_simulations]"
 
+# Check for help flag
 if [ $# -ge 1 ]
 then
     if [ $1 == "--help" ] || [ $1 == "-h" ]
@@ -13,12 +14,14 @@ then
     fi
 fi
 
+# Print usage if too many arguments are given
 if [ $# -gt 3 ]
 then
     echo $usage 1>&2
     exit 1
 fi
 
+# Set number of parallel processes
 if [ $# -ge 1 ]
 then
     num_procs=$1
@@ -35,6 +38,7 @@ else
     fi
 fi
 
+# Set number of simulations to run
 if [ $# -ge 2 ]
 then
     num_simulations=$2

@@ -1,15 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
+# Create temporary file to store simulator output in
 tmpfile=$(mktemp)
 
+# Run simulator and remember exit code
 @CMAKE_CURRENT_BINARY_DIR@/cell-standard-simulator "$@" > $tmpfile
-
 EXIT_CODE=$?
 
+# Print simulator output, redirecting Chaste warnings to stderr
 cat $tmpfile | grep 'Chaste warning' 1>&2
 cat $tmpfile | grep -v 'Chaste warning'
 
+# Remove temporary file and exit with simulator exit code
 rm -f $tmpfile
-
 exit $EXIT_CODE

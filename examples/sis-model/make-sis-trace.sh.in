@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+# Check for Python interpreter availability
 if [ "@PYTHONINTERP_FOUND@" != "TRUE" ]
 then
     echo "Cannot run Python example because Python interpreter was not found"

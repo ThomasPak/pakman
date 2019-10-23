@@ -6,6 +6,7 @@ python=@PYTHON_EXECUTABLE@
 # Process arguments
 usage="Usage: $0 [num_accepted_parameters (default 10)]"
 
+# Check for help flag
 if [ $# -ge 1 ]
 then
     if [ $1 == "--help" ] || [ $1 == "-h" ]
@@ -15,6 +16,7 @@ then
     fi
 fi
 
+# Set number of parameters to accept
 if [ $# == 1 ]
 then
     number_accept=$1

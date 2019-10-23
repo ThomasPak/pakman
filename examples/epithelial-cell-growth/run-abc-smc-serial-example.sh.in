@@ -4,6 +4,7 @@ set -euo pipefail
 # Process arguments
 usage="Usage: $0 [population_size (default 10)]"
 
+# Check for help flag
 if [ $# -ge 1 ]
 then
     if [ $1 == "--help" ] || [ $1 == "-h" ]
@@ -13,6 +14,7 @@ then
     fi
 fi
 
+# Set population size
 if [ $# == 1 ]
 then
     pop_size=$1
