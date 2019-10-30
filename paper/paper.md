@@ -40,7 +40,7 @@ intractable, it is still possible to make progress by applying a method known
 as **approximate Bayesian computation (ABC)** [@Marjoram2003;@Toni2009].
 
 The drawback of ABC methods is that they require many model simulations, which
-quickly becomes computationally expensive for many practical cases.
+quickly becomes a bottleneck when simulations are computationally expensive.
 Fortunately, some ABC algorithms have a simulation workload that is
 embarrassingly parallel, or proceed through a sequence of embarrassingly
 parallel simulation workloads.  These algorithms, ABC rejection and ABC
@@ -49,8 +49,22 @@ reduce computation times [@Toni2009].  Therefore, parallel ABC methods are a
 natural choice for leveraging "big data" and "big compute" for parameter
 inference.
 
-Indeed, parallel ABC has been implemented successfully to accelerate inference
-in a computationally intensive problem [@Jagiella2017].  However, the
+There are a number of software tools for ABC already available.  However, some
+were designed for particular classes of domain-specific models.  For instance,
+``DIYABC`` is a comprehensive software package for inference in population
+genetics with a graphical user interface [@Cornuet2014].  Another example is
+``ABC-SysBio``, a Python package for inferring the parameters of dynamical
+models of biochemical systems based on ordinary or stochastic differential
+equations [@Liepe2010].  Other software tools are modular and can be used with
+any type of model, but do not scale well with computational resources.  For
+instance, the R package ``abc`` can handle arbitrary models, but does not
+parallelise simulations [@Csillery2012].  ``ABCtoolbox`` is a command-line tool
+for running ABC algorithms on models that are supplied as command-line
+programs, but it does not support explicit parallelisation [@Wegmann2010].  For
+an overview of general-purpose ABC software, see [@Kousathanas2018].
+
+More recently, parallel ABC has been implemented successfully to accelerate
+inference in a computationally intensive problem [@Jagiella2017].  However, the
 implementation was problem- and architecture-specific and thus could not be
 applied more generally.  In response, the Python package ``pyABC``
 [@Klinger2018] was developed as a more flexible implementation of parallel ABC,
@@ -71,6 +85,15 @@ Moreover, we chose MPI as the platform for parallelisation because it is a
 well-established standard for distributed computing that has been implemented
 on a wide variety of systems, ranging from multi-core machines to large
 computational clusters.
+
+In summary, Pakman was made for performing likelihood-free inference when model
+simulations are computationally expensive.  The lack of an analytical
+likelihood requires the application of ABC methods and the computational cost
+of individual simulations merits a parallel approach to decrease the
+time-to-solution.  Moreover, in order to be as modular as possible, models are
+specified as black box programs. The target audience consists of researchers
+who want to parameterise a computationally demanding stochastic model based on
+experimental data.
 
 ## Modularity
 
