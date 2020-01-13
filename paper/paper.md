@@ -75,7 +75,7 @@ be expressed as a Python function.  This poses a problem when the user develops
 their model in a programming language other than Python or is using an external
 software package that cannot easily be adapted to Python.
 
-Pakman (**P**arallel **A**B**C** **Man**ager) is a tool for parallel ABC that
+Pakman is a parallel ABC manager that
 is designed to be modular at the systems-level, as opposed to the
 application-level.  Furthermore, Pakman is also designed to be portable and
 efficient.  Pakman is written in C++11 [@ISO2011], and relies on the Message
