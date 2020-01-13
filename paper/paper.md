@@ -198,7 +198,7 @@ series was $\langle 75, 70, \ldots, 35 \rangle$ and the population size was
 transition probabilities of the corresponding discrete-state continuous-time
 Markov chain.  The computed and analytical posteriors do not correspond exactly
 because we used insufficient summary statistics, as well as a nonzero
-tolerance.  See the [GitHub wiki](https://github.com/ThomasPak/pakman/wiki/Example%3A-SIS-model) for more details.](sis-smc-joint-histogram.png)
+tolerance.  See the GitHub wiki for more details.](sis-smc-joint-histogram.png)
 
 In the final example, we use a cell-based model of epithelial tissue growth to
 infer the average cell cycle time, $t_{\textrm{cycle}}$, from the number of
@@ -215,7 +215,7 @@ shown in Figure\ 3.
 posterior distribution for $t_{\textrm{cycle}}$, computed using the ABC SMC
 method.  We used a uniform prior and a normally distributed perturbation kernel
 with a standard deviation of 1.  The tolerance series was $\langle 4, 3, 2, 1,
-0 \rangle$ and the population size was 2,000.  See the [GitHub wiki](https://github.com/ThomasPak/pakman/wiki/Example%3A-epithelial-cell-growth) for more
+0 \rangle$ and the population size was 2,000.  See the GitHub wiki for more
 details.](cell-figure.png)
 
 # Future development
