@@ -51,17 +51,18 @@ inference.
 
 There are a number of software tools for ABC already available.  However, some
 were designed for particular classes of domain-specific models.  For instance,
-``DIYABC`` is a comprehensive software package for inference in population
-genetics with a graphical user interface [@Cornuet2014].  Another example is
-``ABC-SysBio``, a Python package for inferring the parameters of dynamical
+``DIYABC`` [@Cornuet2014] is a comprehensive software package for inference in population
+genetics, and includes a graphical user interface.  Another example is
+``ABC-SysBio`` [@Liepe2010], a Python package for inferring the parameters of dynamical
 models of biochemical systems based on ordinary or stochastic differential
-equations [@Liepe2010].  Other software tools are modular and can be used with
+equations.  Other software tools are modular and can be used with
 any type of model, but do not scale well with computational resources.  For
-instance, the R package ``abc`` can handle arbitrary models, but does not
-parallelise simulations [@Csillery2012].  ``ABCtoolbox`` is a command-line tool
+instance, the R package ``abc`` [@Csillery2012] can handle arbitrary models, but does not
+parallelise simulations.  ``ABCtoolbox``
+[@Wegmann2010] is a command-line tool
 for running ABC algorithms on models that are supplied as command-line
-programs, but it does not support explicit parallelisation [@Wegmann2010].  For
-an overview of general-purpose ABC software, see [@Kousathanas2018].
+programs, but it does not support explicit parallelisation.  For
+an overview of general-purpose ABC software, see @Kousathanas2018.
 
 More recently, parallel ABC has been implemented successfully to accelerate
 inference in a computationally intensive problem [@Jagiella2017].  However, the
@@ -88,10 +89,10 @@ computational clusters.
 
 In summary, Pakman was made for performing likelihood-free inference when model
 simulations are computationally expensive.  The lack of an analytical
-likelihood requires the application of ABC methods and the computational cost
+likelihood requires the application of ABC methods, and the computational cost
 of individual simulations merits a parallel approach to decrease the
-time-to-solution.  Moreover, in order to be as modular as possible, models are
-specified as black box programs. The target audience consists of researchers
+time to solution.  Moreover, in order to be as modular as possible, models are
+specified as black-box programs. The target audience consists of researchers
 who want to parameterise a computationally demanding stochastic model based on
 experimental data.
 
@@ -197,7 +198,7 @@ series was $\langle 75, 70, \ldots, 35 \rangle$ and the population size was
 transition probabilities of the corresponding discrete-state continuous-time
 Markov chain.  The computed and analytical posteriors do not correspond exactly
 because we used insufficient summary statistics, as well as a nonzero
-tolerance.  See the Github wiki for more details.](sis-smc-joint-histogram.png)
+tolerance.  See the [GitHub wiki](https://github.com/ThomasPak/pakman/wiki/Example%3A-SIS-model) for more details.](sis-smc-joint-histogram.png)
 
 In the final example, we use a cell-based model of epithelial tissue growth to
 infer the average cell cycle time, $t_{\textrm{cycle}}$, from the number of
@@ -214,7 +215,7 @@ shown in Figure\ 3.
 posterior distribution for $t_{\textrm{cycle}}$, computed using the ABC SMC
 method.  We used a uniform prior and a normally distributed perturbation kernel
 with a standard deviation of 1.  The tolerance series was $\langle 4, 3, 2, 1,
-0 \rangle$ and the population size was 2,000.  See the Github wiki for more
+0 \rangle$ and the population size was 2,000.  See the [GitHub wiki](https://github.com/ThomasPak/pakman/wiki/Example%3A-epithelial-cell-growth) for more
 details.](cell-figure.png)
 
 # Future development
