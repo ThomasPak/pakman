@@ -119,6 +119,9 @@ int main(int argc, char *argv[])
     // Terminate MPI Worker
     MPIWorkerHandler::terminateStatic();
 
+    // Free MPI_Info object
+    MPI_Info_free(&g_info);
+
     // Finalize
     MPI_Finalize();
 
