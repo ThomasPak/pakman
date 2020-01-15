@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 /** @file utils.h
  *
@@ -34,5 +35,18 @@ std::vector<std::string> parse_command_tokens(const std::string& raw_command);
  */
 std::vector<std::string> parse_tokens(const std::string& str,
         const std::string& delimiters = " ");
+
+/** Splits string into key value pairs.
+ *
+ * The raw string must contain key value pairs in the format
+ * `key1=value1; key2=value2; ...; keyn=valuen`.  The characters `=` and `;`
+ * may be escaped with the backslash (`\`) if it appears in the key or the
+ * value string.
+ *
+ * @param str  raw string.
+ *
+ * @return map of key value pairs.
+ */
+std::map<std::string, std::string> parse_key_value_pairs(const std::string& str);
 
 #endif // UTILS_H

@@ -3,6 +3,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <string.h>
+#include <map>
+#include <assert.h>
 
 #include "utils.h"
 
@@ -202,4 +204,134 @@ std::vector<std::string> parse_tokens(const std::string& str,
     free(c_str);
 
     return str_vector;
+}
+
+std::map<std::string, std::string> parse_key_value_pairs(const std::string& str)
+{
+    // Define states of finite state machine
+    enum state_t { read_key, read_value, quote_next_key_letter,
+        quote_next_value_letter };
+
+    // Initialize
+    state_t state = read_key;
+    std::map<std::string, std::string> dict;
+    std::stringstream key_strm, value_strm;
+
+    // Iterate over str
+    for (auto it = str.cbegin(); it != str.cend(); it++)
+    {
+        // Get current letter
+        char letter = *it;
+
+        switch (state)
+        {
+
+            // Read key state
+            case read_key:
+
+                // If backslash, transition to quote_next_key_letter
+                if (letter == '\\')
+                {
+                    state = quote_next_key_letter;
+                }
+
+                // If equal sign, transition to read_value
+                else if (letter == '=')
+                {
+                    state = read_value;
+                }
+
+                // If normal character, push character to key_strm and remain
+                // in read_key
+                else
+                {
+                    key_strm << letter;
+                }
+
+                break;
+
+            // Read value state
+            case read_value:
+
+                // If backslash, transition to quote_next_value_letter
+                if (letter == '\\')
+                {
+                    state = quote_next_value_letter;
+                }
+
+                // If semicolon sign, push key-value pair, clear key_strm and
+                // value_strm, and transition to read_key
+                else if (letter == ';')
+                {
+                    dict[key_strm.str()] = value_strm.str();
+
+                    key_strm.str("");
+                    key_strm.clear();
+                    value_strm.str("");
+                    value_strm.clear();
+
+                    state = read_key;
+                }
+
+                // If normal character, push character to value_strm and remain
+                // in read_value
+                else
+                {
+                    value_strm << letter;
+                }
+
+                break;
+
+            // Quote next key letter state
+            case quote_next_key_letter:
+
+                // Add next character literally
+                key_strm << letter;
+
+                // Transition to read key state
+                state = read_key;
+
+                break;
+
+            // Quote next value letter state
+            case quote_next_value_letter:
+
+                // Add next character literally
+                value_strm << letter;
+
+                // Transition to read value state
+                state = read_value;
+
+                break;
+
+        }
+    }
+
+    // Check for unfinished quotations
+    if (state == quote_next_value_letter)
+    {
+        std::string error_msg;
+        error_msg += "Encountered unfinished quotations "
+            "while parsing key-value pairs: ";
+        error_msg += str;
+        throw std::runtime_error(error_msg);
+    }
+
+    // Check for incomplete key-value pairs
+    if ( (state == read_key) || (state == quote_next_key_letter) )
+    {
+        std::string error_msg;
+        error_msg += "Encountered incomplete key-value pairs "
+            "while parsing key-value pairs: ";
+        error_msg += str;
+        throw std::runtime_error(error_msg);
+    }
+
+    // Sanity check: final state should be read_value
+    assert(state == read_value);
+
+    // Push last key-value pair
+    dict[key_strm.str()] = value_strm.str();
+
+    return dict;
 }
