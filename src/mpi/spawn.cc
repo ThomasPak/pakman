@@ -12,6 +12,9 @@
 #include "mpi_common.h"
 #include "spawn.h"
 
+// Global MPI_Info
+extern MPI_Info g_info;
+
 MPI_Comm spawn(const Command& cmd, MPI_Info info)
 {
     // Get argv from command
@@ -39,7 +42,7 @@ MPI_Comm spawn_worker(const Command& cmd)
 {
     // Create MPI_Info object
     MPI_Info info;
-    MPI_Info_create(&info);
+    MPI_Info_dup(g_info, &info);
 
     // Ensure process is spawned on same node if g_force_host_spawn is set
     if (g_force_host_spawn)

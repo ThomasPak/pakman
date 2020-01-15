@@ -32,6 +32,7 @@ const char *g_program_name;
 // Global variables
 std::chrono::milliseconds g_main_timeout(1);
 bool g_force_host_spawn = false;
+MPI_Info g_info;
 
 // Help functions
 void help();
@@ -58,6 +59,9 @@ int main(int argc, char *argv[])
 
     // Initialize MPI
     MPI_Init(nullptr, nullptr);
+
+    // Create MPI_Info object
+    MPI_Info_create(&g_info);
 
     // Create raw command string
     std::string raw_command;

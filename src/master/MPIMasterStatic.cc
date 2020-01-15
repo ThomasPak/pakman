@@ -8,6 +8,7 @@
 #include <getopt.h>
 
 #include "core/common.h"
+#include "core/utils.h"
 #include "core/LongOptions.h"
 #include "core/Arguments.h"
 #include "system/signal_handler.h"
@@ -20,6 +21,9 @@
 #include "MPIWorkerHandler.h"
 
 #include "MPIMaster.h"
+
+// Global MPI_Info
+MPI_Info g_info;
 
 // Static help function
 std::string MPIMaster::help()
@@ -64,6 +68,11 @@ MPI master options:
   -m, --mpi-simulator          simulator is spawned using MPI
   -f, --force-host-spawn       force MPI simulator to spawn on same host
                                as manager (requires -m option)
+  -p, --mpi-info=KEY_VAL_STR   specify key-value pairs for MPI_Info object
+                               to MPI_Comm_spawn as
+                               'KEY1=VALUE1; KEY2=VALUE2; ...; KEYN=VALUEN'
+                               (requires -m option).  The characters '=' and
+                               ';' can be escaped using a backslash.
   -t, --main-timeout=TIME      sleep for TIME ms in event loop (default 1)
   -k, --kill-timeout=TIME      wait for TIME ms before sending SIGKILL
                                (default 100)
@@ -87,6 +96,7 @@ void MPIMaster::addLongOptions(LongOptions& lopts)
     lopts.add({"kill-timeout", required_argument, nullptr, 'k'});
     lopts.add({"mpi-simulator", no_argument, nullptr, 'm'});
     lopts.add({"force-host-spawn", no_argument, nullptr, 'f'});
+    lopts.add({"mpi-info", required_argument, nullptr, 'p'});
 }
 
 // Static main function
@@ -118,12 +128,33 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
     else if (args.isOptionalArgumentSet("force-host-spawn"))
     {
         std::cout << "Error: option --mpi-simulator must be set "
-            "if --force_host_spawn is set\n";
+            "if --force-host-spawn is set\n";
+        ::help(mpi, controller, EXIT_FAILURE);
+    }
+    else if (args.isOptionalArgumentSet("mpi-info"))
+    {
+        std::cout << "Error: option --mpi-simulator must be set "
+            "if --mpi-info is set\n";
         ::help(mpi, controller, EXIT_FAILURE);
     }
 
     // Initialize the MPI environment
     MPI_Init(nullptr, nullptr);
+
+    // Create MPI_Info if using MPI simulator
+    if (mpi_simulator)
+    {
+        MPI_Info_create(&g_info);
+
+        if (args.isOptionalArgumentSet("mpi-info"))
+        {
+            std::string&& arg = args.optionalArgument("mpi-info");
+            std::map<std::string, std::string> dict = parse_key_value_pairs(arg);
+
+            for (auto it = dict.begin(); it != dict.end(); ++it)
+                MPI_Info_set(g_info, it->first.c_str(), it->second.c_str());
+        }
+    }
 
     // Get rank
     int rank = 0;
@@ -179,6 +210,10 @@ void MPIMaster::run(controller_t controller, const Arguments& args)
     // Destroy Manager and Controller
     p_manager.reset();
     p_controller.reset();
+
+    // Destroy g_info if it was allocated
+    if (mpi_simulator)
+        MPI_Info_free(&g_info);
 
     // Terminate any remaining Workers
     MPIWorkerHandler::terminateStatic();
