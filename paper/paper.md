@@ -197,8 +197,8 @@ series was $\langle 75, 70, \ldots, 35 \rangle$ and the population size was
 10,000.  We obtained the analytical posterior by numerically computing the
 transition probabilities of the corresponding discrete-state continuous-time
 Markov chain.  The computed and analytical posteriors do not correspond exactly
-because we used insufficient summary statistics, as well as a nonzero
-tolerance.  See the GitHub wiki for more details.](sis-smc-joint-histogram.png)
+because we used a nonzero tolerance.  See the GitHub wiki for more
+details.](sis-smc-joint-histogram.png)
 
 In the final example, we use a cell-based model of epithelial tissue growth to
 infer the average cell cycle time, $t_{\textrm{cycle}}$, from the number of
