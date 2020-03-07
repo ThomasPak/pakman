@@ -1,6 +1,6 @@
 # Pakman
 
-[![Build Status](https://travis-ci.com/ThomasPak/pakman.svg?branch=master)](https://travis-ci.com/ThomasPak/pakman) [![Documentation](https://codedocs.xyz/ThomasPak/pakman.svg)](https://codedocs.xyz/ThomasPak/pakman/)
+[![Build Status](https://travis-ci.com/ThomasPak/pakman.svg?branch=master)](https://travis-ci.com/ThomasPak/pakman) [![Documentation](https://codedocs.xyz/ThomasPak/pakman.svg)](https://codedocs.xyz/ThomasPak/pakman/) [![DOI](https://joss.theoj.org/papers/10.21105/joss.01716/status.svg)](https://doi.org/10.21105/joss.01716)
 
 A modular, efficient and portable tool for running parallel approximate
 Bayesian computation algorithms.
