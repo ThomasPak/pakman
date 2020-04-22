@@ -1,0 +1,44 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite the article below."
+authors:
+  - family-names: Pak
+    given-names: Thomas F.
+    orcid: https://orcid.org/0000-0002-7198-7688
+  - family-names: Baker
+    given-names: Ruth E.
+    orcid: https://orcid.org/0000-0002-6304-9333
+  - family-names: Pitt-Francis
+    given-names: Joe M.
+    orcid: https://orcid.org/0000-0002-5094-5403
+title: Pakman
+version: 1.1.0
+date-released: 2020-03-05
+doi: 10.5281/zenodo.3697312
+references:
+    - type: article
+      authors:
+          - family-names: Pak
+            given-names: Thomas F.
+            orcid: https://orcid.org/0000-0002-7198-7688
+          - family-names: Baker
+            given-names: Ruth E.
+            orcid: https://orcid.org/0000-0002-6304-9333
+          - family-names: Pitt-Francis
+            given-names: Joe M.
+            orcid: https://orcid.org/0000-0002-5094-5403
+      title: 'Pakman: a modular, efficient and portable tool for approximate Bayesian inference'
+      keywords:
+        - C++
+        - MPI
+        - approximate Bayesian computation
+        - Bayesian inference
+        - parallel computing
+        - distributed computing
+      date-released: 2020-03-07
+      doi: 10.21105/joss.01716
+      journal: The Journal of Open Source Software
+      volume: 5
+      issue: 47
+      start: 1716
+      url: https://joss.theoj.org/papers/10.21105/joss.01716
+      year: 2020
