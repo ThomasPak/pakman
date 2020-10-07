@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 
@@ -20,6 +21,26 @@
 
 const int READ_END = 0;
 const int WRITE_END = 1;
+
+std::string get_waitpid_errno()
+{
+    if (errno == ECHILD)
+    {
+        return "ECHILD";
+    }
+    else if (errno == EINVAL)
+    {
+        return "EINVAL";
+    }
+    else if (errno == EINTR)
+    {
+        return "EINTR";
+    }
+    else
+    {
+        return "Unrecognised";
+    }
+}
 
 bool waitpid_success(pid_t pid, int options, const Command& cmd,
                      child_err_opt_t child_err_opt)
@@ -37,6 +58,8 @@ bool waitpid_success(pid_t pid, int options, const Command& cmd,
         std::string error_msg("waitpid of ");
         error_msg += cmd.str();
         error_msg += " failed";
+        error_msg += ", errno = ";
+        error_msg += get_waitpid_errno();
         std::runtime_error e(error_msg);
         throw e;
     }
@@ -81,6 +104,8 @@ bool waitpid_success(pid_t pid, int& error_code, int options,
         std::string error_msg("waitpid of ");
         error_msg += cmd.str();
         error_msg += " failed";
+        error_msg += ", errno = ";
+        error_msg += get_waitpid_errno();
         std::runtime_error e(error_msg);
         throw e;
     }
