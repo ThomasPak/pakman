@@ -23,23 +23,35 @@ void signal_handler(int signal)
 
 int main()
 {
-    ///// Test of get_waitpid_errno() /////
+    ///// Test of waitpid_success() and get_waitpid_errno() /////
 
     // Test ECHILD (invalid child pid)
-    int status;
+    int status, error_code;
     int options = 0;
-    pid_t retval = waitpid(1, &status, options);
 
-    assert(retval == -1);
-    assert(errno == ECHILD);
+    try
+    {
+        waitpid_success(1, options, Command("dummy_cmd"), ignore_error);
+    }
+    catch (const std::runtime_error& e)
+    {
+        assert(std::string(e.what()) == "waitpid of dummy_cmd failed, errno = ECHILD");
+    }
+
     assert(get_waitpid_errno() == "ECHILD");
 
     // Test EINVAL (invalid options)
     options = ~(WNOHANG | WUNTRACED);
-    retval = waitpid(1, &status, options);
 
-    assert(retval == -1);
-    assert(errno == EINVAL);
+    try
+    {
+        waitpid_success(1, error_code, options, Command("dummy_cmd"));
+    }
+    catch (const std::runtime_error& e)
+    {
+        assert(std::string(e.what()) == "waitpid of dummy_cmd failed, errno = EINVAL");
+    }
+
     assert(get_waitpid_errno() == "EINVAL");
 
     // Test EINTR (interrupted by signal)
@@ -79,14 +91,19 @@ int main()
     else // I am the parent
     {
         // waitpid should be interrupted by SIGINT
-        retval = waitpid(child_pid, &status, options);
-        assert(retval == -1);
-        assert(errno == EINTR);
+        try
+        {
+            waitpid_success(child_pid, options, Command("dummy_cmd"), ignore_error);
+        }
+        catch (const std::runtime_error& e)
+        {
+            assert(std::string(e.what()) == "waitpid of dummy_cmd failed, errno = EINTR");
+        }
+
         assert(get_waitpid_errno() == "EINTR");
 
         // waitpid should return normally
-        retval = waitpid(child_pid, &status, options);
-        assert(retval == child_pid);
+        assert(waitpid_success(child_pid, error_code, options, Command("dummy_cmd")));
     }
 
     std::cout << "All tests passed!\n";
