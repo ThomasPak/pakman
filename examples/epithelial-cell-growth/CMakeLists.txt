@@ -1,4 +1,9 @@
-# Check for CHASTE_DIR
+# CHASTE_DIR was not set, return immediately
+if (CHASTE_DIR STREQUAL "")
+    return ()
+endif ()
+
+# Check if CHASTE_DIR is directory
 if (NOT IS_DIRECTORY ${CHASTE_DIR})
     message (WARNING "CHASTE_DIR (\"${CHASTE_DIR}\") is not a valid directory, "
         "cannot build epithelial cell growth example.")
