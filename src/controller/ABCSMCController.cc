@@ -22,7 +22,7 @@
 
 // Constructor
 ABCSMCController::ABCSMCController(const Input &input_obj,
-        std::shared_ptr<std::default_random_engine> p_generator) :
+        std::shared_ptr<std::mt19937_64> p_generator) :
     m_epsilons(input_obj.epsilons),
     m_parameter_names(input_obj.parameter_names),
     m_population_size(input_obj.population_size),

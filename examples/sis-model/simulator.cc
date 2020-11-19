@@ -7,7 +7,7 @@
 #include <math.h>
 #include <assert.h>
 
-std::default_random_engine generator;
+std::mt19937_64 generator;
 
 /** Run Gillespie algorithm for SIS system and return time series of S.
  *

@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     // Seed random number generator
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine generator(seed);
+    std::mt19937_64 generator(seed);
 
     // Sample from uniform distribution for beta
     std::uniform_real_distribution<double> beta_distribution(beta_low, beta_high);

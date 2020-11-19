@@ -9,6 +9,6 @@ void cumsum(const std::vector<double>& array,
 void normalize(std::vector<double>& array);
 int sample_population(const std::vector<double>& norm_cumsum_array,
            std::uniform_real_distribution<double>& distribution,
-           std::default_random_engine& generator);
+           std::mt19937_64& generator);
 
 #endif // SAMPLE_POPULATION_H

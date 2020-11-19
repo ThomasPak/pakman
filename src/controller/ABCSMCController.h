@@ -47,7 +47,7 @@ class ABCSMCController : public AbstractController
          * @param p_generator  pointer to random number engine.
          */
         ABCSMCController(const Input &input_obj,
-                std::shared_ptr<std::default_random_engine> p_generator);
+                std::shared_ptr<std::mt19937_64> p_generator);
 
         /** Default destructor does nothing. */
         virtual ~ABCSMCController() override = default;
@@ -156,7 +156,7 @@ class ABCSMCController : public AbstractController
         std::uniform_real_distribution<double> m_distribution;
 
         // Random number generator
-        std::shared_ptr<std::default_random_engine> m_p_generator;
+        std::shared_ptr<std::mt19937_64> m_p_generator;
 
         // Prior pdf values of pending parameters
         std::queue<double> m_prior_pdf_pending;

@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     // Seed random number generator
     unsigned seed =
         std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine generator(seed);
+    std::mt19937_64 generator(seed);
 
     // Sample from uniform distribution
     std::uniform_real_distribution<double> distribution(q_low, q_high);
