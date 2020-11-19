@@ -12,7 +12,7 @@ std::string usage()
     usage_string += "Usage: ";
     usage_string += g_program_name;
     usage_string += " <master> <controller>";
-    usage_string += " <required args>... [optional args]...";
+    usage_string += " <required args>... [options]...";
     usage_string += "\n";
     return usage_string;
 }
