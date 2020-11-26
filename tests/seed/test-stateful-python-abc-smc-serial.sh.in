@@ -1,0 +1,52 @@
+#!/bin/bash
+set -euo pipefail
+
+# Check for Python interpreter availability
+if [ "@PYTHONINTERP_FOUND@" != "TRUE" ]
+then
+    echo "Cannot run Python example because Python interpreter was not found"
+    exit 1
+fi
+
+python=@PYTHON_EXECUTABLE@
+
+pop_size=2
+stdev=0.3
+seed=0
+seed_file="seed.txt"
+
+# Run ABC smc once
+echo 0 > "$seed_file"
+echo "Running ABC smc with population-size=$pop_size"
+"@PROJECT_BINARY_DIR@/src/pakman" serial smc \
+    --discard-child-stderr \
+    --population-size=$pop_size \
+    --epsilons=4,3,2 \
+    --parameter-names=p \
+    --simulator="$python stateful-simulator.py heads.txt $seed_file" \
+    --prior-sampler="$python stateful-prior-sampler.py 0 1 $seed_file" \
+    --perturber="$python stateful-perturber.py $stdev $seed_file" \
+    --prior-pdf="$python prior-pdf.py 0 1" \
+    --perturbation-pdf="$python perturbation-pdf.py $stdev" \
+    --seed="$seed" \
+    > stateful-python-abc-smc-serial.out1
+
+# Run ABC smc for a second time with the same seed file
+echo 0 > "$seed_file"
+echo "Running ABC smc with population-size=$pop_size"
+"@PROJECT_BINARY_DIR@/src/pakman" serial smc \
+    --discard-child-stderr \
+    --population-size=$pop_size \
+    --epsilons=4,3,2 \
+    --parameter-names=p \
+    --simulator="$python stateful-simulator.py heads.txt $seed_file" \
+    --prior-sampler="$python stateful-prior-sampler.py 0 1 $seed_file" \
+    --perturber="$python stateful-perturber.py $stdev $seed_file" \
+    --prior-pdf="$python prior-pdf.py 0 1" \
+    --perturbation-pdf="$python perturbation-pdf.py $stdev" \
+    --seed="$seed" \
+    > stateful-python-abc-smc-serial.out2
+
+# Compare outputs
+diff stateful-python-abc-smc-serial.out1 \
+     stateful-python-abc-smc-serial.out2

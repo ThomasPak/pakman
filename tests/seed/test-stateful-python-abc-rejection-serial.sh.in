@@ -1,0 +1,42 @@
+#!/bin/bash
+set -euo pipefail
+
+# Check for Python interpreter availability
+if [ "@PYTHONINTERP_FOUND@" != "TRUE" ]
+then
+    echo "Cannot run Python example because Python interpreter was not found"
+    exit 1
+fi
+
+python=@PYTHON_EXECUTABLE@
+
+number_accept=1
+seed_file="seed.txt"
+
+# Run ABC rejection once
+echo 0 > "$seed_file"
+echo "Running ABC rejection with number-accept=$number_accept"
+"@PROJECT_BINARY_DIR@/src/pakman" serial rejection \
+    --discard-child-stderr \
+    --number-accept=$number_accept \
+    --epsilon=2 \
+    --parameter-names=p \
+    --simulator="$python stateful-simulator.py heads.txt $seed_file" \
+    --prior-sampler="$python stateful-prior-sampler.py 0 1 $seed_file" \
+    > stateful-python-abc-rejection-serial.out1
+
+# Run ABC rejection for a second time with same seed file
+echo 0 > "$seed_file"
+echo "Running ABC rejection with number-accept=$number_accept"
+"@PROJECT_BINARY_DIR@/src/pakman" serial rejection \
+    --discard-child-stderr \
+    --number-accept=$number_accept \
+    --epsilon=2 \
+    --parameter-names=p \
+    --simulator="$python stateful-simulator.py heads.txt $seed_file" \
+    --prior-sampler="$python stateful-prior-sampler.py 0 1 $seed_file" \
+    > stateful-python-abc-rejection-serial.out2
+
+# Compare outputs
+diff stateful-python-abc-rejection-serial.out1 \
+     stateful-python-abc-rejection-serial.out2
