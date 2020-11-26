@@ -4,4 +4,5 @@ add_library (core
     Command.cc
     OutputStreamHandler.cc
     utils.cc
+    TaskHandler.cc
     )

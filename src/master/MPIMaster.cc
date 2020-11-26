@@ -210,7 +210,7 @@ bool MPIMaster::finishedTasksEmpty() const
 }
 
 // Returns reference to front finished task
-AbstractMaster::TaskHandler& MPIMaster::frontFinishedTask()
+TaskHandler& MPIMaster::frontFinishedTask()
 {
     return m_finished_tasks.front();
 }

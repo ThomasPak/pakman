@@ -70,7 +70,7 @@ bool SerialMaster::finishedTasksEmpty() const
 }
 
 // Returns reference to front finished task
-AbstractMaster::TaskHandler& SerialMaster::frontFinishedTask()
+TaskHandler& SerialMaster::frontFinishedTask()
 {
     return m_finished_tasks.front();
 }

@@ -67,7 +67,7 @@ void ABCSMCController::iterate()
         m_number_simulated++;
 
         // Get reference to front finished task
-        AbstractMaster::TaskHandler& task = m_p_master->frontFinishedTask();
+        TaskHandler& task = m_p_master->frontFinishedTask();
 
         // Check if error occured
         if (!task.didErrorOccur())

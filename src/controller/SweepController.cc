@@ -64,7 +64,7 @@ void SweepController::iterate()
         m_num_finished++;
 
         // Get reference to front finished task
-        AbstractMaster::TaskHandler& task = m_p_master->frontFinishedTask();
+        TaskHandler& task = m_p_master->frontFinishedTask();
 
         // Throw error if task finished with error and we are not ignoring
         // task errors
