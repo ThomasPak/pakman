@@ -7,11 +7,11 @@ add_library (system
 
 target_link_libraries (system core)
 
-add_executable (unittest
+add_executable (system_test
     unittest.cc
     )
 
-target_link_libraries (unittest system)
+target_link_libraries (system_test system)
 
 add_test (SystemLibraryUnitTest
-    "${CMAKE_CURRENT_BINARY_DIR}/unittest")
+    "${CMAKE_CURRENT_BINARY_DIR}/system_test")
