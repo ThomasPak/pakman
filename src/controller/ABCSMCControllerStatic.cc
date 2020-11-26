@@ -1,7 +1,6 @@
 #include <memory>
 #include <fstream>
 #include <string>
-#include <chrono>
 #include <random>
 
 #include "core/common.h"
@@ -70,6 +69,12 @@ Required arguments:
   -T, --perturber=CMD           CMD is perturber command
   -I, --prior-pdf=CMD           CMD is prior_pdf command
   -U, --perturbation-pdf=CMD    CMD is perturbation_pdf command
+
+ABC SMC controller options:
+  -s, --seed=SEED               SEED is the seed for the pseudo random number
+                                generator that is used to sample from the
+                                parameter population (by default, the seed is
+                                derived from the system clock).
 )";
 }
 
@@ -84,6 +89,7 @@ void ABCSMCController::addLongOptions(
     lopts.add({"perturber", required_argument, nullptr, 'T'});
     lopts.add({"prior-pdf", required_argument, nullptr, 'I'});
     lopts.add({"perturbation-pdf", required_argument, nullptr, 'U'});
+    lopts.add({"seed", required_argument, nullptr, 's'});
 }
 
 ABCSMCController* ABCSMCController::makeController(const Arguments& args)
@@ -93,14 +99,8 @@ ABCSMCController* ABCSMCController::makeController(const Arguments& args)
     // Parse command-line options
     input_obj = Input::makeInput(args);
 
-    // Create random number generator
-    // TODO accept other seeds
-    unsigned seed =
-        std::chrono::system_clock::now().time_since_epoch().count();
-    auto p_generator = std::make_shared<std::mt19937_64>(seed);
-
     // Make ABCSMCController
-    return new ABCSMCController(input_obj, p_generator);
+    return new ABCSMCController(input_obj);
 }
 
 // Construct Input from Arguments object
@@ -109,6 +109,13 @@ ABCSMCController::Input ABCSMCController::Input::makeInput(
 {
     // Initialize input
     Input input_obj;
+
+    // Process optional arguments
+    if (args.isOptionalArgumentSet("seed"))
+    {
+        input_obj.seed =
+            parse_unsigned_long_integer(args.optionalArgument("seed"));
+    }
 
     try
     {

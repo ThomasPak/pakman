@@ -22,6 +22,14 @@ class Command;
  */
 int parse_integer(const std::string& raw_input);
 
+/** Parse unsigned long integer.
+ *
+ * @param raw_input  raw input string.
+ *
+ * @return parsed unsigned long integer.
+ */
+unsigned long parse_unsigned_long_integer(const std::string& raw_input);
+
 /** Parse Command.
  *
  * @param raw_input  raw input string.

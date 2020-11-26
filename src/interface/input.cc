@@ -11,6 +11,11 @@ int parse_integer(const std::string& raw_input)
     return std::stoi(raw_input);
 }
 
+unsigned long parse_unsigned_long_integer(const std::string& raw_input)
+{
+    return std::stoul(raw_input);
+}
+
 Command parse_command(const std::string& raw_input)
 {
     return static_cast<Command>(raw_input);

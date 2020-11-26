@@ -6,6 +6,7 @@
 #include <queue>
 #include <memory>
 #include <random>
+#include <chrono>
 
 #include "core/Command.h"
 
@@ -46,8 +47,7 @@ class ABCSMCController : public AbstractController
          * @param input_obj  Input object.
          * @param p_generator  pointer to random number engine.
          */
-        ABCSMCController(const Input &input_obj,
-                std::shared_ptr<std::mt19937_64> p_generator);
+        ABCSMCController(const Input &input_obj);
 
         /** Default destructor does nothing. */
         virtual ~ABCSMCController() override = default;
@@ -113,6 +113,10 @@ class ABCSMCController : public AbstractController
              * distribution.
              */
             Command perturbation_pdf;
+
+            /** Seed for pseudo random number generator */
+            unsigned long seed =
+                std::chrono::system_clock::now().time_since_epoch().count();
         };
 
     private:
@@ -156,7 +160,7 @@ class ABCSMCController : public AbstractController
         std::uniform_real_distribution<double> m_distribution;
 
         // Random number generator
-        std::shared_ptr<std::mt19937_64> m_p_generator;
+        std::mt19937_64 m_generator;
 
         // Prior pdf values of pending parameters
         std::queue<double> m_prior_pdf_pending;

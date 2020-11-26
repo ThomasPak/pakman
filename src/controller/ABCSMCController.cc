@@ -21,8 +21,7 @@
 #include "ABCSMCController.h"
 
 // Constructor
-ABCSMCController::ABCSMCController(const Input &input_obj,
-        std::shared_ptr<std::mt19937_64> p_generator) :
+ABCSMCController::ABCSMCController(const Input &input_obj) :
     m_epsilons(input_obj.epsilons),
     m_parameter_names(input_obj.parameter_names),
     m_population_size(input_obj.population_size),
@@ -31,7 +30,7 @@ ABCSMCController::ABCSMCController(const Input &input_obj,
     m_prior_pdf(input_obj.prior_pdf),
     m_perturber(input_obj.perturber),
     m_perturbation_pdf(input_obj.perturbation_pdf),
-    m_p_generator(p_generator),
+    m_generator(input_obj.seed),
     m_distribution(0.0, 1.0),
     m_prmtr_accepted_old(input_obj.population_size),
     m_weights_old(input_obj.population_size)
@@ -210,7 +209,7 @@ Parameter ABCSMCController::sampleParameter()
     {
         // Sample parameter population
         int idx = sample_population(m_weights_cumsum, m_distribution,
-                *m_p_generator);
+                m_generator);
         Parameter source_parameter = m_prmtr_accepted_old[idx];
 
         // Perturb parameter
