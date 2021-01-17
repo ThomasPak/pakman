@@ -75,6 +75,28 @@ template <>
 void serialise_scalar_value(const LineString& key, const TaskHandler& value,
         std::ostream& out);
 
+/** Serialise vector
+ *
+ * @param key  identifier of serialised vector
+ * @param values  values to serialise
+ * @param out  output stream to write to
+ */
+template <typename value_type>
+void serialise_vector(const LineString& key,
+        const std::vector<value_type>& values,
+        std::ostream& out)
+{
+    // Print key and number of elements
+    out << key.str() << ":" << values.size() << std::endl;
+
+    // Print each element with key_n
+    for (unsigned idx = 0; idx < values.size(); ++idx)
+    {
+        serialise_scalar_value<value_type>(key.str() + "_" + std::to_string(idx),
+                values[idx], out);
+    }
+}
+
 /** Overload << operator for LineString
  *
  * @param out  output stream
