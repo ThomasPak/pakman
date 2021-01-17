@@ -16,6 +16,11 @@
 
 class LineString
 {
+    friend std::ostream& operator<<(std::ostream& out,
+            const LineString& line_string);
+    friend std::istream& operator<<(std::istream& in,
+            LineString& line_string);
+
     public:
 
         /** Default constructor does nothing. */

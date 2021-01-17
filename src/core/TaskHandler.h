@@ -70,7 +70,7 @@ class TaskHandler
         std::string m_output_string;
 
         // Error code, only valid in finished state
-        int m_error_code;
+        int m_error_code = -1;
 };
 
 #endif // TASKHANDLER_H
