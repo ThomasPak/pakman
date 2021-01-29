@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include "TaskHandler.h"
 
 // Construct from input string
