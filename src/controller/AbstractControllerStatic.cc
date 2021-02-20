@@ -9,6 +9,7 @@
 #include "SweepController.h"
 #include "ABCRejectionController.h"
 #include "ABCSMCController.h"
+#include "AdaptiveABCSMCController.h"
 
 #include "AbstractController.h"
 
@@ -27,6 +28,10 @@ controller_t AbstractController::getController(const std::string& arg)
     else if (arg.compare("smc") == 0)
         return smc;
 
+    // Check for adaptive_smc controller
+    else if (arg.compare("adaptive_smc") == 0)
+        return adaptive_smc;
+
     // Else return no_controller
     return no_controller;
 }
@@ -41,6 +46,8 @@ std::string AbstractController::help(controller_t controller)
             return ABCRejectionController::help();
         case smc:
             return ABCSMCController::help();
+        case adaptive_smc:
+            return AdaptiveABCSMCController::help();
         default:
             throw std::runtime_error("Invalid controller type in "
                     "AbstractController::help");
@@ -58,6 +65,8 @@ void AbstractController::addLongOptions(controller_t controller,
             return ABCRejectionController::addLongOptions(lopts);
         case smc:
             return ABCSMCController::addLongOptions(lopts);
+        case adaptive_smc:
+            return AdaptiveABCSMCController::addLongOptions(lopts);
         default:
             throw std::runtime_error("Invalid controller type in "
                     "AbstractController::makeController");
@@ -75,6 +84,8 @@ AbstractController* AbstractController::makeController(controller_t controller,
             return ABCRejectionController::makeController(args);
         case smc:
             return ABCSMCController::makeController(args);
+        case adaptive_smc:
+            return AdaptiveABCSMCController::makeController(args);
         default:
             throw std::runtime_error("Invalid controller type in "
                     "AbstractController::makeController");

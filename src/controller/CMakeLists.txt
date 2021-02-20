@@ -7,6 +7,8 @@ add_library (controller
     ABCRejectionControllerStatic.cc
     ABCSMCController.cc
     ABCSMCControllerStatic.cc
+    AdaptiveABCSMCController.cc
+    AdaptiveABCSMCControllerStatic.cc
     smc_weight.cc
     sample_population.cc
     )

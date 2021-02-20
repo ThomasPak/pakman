@@ -50,6 +50,7 @@ Available controllers:
   sweep         run a parameter sweep
   rejection     run the ABC rejection algorithm
   smc           run the ABC SMC algorithm
+  adaptive_smc  run the adaptive ABC SMC algorithm
 See ')" << g_program_name << R"( <controller> --help' for more info.
 
 Alternatively, see ')" <<

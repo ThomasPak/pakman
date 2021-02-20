@@ -48,6 +48,7 @@ enum controller_t
     sweep,
     rejection,
     smc,
+    adaptive_smc,
 };
 
 #endif // COMMON_H
