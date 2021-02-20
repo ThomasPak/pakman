@@ -2,14 +2,15 @@
 set -euo pipefail
 
 # Process arguments
-if [ $# -ne 2 ]
+if [ $# -ne 3 ]
 then
-    echo "Usage: $0 EPSILONS POP_SIZE" 1>&2
+    echo "Usage: $0 OFFSET EPSILONS POP_SIZE" 1>&2
     exit 1
 fi
 
-epsilons="$1"
-pop_size="$2"
+offset="$1"
+epsilons="$2"
+pop_size="$3"
 
 # Create temporary files
 temp_number_file=$(mktemp)
@@ -26,11 +27,11 @@ echo 0 > $temp_number_file
     --parameter-names=p \
     --population-size=$pop_size \
     --epsilons=$epsilons \
-    --simulator="'@CMAKE_CURRENT_BINARY_DIR@/../abc-rejection/accept-if-epsilon-plus-parameter-is-even.sh'" \
+    --simulator="'@CMAKE_CURRENT_BINARY_DIR@/../abc-rejection/return-zero-else-one-if-parameter-plus-offset-is-even.sh' $offset" \
     --prior-sampler="'@CMAKE_CURRENT_BINARY_DIR@/../abc-rejection/increment-and-print-number.sh' $temp_number_file" \
-    --perturber="'@CMAKE_CURRENT_BINARY_DIR@/perturber.sh' $epsilons" \
+    --perturber="'@CMAKE_CURRENT_BINARY_DIR@/perturber.sh' $offset" \
     --prior-pdf="'@CMAKE_CURRENT_BINARY_DIR@/prior-pdf.sh'" \
-    --perturbation-pdf="'@CMAKE_CURRENT_BINARY_DIR@/perturbation-pdf.sh' $epsilons"
+    --perturbation-pdf="'@CMAKE_CURRENT_BINARY_DIR@/perturbation-pdf.sh' $offset"
 
 
 # Clean up temporary files

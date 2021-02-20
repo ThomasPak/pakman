@@ -21,7 +21,7 @@ configure_script (
 
 # Add tests
 add_test (ABCSMCInferenceEven
-    "${CMAKE_CURRENT_BINARY_DIR}/test-abc-smc.sh" 2,1,0 10)
+    "${CMAKE_CURRENT_BINARY_DIR}/test-abc-smc.sh" 0 0,0,0 10)
 
 add_test (ABCSMCInferenceOdd
-    "${CMAKE_CURRENT_BINARY_DIR}/test-abc-smc.sh" 3,2,1 10)
+    "${CMAKE_CURRENT_BINARY_DIR}/test-abc-smc.sh" 1 0,0,0 10)

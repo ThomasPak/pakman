@@ -124,9 +124,9 @@ int main(int argc, char *argv[])
     {
         std::cerr << "Usage: " << argv[0] << " S0 I0 TEND NOBS DATAFILE\n"
             "Read S and I counts from DATAFILE, "
-            "epsilon and parameters beta and gamma from stdin,\n"
-            "run simulation and output whether "
-            "parameter is accepted or rejected\n";
+            "parameters beta and gamma from stdin,\n"
+            "run simulation and output distance "
+            "between simulated and observed data\n";
 
         return 1;
     }
@@ -144,11 +144,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Read epsilon, beta and gamma from stdin
-    double epsilon;
+    // Read beta and gamma from stdin
     double beta, gamma;
 
-    std::cin >> epsilon;
     std::cin >> beta >> gamma;
 
     if (std::cin.fail())
@@ -183,15 +181,8 @@ int main(int argc, char *argv[])
     // Compute distance
     double dist = distance(S_obs, S_sim);
 
-    // Print 'accept' if dist <= epsilon, else print 'reject'
-    if (dist <= epsilon)
-    {
-        std::cout << "accept\n";
-    }
-    else
-    {
-        std::cout << "reject\n";
-    }
+    // Print distance
+    std::cout << dist << std::endl;
 
     return 0;
 }

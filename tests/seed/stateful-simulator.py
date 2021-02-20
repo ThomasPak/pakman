@@ -5,9 +5,9 @@ from sys import argv, stdin, stdout, stderr
 if len(argv) < 2:
     stderr.write("Usage: {} DATAFILE [SEED_FILE]\n"
             "Read number of heads from DATAFILE, "
-            "epsilon and parameter from stdin,\n"
-            "run simulation and output whether "
-            "parameter is accepted or rejected\n"
+            "and parameter from stdin,\n"
+            "run simulation and output the distance "
+            "between simulated and observed data\n"
             "If given SEED_FILE, read seed from file".format(argv[0]))
 
     exit(1)
@@ -33,10 +33,7 @@ if len(argv) == 3:
     seed_file.write(str(current_seed + 1))
     seed_file.close()
 
-# Read epsilon and q from stdin
-stderr.write("Enter epsilon\n");
-epsilon = int(stdin.readline())
-
+# Read q from stdin
 stderr.write("Enter q\n");
 q = float(stdin.readline())
 
@@ -50,8 +47,5 @@ for i in range(20):
     if uniform() < q:
         sim_num_heads += 1
 
-# If absolute difference is less or equal than epsilon, accept, else reject.
-if abs(sim_num_heads - obs_num_heads) <= epsilon:
-    stdout.write("accept\n")
-else:
-    stdout.write("reject\n")
+# Return absolute distance between simulated and observed number of heads
+stdout.write("{}\n".format(abs(sim_num_heads - obs_num_heads)))

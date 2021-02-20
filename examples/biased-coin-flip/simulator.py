@@ -5,18 +5,15 @@ from sys import argv, stdin, stdout, stderr
 if len(argv) != 2:
     stderr.write("Usage: {} DATAFILE\n"
             "Read number of heads from DATAFILE, "
-            "epsilon and parameter from stdin,\n"
-            "run simulation and output whether "
-            "parameter is accepted or rejected\n".format(argv[0]))
+            "and parameter from stdin,\n"
+            "run simulation and output the distance "
+            "between simulated and observed data\n".format(argv[0]))
 
     exit(1)
 
 datafile = argv[1]
 
-# Read epsilon and q from stdin
-stderr.write("Enter epsilon\n");
-epsilon = int(stdin.readline())
-
+# Read q from stdin
 stderr.write("Enter q\n");
 q = float(stdin.readline())
 
@@ -34,8 +31,5 @@ with open(datafile, 'r') as dfile:
 stderr.write("Observed heads: {}\n".format(obs_num_heads))
 stderr.write("Simulated heads: {}\n".format(sim_num_heads))
 
-# If absolute difference is less or equal than epsilon, accept, else reject.
-if abs(sim_num_heads - obs_num_heads) <= epsilon:
-    stdout.write("accept\n")
-else:
-    stdout.write("reject\n")
+# Return absolute distance between simulated and observed number of heads
+stdout.write("{}\n".format(abs(sim_num_heads - obs_num_heads)))

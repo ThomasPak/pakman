@@ -20,22 +20,19 @@ class Command;
 
 /** Format input to simulator.
  *
- * @param epsilon  distance tolerance.
  * @param parameter  parameter to simulate.
  *
  * @return input string to simulator.
  */
-std::string format_simulator_input(
-        const Epsilon& epsilon,
-        const Parameter& parameter);
+std::string format_simulator_input(const Parameter& parameter);
 
 /** Parse output from simulator.
  *
  * @param simulator_output  output string from simulator.
  *
- * @return whether parameter was accepted.
+ * @return distance between simulated and observed data.
  */
-bool parse_simulator_output(const std::string& simulator_output);
+double parse_simulator_output(const std::string& simulator_output);
 
 /** Parse output from prior_sampler.
  *

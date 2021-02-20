@@ -236,7 +236,7 @@ function (get_rejection_options _options
         endif ()
     endif ()
 
-    string (APPEND options "1 ${return_code}\"")
+    string (APPEND options "0 ${return_code}\"")
 
     # Separate arguments
     separate_arguments (options UNIX_COMMAND ${options})
@@ -373,7 +373,7 @@ function (get_smc_options _options
         endif ()
     endif ()
 
-    string (APPEND options "1 ${return_code}\"")
+    string (APPEND options "0 ${return_code}\"")
 
     # Separate arguments
     separate_arguments (options UNIX_COMMAND ${options})

@@ -13,9 +13,9 @@ int main(int argc, char *argv[])
     {
         std::cerr << "Usage: " << argv[0] << " DATAFILE\n"
             "Read number of heads from DATAFILE, "
-            "epsilon and parameter from stdin,\n"
-            "run simulation and output whether "
-            "parameter is accepted or rejected\n";
+            "parameter from stdin,\n"
+            "run simulation and output the distance "
+            "between simulated and observed data\n";
 
         return 1;
     }
@@ -28,16 +28,14 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Read epsilon and q from stdin
-    int epsilon;
+    // Read q from stdin
     double q;
 
-    std::cin >> epsilon;
     std::cin >> q;
 
     if (std::cin.fail())
     {
-        std::cerr << "Error: could not read epsilon or q from stdin\n";
+        std::cerr << "Error: could not read q from stdin\n";
         return 1;
     }
 
@@ -70,16 +68,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    // If absolute difference is less or equal than epsilon, accept, else
-    // reject
-    if (abs(sim_num_heads - obs_num_heads) <= epsilon)
-    {
-        std::cout << "accept\n";
-    }
-    else
-    {
-        std::cout << "reject\n";
-    }
+    // Return absolute distance between simulated and observed number of heads
+    std::cout << abs(sim_num_heads - obs_num_heads) << std::endl;
 
     return 0;
 }

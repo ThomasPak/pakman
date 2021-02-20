@@ -9,19 +9,16 @@
 
 // simulator protocol
 std::string format_simulator_input(
-        const Epsilon& epsilon,
         const Parameter& parameter)
 {
     std::string input_string;
-    input_string += epsilon.str();
-    input_string += '\n';
     input_string += parameter.str();
     input_string += '\n';
 
     return input_string;
 }
 
-bool parse_simulator_output(const std::string& simulator_output)
+double parse_simulator_output(const std::string& simulator_output)
 {
     // Extract line
     std::string line;
@@ -39,26 +36,7 @@ bool parse_simulator_output(const std::string& simulator_output)
     }
 
     // Parse line
-    if (line.compare("1") == 0)
-        return true;
-    else if (line.compare("accept") == 0)
-        return true;
-    else if (line.compare("accepted") == 0)
-        return true;
-    if (line.compare("0") == 0)
-        return false;
-    else if (line.compare("reject") == 0)
-        return false;
-    else if (line.compare("rejected") == 0)
-        return false;
-    // Invalid simulator output
-    else
-    {
-        std::string error_msg;
-        error_msg += "Cannot parse output of simulator: ";
-        error_msg += simulator_output;
-        throw std::runtime_error(error_msg);
-    }
+    return std::stod(line);
 }
 
 // prior_sampler protocol

@@ -6,9 +6,9 @@ from sys import argv, stdin, stdout, stderr
 if len(argv) < 6:
     stderr.write("Usage: {} S0 I0 TEND NOBS DATAFILE [TRACEFILE]\n"
             "Read S and I counts from DATAFILE, "
-            "epsilon and parameters beta and gamma from stdin,\n"
-            "run simulation and output whether "
-            "parameter is accepted or rejected\n"
+            "parameters beta and gamma from stdin,\n"
+            "run simulation and output distance "
+            "between simulated and observed data\n"
             "If TRACEFILE is given, save the t and S series to TRACEFILE\n".format(argv[0]))
 
     exit(1)
@@ -24,10 +24,7 @@ if len(argv) >= 7:
 else:
     tracefile = None
 
-# Read epsilon and q from stdin
-stderr.write("Enter epsilon\n");
-epsilon = int(stdin.readline())
-
+# Read beta and gamma from stdin
 stderr.write("Enter beta and gamma\n");
 beta, gamma = [ float(num) for num in stdin.readline().split() ]
 
@@ -167,8 +164,5 @@ stderr.write("Observed S: {}\n".format(S_obs))
 stderr.write("Simulated S: {}\n".format(S_sim))
 stderr.write("L2 difference: {}\n".format(dist))
 
-# If absolute difference is less or equal than epsilon, accept, else reject.
-if dist <= epsilon:
-    stdout.write("accept\n")
-else:
-    stdout.write("reject\n")
+# Return distance
+stdout.write("{}\n".format(distance))

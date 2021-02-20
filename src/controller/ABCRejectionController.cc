@@ -46,7 +46,8 @@ void ABCRejectionController::iterate()
         if (!task.didErrorOccur())
         {
             // Check if parameter was accepted
-            if (parse_simulator_output(task.getOutputString()))
+            if (parse_simulator_output(task.getOutputString())
+                    <= std::stod(m_epsilon.str()))
             {
                 // Declare raw parameter
                 std::string raw_parameter;
@@ -54,11 +55,11 @@ void ABCRejectionController::iterate()
                 // Get input string
                 std::stringstream input_sstrm(task.getInputString());
 
-                // Discard epsilon
-                std::getline(input_sstrm, raw_parameter);
-
                 // Read accepted parameter
                 std::getline(input_sstrm, raw_parameter);
+
+                // Sanity check on input stringstream
+                assert(input_sstrm.good());
 
                 // Push accepted parameter
                 m_prmtr_accepted.push_back(std::move(raw_parameter));
@@ -97,7 +98,7 @@ void ABCRejectionController::iterate()
     // There is still work to be done, so make sure there are as many tasks
     // queued as there are Managers
     while (m_p_master->needMorePendingTasks())
-        m_p_master->pushPendingTask(format_simulator_input(m_epsilon.str(),
+        m_p_master->pushPendingTask(format_simulator_input(
                     sample_from_prior(m_prior_sampler)));
 
     m_entered = false;

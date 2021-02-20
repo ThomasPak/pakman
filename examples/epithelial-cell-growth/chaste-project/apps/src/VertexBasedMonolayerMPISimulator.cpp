@@ -87,15 +87,13 @@ int simulator(int argc, char *argv[], const std::string& input_string,
         }
 
         // Get input
-        int epsilon; double tcycle;
+        double tcycle;
         std::stringstream inputstrm(input_string);
-        inputstrm >> epsilon;
         inputstrm >> tcycle;
 
         // Print output
         if (!silent)
         {
-            std::cerr << "Epsilon: " << epsilon << std::endl;
             std::cerr << "Tcycle: " << tcycle << std::endl;
         }
 
@@ -128,13 +126,10 @@ int simulator(int argc, char *argv[], const std::string& input_string,
         // Initialize result
         std::string result;
 
-        // Compare data and simulation and send result
-        if (abs(sim_num_cells - data_num_cells) <= epsilon)
-            // Parameter accepted
-            result.assign("accept\n");
-        else
-            // Parameter rejected
-            result.assign("reject\n");
+        // Send distance
+        std::stringstream sstr;
+        sstr << abs(sim_num_cells - data_num_cells) << std::endl;
+        result.assign(sstr.str());
 
         // Write result
         output_string.assign(result);

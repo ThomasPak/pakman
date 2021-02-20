@@ -61,9 +61,7 @@ int main(int argc, char *argv[])
                 keep_testoutput = true;
 
         // Get input
-        int epsilon; double tcycle;
-        std::cerr << "Enter epsilon\n";
-        std::cin >> epsilon;
+        double tcycle;
         std::cerr << "Enter tcycle\n";
         std::cin >> tcycle;
 
@@ -87,16 +85,8 @@ int main(int argc, char *argv[])
         std::cerr << "Observed cell count: " << data_num_cells << std::endl;
         std::cerr << "Simulated cell count: " << sim_num_cells << std::endl;
 
-        // Initialize result
-        std::string result;
-
-        // Compare data and simulation and send result
-        if (abs(sim_num_cells - data_num_cells) <= epsilon)
-            // Parameter accepted
-            std::cout << "accept\n";
-        else
-            // Parameter rejected
-            std::cout << "reject\n";
+        // Send distance
+        std::cout << abs(sim_num_cells - data_num_cells) << std::endl;
 
         // Remove temporary directory
         if (!keep_testoutput)

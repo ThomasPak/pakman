@@ -73,7 +73,8 @@ void ABCSMCController::iterate()
         if (!task.didErrorOccur())
         {
             // Check if parameter was accepted
-            if (parse_simulator_output(task.getOutputString()))
+            if (parse_simulator_output(task.getOutputString())
+                    <= std::stod(m_epsilons[m_t].str()))
             {
                 // Declare raw parameter
                 std::string raw_parameter;
@@ -81,11 +82,11 @@ void ABCSMCController::iterate()
                 // Get input string
                 std::stringstream input_sstrm(task.getInputString());
 
-                // Discard epsilon
-                std::getline(input_sstrm, raw_parameter);
-
                 // Read accepted parameter
                 std::getline(input_sstrm, raw_parameter);
+
+                // Sanity check on input stringstream
+                assert(input_sstrm.good());
 
                 // Push accepted parameter
                 m_prmtr_accepted_new.push_back(std::move(raw_parameter));
@@ -178,8 +179,7 @@ void ABCSMCController::iterate()
     // queued as there are Managers
     while (m_p_master->needMorePendingTasks())
         m_p_master->pushPendingTask(
-                format_simulator_input(
-                    m_epsilons[m_t].str(), sampleParameter()));
+                format_simulator_input(sampleParameter()));
 
     m_entered = false;
 }

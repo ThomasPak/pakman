@@ -4,14 +4,13 @@ set -euo pipefail
 # Process arguments
 if [ $# -ne 1 ]
 then
-    echo "Usage: $0 EPSILONS" 1>&2
+    echo "Usage: $0 OFFSET" 1>&2
     echo "Checks parameters and prints 1 if OK" 1>&2
-    echo "EPSILONS is comma-separated list of epsilon values" 1>&2
-    echo "Throws an error if (parameter + epsilon[t - 1]) is odd" 1>&2
+    echo "Throws an error if (parameter + OFFSET) is odd" 1>&2
     exit 1
 fi
 
-epsilon_list="$1"
+offset="$1"
 
 # Read t
 read t
@@ -23,9 +22,6 @@ then
     exit 1
 fi
 
-# Get previous epsilon (cut uses one-based indexing for fields)
-previous_epsilon=$(echo $epsilon_list | cut -d, -f$t)
-
 # Read perturbed parameter
 read perturbed_prmtr
 
@@ -35,7 +31,7 @@ is_valid="false"
 while read parameter
 do
     # Add previous epsilon and parameter
-    sum=$((previous_epsilon + parameter))
+    sum=$((offset + parameter))
 
     # Take mod 2
     mod=$((sum % 2))
@@ -43,11 +39,11 @@ do
     # If mod is equal to 1, throw error
     if [ "$mod" -eq "1" ]
     then
-        echo "Sum of parameter and epsilon is odd" 1>&2
+        echo "Sum of parameter and offset is odd" 1>&2
         exit 1
     fi
 
-    if [ "$((parameter+1))" -eq "$perturbed_prmtr" ]
+    if [ "$((parameter+2))" -eq "$perturbed_prmtr" ]
     then
         is_valid="true"
     fi

@@ -5,8 +5,8 @@ configure_script (
     )
 
 configure_script (
-    "${CMAKE_CURRENT_SOURCE_DIR}/accept-if-epsilon-plus-parameter-is-even.sh"
-    "${CMAKE_CURRENT_BINARY_DIR}/accept-if-epsilon-plus-parameter-is-even.sh"
+    "${CMAKE_CURRENT_SOURCE_DIR}/return-zero-else-one-if-parameter-plus-offset-is-even.sh"
+    "${CMAKE_CURRENT_BINARY_DIR}/return-zero-else-one-if-parameter-plus-offset-is-even.sh"
     )
 
 configure_script (
